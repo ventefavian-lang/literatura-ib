@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FigurasIB — El arsenal retórico</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Nunito:wght@300;400;600;700;800;900&display=swap');
+
+  :root {
+    --ink: #1a1025;
+    --paper: #fdf8f0;
+    --cream: #f5ede0;
+    --accent: #e63946;
+    --gold: #f4a261;
+    --teal: #2a9d8f;
+    --purple: #6d4c9e;
+    --blue: #457b9d;
+    --light: #a8dadc;
+    --success: #2a9d8f;
+    --error: #e63946;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--ink);
+    color: var(--paper);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* SPLASH / HERO */
+  #splash {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: var(--ink);
+    position: relative;
+    overflow: hidden;
+    padding: 2rem;
+  }
+
+  #splash::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 30%, rgba(69,123,157,0.25) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 70%, rgba(230,57,70,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 50% 90%, rgba(42,157,143,0.2) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .floating-letters { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .fl {
+    position: absolute;
+    font-family: 'Playfair Display', serif;
+    opacity: 0.06;
+    color: var(--paper);
+    animation: floatUp linear infinite;
+    user-select: none;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.06; }
+    90% { opacity: 0.06; }
+    100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+  }
+
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    animation: fadeSlideUp 0.8s ease both;
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 10vw, 7rem);
+    font-weight: 900;
+    line-height: 0.9;
+    margin-bottom: 1.5rem;
+    animation: fadeSlideUp 0.8s 0.15s ease both;
+  }
+  .hero-title span { color: var(--accent); font-style: italic; }
+  .hero-sub {
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    color: rgba(253,248,240,0.65);
+    max-width: 620px;
+    line-height: 1.7;
+    margin-bottom: 3rem;
+    animation: fadeSlideUp 0.8s 0.3s ease both;
+  }
+  .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; animation: fadeSlideUp 0.8s 0.45s ease both; }
+  .btn-primary {
+    background: var(--accent); color: white; border: none; padding: 1rem 2.5rem; border-radius: 50px;
+    font-family: 'Nunito', sans-serif; font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: all 0.3s;
+    box-shadow: 0 8px 30px rgba(230,57,70,0.4); letter-spacing: 0.02em;
+  }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(230,57,70,0.5); }
+  .btn-secondary {
+    background: transparent; color: var(--paper); border: 2px solid rgba(253,248,240,0.3); padding: 1rem 2.5rem;
+    border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: all 0.3s;
+  }
+  .btn-secondary:hover { border-color: var(--paper); background: rgba(253,248,240,0.08); }
+  @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+  .stats-bar { display: flex; gap: 3rem; margin-top: 4rem; animation: fadeSlideUp 0.8s 0.6s ease both; flex-wrap: wrap; justify-content: center; }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700; color: var(--gold); }
+  .stat-label { font-size: 0.8rem; color: rgba(253,248,240,0.5); text-transform: uppercase; letter-spacing: 0.1em; }
+
+  .back-link {
+    position: absolute; top: 1.5rem; left: 1.5rem; font-family: 'DM Mono', monospace; font-size: 0.8rem;
+    color: rgba(253,248,240,0.5); letter-spacing: 0.05em; z-index: 5;
+  }
+  .back-link:hover { color: var(--paper); }
+
+  /* APP */
+  #app { display: none; min-height: 100vh; }
+
+  .sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 260px;
+    background: rgba(26,16,37,0.97); border-right: 1px solid rgba(253,248,240,0.08); z-index: 100;
+    display: flex; flex-direction: column; backdrop-filter: blur(20px); transition: transform 0.3s;
+  }
+  .sidebar-logo { padding: 1.5rem 1.5rem 1rem; border-bottom: 1px solid rgba(253,248,240,0.08); }
+  .sidebar-logo h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; }
+  .sidebar-logo h2 span { color: var(--accent); font-style: italic; }
+  .sidebar-logo p { font-size: 0.7rem; color: rgba(253,248,240,0.4); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
+  .sidebar-nav { flex: 1; padding: 1rem 0; overflow-y: auto; }
+  .nav-section-label { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(253,248,240,0.3); padding: 1rem 1.5rem 0.5rem; font-family: 'DM Mono', monospace; }
+  .nav-item {
+    display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 1.5rem; cursor: pointer; transition: all 0.2s;
+    border-left: 3px solid transparent; font-weight: 600; font-size: 0.9rem; color: rgba(253,248,240,0.6); user-select: none;
+  }
+  .nav-item:hover { background: rgba(253,248,240,0.05); color: var(--paper); }
+  .nav-item.active { border-left-color: var(--accent); background: rgba(230,57,70,0.1); color: var(--paper); }
+  .nav-item .icon { font-size: 1.1rem; width: 20px; text-align: center; }
+  .progress-mini { padding: 1rem 1.5rem; border-top: 1px solid rgba(253,248,240,0.08); }
+  .progress-mini p { font-size: 0.72rem; color: rgba(253,248,240,0.4); margin-bottom: 0.5rem; }
+  .progress-bar { height: 4px; background: rgba(253,248,240,0.1); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--purple)); border-radius: 2px; transition: width 0.5s; }
+  .xp-display { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--gold); margin-top: 0.5rem; }
+
+  .main-area { margin-left: 260px; min-height: 100vh; background: linear-gradient(135deg, #1a1025 0%, #0f1923 100%); position: relative; }
+  .top-bar {
+    position: sticky; top: 0; background: rgba(26,16,37,0.9); backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(253,248,240,0.08); padding: 1rem 2rem; display: flex; align-items: center;
+    justify-content: space-between; z-index: 50;
+  }
+  .top-bar h1 { font-family: 'Playfair Display', serif; font-size: 1.3rem; }
+  .top-bar h1 span { color: var(--accent); font-style: italic; }
+  .top-stats { display: flex; gap: 1.5rem; align-items: center; }
+  .top-stat { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: rgba(253,248,240,0.7); font-family: 'DM Mono', monospace; }
+  .top-stat strong { color: var(--gold); }
+  .streak-badge { background: linear-gradient(135deg, #f4a261, #e63946); color: white; padding: 0.3rem 0.8rem; border-radius: 50px; font-size: 0.8rem; font-weight: 800; }
+
+  .section { display: none; padding: 2rem; }
+  .section.active { display: block; }
+
+  .exercise-card {
+    background: rgba(253,248,240,0.04); border: 1px solid rgba(253,248,240,0.08); border-radius: 20px;
+    padding: 2.5rem; max-width: 800px; margin: 0 auto; position: relative; overflow: hidden;
+  }
+  .exercise-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--purple), var(--teal)); }
+  .ex-meta { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .ex-type-badge { font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.3rem 0.8rem; border-radius: 50px; font-weight: 500; }
+  .badge-fono { background: rgba(69,123,157,0.2); color: var(--light); border: 1px solid rgba(69,123,157,0.3); }
+  .badge-gram { background: rgba(109,76,158,0.2); color: #a67fd4; border: 1px solid rgba(109,76,158,0.3); }
+  .badge-sem { background: rgba(42,157,143,0.2); color: var(--teal); border: 1px solid rgba(42,157,143,0.3); }
+  .badge-prag { background: rgba(230,57,70,0.2); color: #ff8a93; border: 1px solid rgba(230,57,70,0.3); }
+  .diff-stars { color: var(--gold); font-size: 0.85rem; }
+  .ex-question { font-family: 'Playfair Display', serif; font-size: 1.35rem; line-height: 1.6; margin-bottom: 0.4rem; color: var(--paper); font-style: italic; }
+  .ex-instruction { font-size: 0.85rem; color: rgba(253,248,240,0.5); margin-bottom: 2rem; }
+  .ex-author { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: rgba(253,248,240,0.35); margin-bottom: 1.8rem; }
+
+  .options-grid { display: grid; gap: 0.8rem; margin-bottom: 1.5rem; }
+  .option-btn {
+    background: rgba(253,248,240,0.04); border: 1.5px solid rgba(253,248,240,0.12); color: var(--paper);
+    padding: 1rem 1.5rem; border-radius: 12px; cursor: pointer; text-align: left; font-family: 'Nunito', sans-serif;
+    font-size: 1rem; font-weight: 600; transition: all 0.25s; display: flex; align-items: center; gap: 1rem;
+  }
+  .option-btn:hover:not(:disabled) { background: rgba(253,248,240,0.09); border-color: rgba(253,248,240,0.25); transform: translateX(4px); }
+  .option-btn.correct { background: rgba(42,157,143,0.2); border-color: var(--teal); color: #7ecec7; }
+  .option-btn.incorrect { background: rgba(230,57,70,0.15); border-color: var(--accent); color: #ff8a93; }
+  .option-letter { width: 28px; height: 28px; background: rgba(253,248,240,0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 0.8rem; flex-shrink: 0; }
+
+  .feedback-box { display: none; padding: 1.2rem 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; animation: fadeIn 0.3s ease; }
+  .feedback-box.show { display: block; }
+  .feedback-correct { background: rgba(42,157,143,0.15); border: 1px solid rgba(42,157,143,0.3); }
+  .feedback-incorrect { background: rgba(230,57,70,0.12); border: 1px solid rgba(230,57,70,0.25); }
+  .feedback-title { font-weight: 800; font-size: 1rem; margin-bottom: 0.5rem; }
+  .feedback-correct .feedback-title { color: #7ecec7; }
+  .feedback-incorrect .feedback-title { color: #ff8a93; }
+  .feedback-text { font-size: 0.9rem; color: rgba(253,248,240,0.75); line-height: 1.6; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .ex-actions { display: flex; gap: 1rem; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+  .btn-next {
+    background: var(--teal); color: white; border: none; padding: 0.9rem 2rem; border-radius: 50px;
+    font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800; cursor: pointer; transition: all 0.3s;
+    box-shadow: 0 5px 20px rgba(42,157,143,0.4);
+  }
+  .btn-next:hover { transform: translateY(-2px); }
+  .btn-skip { background: transparent; color: rgba(253,248,240,0.4); border: none; padding: 0.5rem 1rem; font-family: 'Nunito', sans-serif; font-size: 0.85rem; cursor: pointer; transition: color 0.2s; }
+  .btn-skip:hover { color: rgba(253,248,240,0.7); }
+
+  .combo-display { position: fixed; top: 80px; right: 2rem; z-index: 200; text-align: center; pointer-events: none; }
+  .combo-num { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; color: var(--gold); line-height: 1; text-shadow: 0 0 30px rgba(244,162,97,0.6); transition: all 0.3s; opacity: 0; }
+  .combo-num.show { opacity: 1; }
+  .combo-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.2em; color: rgba(244,162,97,0.6); text-transform: uppercase; }
+
+  .xp-pop { position: fixed; pointer-events: none; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.5rem; color: var(--gold); z-index: 500; animation: xpFly 1.2s ease forwards; }
+  @keyframes xpFly { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-80px) scale(1.3); } }
+
+  .dict-search-wrap { max-width: 700px; margin: 0 auto 2rem; position: relative; }
+  .dict-input {
+    width: 100%; background: rgba(253,248,240,0.06); border: 2px solid rgba(253,248,240,0.15); color: var(--paper);
+    padding: 1.2rem 1.5rem 1.2rem 4rem; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 1.1rem;
+    font-weight: 600; outline: none; transition: border-color 0.3s;
+  }
+  .dict-input:focus { border-color: var(--gold); }
+  .dict-search-icon { position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); font-size: 1.2rem; }
+  .dict-card { background: rgba(253,248,240,0.04); border: 1px solid rgba(253,248,240,0.1); border-radius: 16px; padding: 2rem; max-width: 700px; margin: 0 auto 1.2rem; display: none; }
+  .dict-card.show { display: block; animation: fadeIn 0.3s ease; }
+  .dict-word { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700; }
+  .dict-word span { color: var(--gold); font-style: italic; }
+  .dict-type { display: inline-block; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0.7rem; border-radius: 50px; margin: 0.6rem 0 1rem; font-family: 'DM Mono', monospace; }
+  .dict-def { font-size: 1rem; line-height: 1.8; color: rgba(253,248,240,0.85); margin-bottom: 1rem; }
+  .dict-example { font-style: italic; color: rgba(253,248,240,0.6); font-size: 0.95rem; border-left: 3px solid var(--gold); padding-left: 1rem; margin-bottom: 0.6rem; }
+  .dict-origin { font-size: 0.82rem; color: rgba(253,248,240,0.4); font-family: 'DM Mono', monospace; }
+  .word-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; max-width: 700px; margin: 0 auto 2rem; justify-content: center; }
+  .word-chip {
+    background: rgba(253,248,240,0.06); border: 1px solid rgba(253,248,240,0.1); color: rgba(253,248,240,0.7);
+    padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; font-weight: 600;
+  }
+  .word-chip:hover { background: rgba(253,248,240,0.12); color: var(--paper); }
+
+  .rules-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.3rem; max-width: 1200px; margin: 0 auto; }
+  .rule-card { background: rgba(253,248,240,0.04); border: 1px solid rgba(253,248,240,0.08); border-radius: 16px; padding: 1.6rem; transition: all 0.3s; }
+  .rule-card:hover { transform: translateY(-4px); border-color: rgba(253,248,240,0.15); background: rgba(253,248,240,0.07); }
+  .rule-title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .rule-desc { font-size: 0.88rem; color: rgba(253,248,240,0.6); line-height: 1.6; margin-bottom: 1rem; }
+  .rule-examples { font-family: 'DM Mono', monospace; font-size: 0.8rem; }
+  .rule-example { padding: 0.5rem 0; border-top: 1px solid rgba(253,248,240,0.05); font-style: italic; color: rgba(253,248,240,0.65); }
+  .rule-example em { color: var(--gold); font-style: normal; display: block; margin-top: 0.3rem; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.75rem; letter-spacing: 0.03em; }
+  .rule-tag { display: inline-block; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 50px; margin-bottom: 0.7rem; font-family: 'DM Mono', monospace; }
+
+  .section-header { margin-bottom: 2rem; }
+  .section-header h2 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .section-header h2 span { color: var(--accent); font-style: italic; }
+  .section-header p { color: rgba(253,248,240,0.5); font-size: 0.95rem; }
+
+  .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-width: 900px; margin: 0 auto; }
+  @media (max-width: 700px) { .home-grid { grid-template-columns: 1fr; } }
+  .home-card { background: rgba(253,248,240,0.04); border: 1px solid rgba(253,248,240,0.08); border-radius: 20px; padding: 2rem; cursor: pointer; transition: all 0.3s; }
+  .home-card:hover { transform: translateY(-5px); }
+  .home-card.c1 { border-top: 3px solid var(--blue); }
+  .home-card.c2 { border-top: 3px solid var(--purple); }
+  .home-card.c3 { border-top: 3px solid var(--teal); }
+  .home-card.c4 { border-top: 3px solid var(--accent); }
+  .home-card.c5 { border-top: 3px solid var(--gold); }
+  .home-card.c6 { border-top: 3px solid var(--light); }
+  .home-card-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .home-card h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 0.5rem; }
+  .home-card p { font-size: 0.85rem; color: rgba(253,248,240,0.5); line-height: 1.6; }
+  .home-card .exercise-count { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: rgba(253,248,240,0.3); margin-top: 0.8rem; }
+
+  .progress-rings { display: flex; flex-wrap: wrap; gap: 2rem; max-width: 900px; margin: 0 auto 2rem; }
+  .ring-card { background: rgba(253,248,240,0.04); border: 1px solid rgba(253,248,240,0.08); border-radius: 16px; padding: 1.5rem; text-align: center; flex: 1; min-width: 150px; }
+  .ring-card h4 { font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(253,248,240,0.4); margin-bottom: 1rem; font-family: 'DM Mono', monospace; }
+  .ring-num { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; color: var(--gold); }
+  .ring-label { font-size: 0.75rem; color: rgba(253,248,240,0.4); }
+
+  .sidebar-toggle {
+    display: none; position: fixed; bottom: 1.5rem; right: 1.5rem; width: 56px; height: 56px; background: var(--accent);
+    border: none; border-radius: 50%; font-size: 1.4rem; cursor: pointer; z-index: 300; box-shadow: 0 8px 25px rgba(230,57,70,0.5); color: white;
+  }
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main-area { margin-left: 0; }
+    .sidebar-toggle { display: flex; align-items: center; justify-content: center; }
+    .combo-display { top: auto; bottom: 5rem; right: 1rem; }
+  }
+
+  .section-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; justify-content: center; }
+  .section-tab {
+    padding: 0.5rem 1.2rem; border-radius: 50px; border: 1.5px solid rgba(253,248,240,0.12); background: transparent;
+    color: rgba(253,248,240,0.6); font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
+  }
+  .section-tab:hover { border-color: rgba(253,248,240,0.25); color: var(--paper); }
+  .section-tab.active { background: var(--purple); border-color: var(--purple); color: white; }
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <a class="back-link" href="index.html">← Volver al portal</a>
+  <div class="floating-letters" id="floatingLetters"></div>
+  <div class="hero-tag">📚 IB Literatura — Nivel Superior</div>
+  <h1 class="hero-title">El arsenal<br><span>retórico</span>.</h1>
+  <p class="hero-sub">122 figuras retóricas del español, clasificadas en fonológicas, gramaticales, semánticas y pragmáticas — con ejemplos de autores clásicos, quiz interactivo y diccionario de consulta. Basado en <em>Las figuras retóricas</em> de José Luis García Barrientos.</p>
+  <div class="hero-buttons">
+    <button class="btn-primary" onclick="launchApp()">🚀 Explorar figuras</button>
+    <button class="btn-secondary" onclick="launchApp(); showSection('quiz')">🎯 Ir directo al quiz</button>
+  </div>
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-num">122</div><div class="stat-label">Figuras</div></div>
+    <div class="stat"><div class="stat-num">4</div><div class="stat-label">Categorías</div></div>
+    <div class="stat"><div class="stat-num">30+</div><div class="stat-label">Autores citados</div></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <h2>Figuras<span>IB</span></h2>
+      <p>El arsenal retórico</p>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Explorar</div>
+      <div class="nav-item active" onclick="showSection('inicio')"><span class="icon">🏠</span> Inicio</div>
+      <div class="nav-item" onclick="showSection('fono')"><span class="icon">🔊</span> Fonológicas</div>
+      <div class="nav-item" onclick="showSection('gram')"><span class="icon">🧩</span> Gramaticales</div>
+      <div class="nav-item" onclick="showSection('sem')"><span class="icon">🎭</span> Semánticas</div>
+      <div class="nav-item" onclick="showSection('prag')"><span class="icon">🗣️</span> Pragmáticas</div>
+      <div class="nav-section-label">Practicar</div>
+      <div class="nav-item" onclick="showSection('quiz')"><span class="icon">🎯</span> Quiz</div>
+      <div class="nav-item" onclick="showSection('diccionario')"><span class="icon">🔍</span> Diccionario</div>
+      <div class="nav-item" onclick="showSection('progreso')"><span class="icon">📊</span> Mi progreso</div>
+    </div>
+    <div class="progress-mini">
+      <p>Nivel <span id="miniLevel">1</span></p>
+      <div class="progress-bar"><div class="progress-fill" id="miniProgress" style="width:0%"></div></div>
+      <div class="xp-display" id="miniXP">0 XP</div>
+    </div>
+  </div>
+
+  <div class="main-area">
+    <div class="top-bar">
+      <h1>Figuras<span>IB</span></h1>
+      <div class="top-stats">
+        <div class="top-stat">🔥 <strong id="topStreak">0</strong></div>
+        <div class="top-stat">⭐ <strong id="topXP">0</strong> XP</div>
+        <div class="streak-badge" id="topLevel">Nivel 1</div>
+      </div>
+    </div>
+
+    <div class="combo-display" id="comboDisplay">
+      <div class="combo-num" id="comboNum">0</div>
+      <div class="combo-label">combo</div>
+    </div>
+
+    <!-- INICIO -->
+    <div class="section active" id="sec-inicio">
+      <div class="section-header">
+        <h2>Bienvenido a tu <span>arsenal</span></h2>
+        <p>Elige una categoría para estudiar, o ve directo a practicar en el quiz.</p>
+      </div>
+      <div class="home-grid">
+        <div class="home-card c1" onclick="showSection('fono')">
+          <div class="home-card-icon">🔊</div>
+          <h3>Figuras fonológicas</h3>
+          <p>Metaplasmos, licencias métricas y recurrencias de sonido: aliteración, rima, sinalefa, aféresis…</p>
+          <div class="exercise-count" id="count-fono"></div>
+        </div>
+        <div class="home-card c2" onclick="showSection('gram')">
+          <div class="home-card-icon">🧩</div>
+          <h3>Figuras gramaticales</h3>
+          <p>Hipérbaton, elipsis, anáfora, quiasmo, políptoton y todos los juegos de repetición y orden.</p>
+          <div class="exercise-count" id="count-gram"></div>
+        </div>
+        <div class="home-card c3" onclick="showSection('sem')">
+          <div class="home-card-icon">🎭</div>
+          <h3>Figuras semánticas</h3>
+          <p>Los tropos: metáfora, metonimia, ironía, hipérbole, y las figuras de contraste: antítesis, oxímoron…</p>
+          <div class="exercise-count" id="count-sem"></div>
+        </div>
+        <div class="home-card c4" onclick="showSection('prag')">
+          <div class="home-card-icon">🗣️</div>
+          <h3>Figuras pragmáticas</h3>
+          <p>Apóstrofe, prosopopeya, dialogismo, exclamación — las figuras de la puesta en escena del discurso.</p>
+          <div class="exercise-count" id="count-prag"></div>
+        </div>
+        <div class="home-card c5" onclick="showSection('quiz')">
+          <div class="home-card-icon">🎯</div>
+          <h3>Quiz mixto</h3>
+          <p>Identifica la figura a partir de un ejemplo real. Gana XP, mantén tu racha.</p>
+        </div>
+        <div class="home-card c6" onclick="showSection('diccionario')">
+          <div class="home-card-icon">🔍</div>
+          <h3>Diccionario de figuras</h3>
+          <p>Busca cualquier figura por nombre y consulta su definición y ejemplo al instante.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CATEGORIAS -->
+    <div class="section" id="sec-fono">
+      <div class="section-header"><h2>Figuras <span>fonológicas</span></h2><p>Afectan al plano del sonido: licencias métricas y recurrencias fónicas.</p></div>
+      <div class="rules-grid" id="grid-fono"></div>
+    </div>
+    <div class="section" id="sec-gram">
+      <div class="section-header"><h2>Figuras <span>gramaticales</span></h2><p>Afectan al orden y la repetición de morfemas, palabras y estructuras sintácticas.</p></div>
+      <div class="rules-grid" id="grid-gram"></div>
+    </div>
+    <div class="section" id="sec-sem">
+      <div class="section-header"><h2>Figuras <span>semánticas</span></h2><p>Tropos y recurrencias del significado: sustitución, sinonimia y antonimia.</p></div>
+      <div class="rules-grid" id="grid-sem"></div>
+    </div>
+    <div class="section" id="sec-prag">
+      <div class="section-header"><h2>Figuras <span>pragmáticas</span></h2><p>Afectan a la situación comunicativa: al referente, a la ficción enunciativa, al hablante y al destinatario.</p></div>
+      <div class="rules-grid" id="grid-prag"></div>
+    </div>
+
+    <!-- QUIZ -->
+    <div class="section" id="sec-quiz">
+      <div class="section-header"><h2>Quiz <span>de figuras</span></h2><p>Lee el ejemplo e identifica qué figura retórica es.</p></div>
+      <div class="section-tabs">
+        <button class="section-tab active" onclick="setQuizFilter('todas', event)">Todas</button>
+        <button class="section-tab" onclick="setQuizFilter('fono', event)">Fonológicas</button>
+        <button class="section-tab" onclick="setQuizFilter('gram', event)">Gramaticales</button>
+        <button class="section-tab" onclick="setQuizFilter('sem', event)">Semánticas</button>
+        <button class="section-tab" onclick="setQuizFilter('prag', event)">Pragmáticas</button>
+      </div>
+      <div id="quizContainer"></div>
+    </div>
+
+    <!-- DICCIONARIO -->
+    <div class="section" id="sec-diccionario">
+      <div class="section-header"><h2>Diccionario de <span>figuras</span></h2><p>Busca por nombre (ej: "metáfora", "hipérbaton", "quiasmo"…).</p></div>
+      <div class="dict-search-wrap">
+        <span class="dict-search-icon">🔍</span>
+        <input class="dict-input" id="dictInput" type="text" placeholder="Busca una figura retórica…" oninput="searchDict(this.value)">
+      </div>
+      <div class="word-chips" id="wordChips"></div>
+      <div class="dict-card" id="dictCard"></div>
+    </div>
+
+    <!-- PROGRESO -->
+    <div class="section" id="sec-progreso">
+      <div class="section-header"><h2>Mi <span>progreso</span></h2><p>Tu avance en el dominio de las figuras retóricas.</p></div>
+      <div class="progress-rings" id="progressRings"></div>
+    </div>
+  </div>
+</div>
+
+<button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+
+<script>
+// ============================================================
+// DATA — 122 FIGURAS RETÓRICAS
+// Basado en García Barrientos, "Las figuras retóricas" (Arco/Libros)
+// n=nombre, cat=categoría, sub=subtipo, d=definición, e=ejemplo, a=autor
+// ============================================================
+const FIGURAS_DATA = [
+  {n:"Prótesis", cat:"fono", sub:"Licencia por adición", d:"Añade un fonema o sílaba al principio de la palabra.", e:"amatado (por matado)", a:"Garcilaso"},
+  {n:"Epéntesis", cat:"fono", sub:"Licencia por adición", d:"Incrementa fonemas o sílabas en el interior de la palabra.", e:"corónica (por crónica)", a:"anónimo"},
+  {n:"Paragoge", cat:"fono", sub:"Licencia por adición", d:"Suma fonemas o sílabas al final de la palabra.", e:"infelice (por infeliz)", a:"Calderón"},
+  {n:"Aféresis", cat:"fono", sub:"Licencia por supresión", d:"Suprime fonemas o sílabas en posición inicial de la palabra.", e:"ora (por ahora)", a:"tradicional"},
+  {n:"Síncopa", cat:"fono", sub:"Licencia por supresión", d:"Suprime fonemas o sílabas en posición interna de la palabra.", e:"guarte (por guárdate)", a:"San Juan de la Cruz"},
+  {n:"Apócope", cat:"fono", sub:"Licencia por supresión", d:"Suprime fonemas o sílabas en posición final de la palabra.", e:"Siquier la muerte me lleva", a:"Romancero"},
+  {n:"Metátesis", cat:"fono", sub:"Licencia por inversión", d:"Permuta fonemas o sílabas dentro de una misma palabra.", e:"Miraldo (por miradlo)", a:"Cervantes"},
+  {n:"Antistecon", cat:"fono", sub:"Licencia por sustitución", d:"Sustituye unos fonemas (raramente sílabas) por otros.", e:"trujo (por trajo), mesmo (por mismo)", a:"tradicional"},
+  {n:"Diéresis", cat:"fono", sub:"Licencia métrica", d:"Cómputo en sílabas distintas de vocales que forman diptongo, pronunciándolo excepcionalmente como hiato.", e:"¡Oh crüeles despojos de mi gloria!", a:"Herrera"},
+  {n:"Sinéresis", cat:"fono", sub:"Licencia métrica", d:"Cómputo en una sola sílaba de dos vocales que normalmente forman hiato.", e:"Trenza, veleta poesía", a:"Dámaso Alonso"},
+  {n:"Sinalefa", cat:"fono", sub:"Licencia métrica", d:"Cómputo en una sola sílaba de la vocal final de una palabra y la inicial de la siguiente.", e:"Gloria, hermanos, al Dios de la alborada", a:"Unamuno"},
+  {n:"Dialefa", cat:"fono", sub:"Licencia métrica", d:"Incumplimiento deliberado de la sinalefa esperada.", e:"un relámpago azul, unos racimos / de luz rasgada en un frondor de oro", a:"Blas de Otero"},
+  {n:"Ecthlipsis", cat:"fono", sub:"Licencia métrica", d:"Une en pronunciación las consonantes idénticas o parecidas con que termina una palabra y empieza la siguiente.", e:"«sotil ladrón» (pierde la primera l)", a:"Nebrija"},
+  {n:"Diástole", cat:"fono", sub:"Licencia métrica", d:"Desplaza el acento prosódico de una palabra hacia una sílaba posterior.", e:"El Conde mi señor se fue a Nápoles", a:"Góngora"},
+  {n:"Sístole", cat:"fono", sub:"Licencia métrica", d:"Desplaza el acento prosódico hacia una sílaba anterior.", e:"que la fe me tenia dada", a:"Montemayor"},
+  {n:"Parómeon", cat:"fono", sub:"Recurrencia general", d:"Repite el mismo fonema al inicio de varias palabras consecutivas (también llamado homeoproforon).", e:"Mientra el franco furor fiero se muestra", a:"Cetina"},
+  {n:"Tautograma", cat:"fono", sub:"Recurrencia general", d:"Parómeon extendido a un texto entero: todas sus palabras empiezan con el mismo fonema.", e:"Antes alegre andaba; agora apenas / alcanzo alivio, ardiendo aprisionado…", a:"Quevedo"},
+  {n:"Similicadencia", cat:"fono", sub:"Recurrencia general", d:"Repite los mismos (o semejantes) fonemas finales de palabras próximas.", e:"Al padre de la viña se le aliña / gentil vendimia en estos jornaleros", a:"Quevedo"},
+  {n:"Aliteración", cat:"fono", sub:"Recurrencia general", d:"Repite un mismo fonema, en cualquier posición, de forma relevante dentro de un contexto limitado.", e:"el silbo de los aires amorosos", a:"San Juan de la Cruz"},
+  {n:"Anagrama", cat:"fono", sub:"Recurrencia general", d:"Relaciona palabras formadas por los mismos fonemas o sílabas en distinto orden.", e:"Luisa / ilusa", a:"Juan de Salinas"},
+  {n:"Rima", cat:"fono", sub:"Recurrencia propia del verso", d:"Codificación estricta de la similicadencia entre la última vocal tónica y el final de cada verso.", e:"musa / usa / ardiente / amante", a:"Garcilaso"},
+  {n:"Eco", cat:"fono", sub:"Recurrencia propia del verso", d:"La palabra de la rima va seguida, al final del verso o al principio del siguiente, por otra menor que repite sus sílabas finales.", e:"Marte celeste en quien ventura tura", a:"Cancionero Antequerano"},
+  {n:"Acróstico", cat:"fono", sub:"Recurrencia propia del verso", d:"Las letras iniciales de cada verso, leídas en vertical, forman por sí solas una unidad con sentido.", e:"El Bachiller Fernando de Rojas… (poema de Fernando de Rojas)", a:"Fernando de Rojas"},
+
+  {n:"Pleonasmo", cat:"gram", sub:"Licencia por adición", d:"Construcción con elementos superfluos o redundantes que intensifican o adornan la expresión.", e:"lo vi con mis propios ojos", a:"tradicional"},
+  {n:"Figura etimológica", cat:"gram", sub:"Licencia por adición", d:"Pleonasmo que repite formas derivadas del mismo lexema (un verbo y su complemento de la misma raíz).", e:"con los ojos tantos tiros / con mano alguno sufráis", a:"Laínez"},
+  {n:"Epífrasis", cat:"gram", sub:"Licencia por adición", d:"Amplía una unidad sintáctica ya completa añadiendo un elemento complementario.", e:"Con dolorido cuidado, / desgrado, pena y dolor, / parto yo, triste amador, / de amores, que no de amor", a:"Jorge Manrique"},
+  {n:"Sinatroísmo", cat:"gram", sub:"Licencia por adición", d:"Acumulación coordinante de términos semánticamente afines y gramaticalmente equivalentes.", e:"A las aves ligeras, / leones, ciervos, gamos saltadores…", a:"San Juan de la Cruz"},
+  {n:"Enumeración", cat:"gram", sub:"Licencia por adición", d:"Serie coordinada de términos con la misma categoría y función gramatical.", e:"derriba, rompe, hiere, parte y mata", a:"Espinel"},
+  {n:"Polisíndeton", cat:"gram", sub:"Licencia por adición", d:"Multiplica los nexos conjuntivos, reducidos en la práctica a la copulativa 'y'.", e:"y avanza y levanta espumas, y salta y confía", a:"Vicente Aleixandre"},
+  {n:"Asíndeton", cat:"gram", sub:"Licencia por supresión", d:"Prescinde de los nexos conjuntivos, presentando la enumeración como abierta.", e:"Una risa, unos ojos, unas manos", a:"Quevedo"},
+  {n:"Elipsis", cat:"gram", sub:"Licencia por supresión", d:"Omite términos exigidos por la estructura gramatical, que deben suplirse por el contexto o la imaginación.", e:"Lo bueno, si breve, dos veces bueno", a:"Gracián"},
+  {n:"Zeugma", cat:"gram", sub:"Licencia por supresión", d:"Elipsis en que el elemento omitido sí se encuentra expreso en otra parte del enunciado.", e:"La rotación del fruto, la alegría / del pájaro fomentas / y el bienestar y la salud de paso", a:"Miguel Hernández"},
+  {n:"Silepsis", cat:"gram", sub:"Licencia por supresión", d:"Infracción de las reglas de concordancia gramatical, a favor de la concordancia 'de sentido'.", e:"Dicen que era de muy buena cepa, y según él bebía…", a:"Quevedo"},
+  {n:"Interrupción", cat:"gram", sub:"Licencia por supresión", d:"Corte brusco del hilo del discurso, generalmente por la emoción.", e:"Hay golpes en la vida, tan fuertes… ¡Yo no sé!", a:"César Vallejo"},
+  {n:"Anástrofe", cat:"gram", sub:"Licencia por inversión", d:"Permuta términos inmediatos que siguen en contacto (sin romper su contigüidad).", e:"prudentísima Ester, que el sol más bella", a:"Cervantes"},
+  {n:"Hipérbaton", cat:"gram", sub:"Licencia por inversión", d:"Ruptura de una unidad sintáctica intercalando términos ajenos entre miembros inseparables.", e:"divina me puedes llamar Providencia", a:"Juan de Mena"},
+  {n:"Tmesis", cat:"gram", sub:"Licencia por inversión", d:"Hipérbaton extremo que se produce en el interior de una palabra, insertando elementos ajenos entre sus componentes.", e:"la jeri (aprenderá) gonza siguiente", a:"Quevedo"},
+  {n:"Sínquisis", cat:"gram", sub:"Licencia por inversión", d:"Confusión sintáctica extrema por entrecruzamiento de elementos, con hipérbatos y anástrofes muy violentos.", e:"Del siempre en la montaña opuesto pino / al enemigo Noto…", a:"Góngora"},
+  {n:"Enálage", cat:"gram", sub:"Licencia por sustitución", d:"Sustituye una palabra por otra del mismo lexema pero de distinta categoría o morfema gramatical.", e:"hayan perder los triunfos y morir los médicos", a:"César Vallejo"},
+  {n:"Hipálage", cat:"gram", sub:"Licencia por sustitución", d:"Atribuye a un término un complemento que en realidad corresponde a otro del contexto.", e:"el buen burgués en su balcón enciende / la estoica pipa", a:"Antonio Machado"},
+  {n:"Homeóptoton", cat:"gram", sub:"Recurrencia por repetición de morfemas", d:"Termina varias cláusulas con palabras que comparten los mismos morfemas flexivos.", e:"Te puncen y te sajen, / te tundan, te golpeen, te martillen", a:"Fray Diego T. González"},
+  {n:"Políptoton", cat:"gram", sub:"Recurrencia por repetición de morfemas", d:"Repite distintas formas flexivas de un mismo lexema.", e:"que quiera querer poder / que bien quiero y bien desquiero", a:"Aldana"},
+  {n:"Derivación", cat:"gram", sub:"Recurrencia por repetición de morfemas", d:"Reúne en un mismo contexto palabras derivadas de un mismo lexema.", e:"Cubierto de luto igual, / grande mal tiene encubierto", a:"Lope de Vega"},
+  {n:"Geminación", cat:"gram", sub:"Recurrencia por repetición de palabras", d:"Repite de forma inmediata una misma palabra o corta secuencia (también epizeuxis).", e:"Huye luna, luna, luna", a:"García Lorca"},
+  {n:"Diácope", cat:"gram", sub:"Recurrencia por repetición de palabras", d:"Variante de la geminación en que se intercala una unidad breve entre las repeticiones.", e:"Gatos, gatos y gatos y más gatos", a:"Rafael Alberti"},
+  {n:"Anadiplosis", cat:"gram", sub:"Recurrencia por repetición de palabras", d:"Repite una palabra o secuencia al final de una unidad sintáctica y al principio de la siguiente.", e:"Oye, no temas, y a mi ninfa dile, / dile que muero", a:"Villegas"},
+  {n:"Clímax", cat:"gram", sub:"Recurrencia por repetición de palabras", d:"Serie de anadiplosis encadenadas, dispuesta en escala o gradación (también concatenación).", e:"Mal te perdonarán a ti las horas, / las horas que limando están los días", a:"Góngora"},
+  {n:"Anáfora", cat:"gram", sub:"Recurrencia a distancia", d:"Repite una o más palabras al comienzo de varias secuencias sintácticas o versales.", e:"¿Soledad, y está el pájaro en el árbol…", a:"Juan Ramón Jiménez"},
+  {n:"Epífora", cat:"gram", sub:"Recurrencia a distancia", d:"Repite una o más palabras al final de varias secuencias sintácticas o versales (también conversión).", e:"Siendo yo criado en casas de príncipes…", a:"Fray Antonio de Guevara"},
+  {n:"Complexión", cat:"gram", sub:"Recurrencia a distancia", d:"Suma anáfora y epífora: secuencias que empiezan y terminan con las mismas palabras.", e:"No digáis que la muerte huele a nada…", a:"Vicente Aleixandre"},
+  {n:"Epanadiplosis", cat:"gram", sub:"Recurrencia a distancia", d:"Repite las mismas palabras al principio y al final de una misma secuencia (también redición).", e:"El austro proceloso airado suena, / crece su furia y la tormenta crece", a:"Arguijo"},
+  {n:"Diseminación", cat:"gram", sub:"Recurrencia a distancia", d:"Repite las mismas palabras (a veces ligeramente modificadas) sin un orden fijo en un contexto.", e:"Un solo pez en el agua… dos Córdobas de hermosura", a:"García Lorca"},
+  {n:"Antanaclasis", cat:"gram", sub:"Juego de palabras", d:"Repite una palabra polisémica (u homónima) con dos significados diferentes.", e:"Cura graciosa y parlando… es un matalascallando", a:"Quevedo"},
+  {n:"Calambur", cat:"gram", sub:"Juego de palabras", d:"Repite homónimos, uno de los cuales resulta de unir al menos dos palabras distintas.", e:"Si el rey no muere / el reino muere", a:"A. de Ledesma"},
+  {n:"Paronomasia", cat:"gram", sub:"Juego de palabras", d:"Reúne en posiciones próximas 'parónimos', palabras de significante parecido.", e:"Donde los árboles baila, / con brazos de ramas tiernas", a:"Diego de Frías"},
+  {n:"Epímone", cat:"gram", sub:"Recurrencia de enunciados", d:"Repite el mismo enunciado o verso a lo largo del texto (base del estribillo).", e:"a las cinco de la tarde", a:"García Lorca"},
+  {n:"Isocolon", cat:"gram", sub:"Plurimembración", d:"Segmenta un enunciado en miembros equivalentes de igual o semejante extensión.", e:"embriagada del dios que la enamora, / dulce la mira, extática la adora", a:"Espronceda"},
+  {n:"Correlación", cat:"gram", sub:"Plurimembración", d:"Plurimembración compleja de desarrollo horizontal y vertical (versus rapportati).", e:"Mientras por competir con tu cabello…", a:"Góngora"},
+  {n:"Párison", cat:"gram", sub:"Plurimembración", d:"Distribución paralela o identidad estructural de los componentes de unidades gramaticales equivalentes.", e:"Es tan corto el amor, y es tan largo el olvido", a:"Pablo Neruda"},
+  {n:"Quiasmo", cat:"gram", sub:"Plurimembración", d:"Distribución simétrica o cruzada de los componentes de unidades equivalentes: A(a,b) // A'(b',a').", e:"Yo soy aquel gentil hombre, / digo, aquel hombre gentil", a:"Góngora"},
+  {n:"Retruécano", cat:"gram", sub:"Plurimembración", d:"Quiasmo en que además se cruzan las funciones sintácticas de los términos repetidos.", e:"soy un hombre de las fieras / y una fiera de los hombres", a:"Calderón"},
+  {n:"Distribución", cat:"gram", sub:"Plurimembración", d:"Repite en serie miembros gramaticalmente equivalentes que amplían términos ya enumerados en el contexto previo.", e:"temed, mirad, sentid su efecto raro", a:"Liñán de Riaza"},
+
+  {n:"Paréntesis", cat:"sem", sub:"Licencia por adición", d:"Intercala en un pensamiento otra idea, emparentada con él, que lo interrumpe y matiza antes de concluir.", e:"Mándanme, ingenios nobles, flor de España / —que en esta junta y academia insigne…", a:"Lope de Vega"},
+  {n:"Etiología", cat:"sem", sub:"Licencia por adición", d:"Especie de amplificación que añade la causa explicativa de las ideas ya formuladas.", e:"sin vos, porque no sois de mí servida…", a:"Figueroa"},
+  {n:"Digresión", cat:"sem", sub:"Licencia por adición", d:"Inserta enunciados que se desvían, en diferente medida, de la materia central del discurso.", e:"panegírico de la casa de Alba en la Égloga II", a:"Garcilaso"},
+  {n:"Gradación", cat:"sem", sub:"Licencia por adición", d:"Enumera miembros oracionales dispuestos en orden creciente o decreciente de intensidad.", e:"Un manotazo duro, un golpe helado, / un hachazo invisible y homicida", a:"Miguel Hernández"},
+  {n:"Símil", cat:"sem", sub:"Licencia por adición", d:"Realza un pensamiento u objeto estableciendo comparaciones explícitas con otro.", e:"Había príncipes duros como el yunque, y príncipes que eran como leopardos", a:"Alejo Carpentier"},
+  {n:"Epíteto", cat:"sem", sub:"Licencia por adición", d:"Adjetivo (u otra forma) que añade o subraya una cualidad del nombre sin modificar su extensión.", e:"la rápida Iris… descendió desde las cumbres del monte Ida", a:"Homero"},
+  {n:"Percusión", cat:"sem", sub:"Licencia por supresión", d:"Condensa un contenido que se desarrollará (o se ha desarrollado ya) por extenso.", e:"cual es la vida de cada uno, tal es su muerte", a:"Fray Luis de Granada"},
+  {n:"Preterición", cat:"sem", sub:"Licencia por supresión", d:"Menciona explícitamente contenidos que se pasan por alto, con el pretexto de querer eludirlos.", e:"No quiero llegar a otras menudencias…", a:"Cervantes"},
+  {n:"Reticencia", cat:"sem", sub:"Licencia por supresión", d:"Interrupción abrupta de un pensamiento que se sobrentiende, omitiendo algo fácilmente intuible.", e:"¡Oh, lo que diera el pastor / por ser aquel día babosa…!", a:"Góngora"},
+  {n:"Histerología", cat:"sem", sub:"Licencia por inversión", d:"Orden postergado: inversión lógica o cronológica en la secuencia de ideas o acontecimientos.", e:"¡Ojalá la nave de Argo no hubiera volado…!", a:"Eurípides"},
+  {n:"Metáfora", cat:"sem", sub:"Tropo (por semejanza)", d:"Traslada el significado de un término al de otro por relación de semejanza entre sus referentes.", e:"Las algas que aparecen en las playas son los pelos que se arrancan las sirenas al peinarse", a:"Ramón Gómez de la Serna"},
+  {n:"Hipérbole", cat:"sem", sub:"Tropo (por semejanza)", d:"Sustituye significados con exageración, rebasando llamativamente los límites de lo verosímil.", e:"Lloran los mirmídones en los funerales de Patroclo…", a:"Homero"},
+  {n:"Sinestesia", cat:"sem", sub:"Tropo (por semejanza)", d:"Transferencia de significados de un dominio sensorial a otro (percepción simultánea).", e:"Deja hablar a mis enojos, / pues que quiere el cielo santo / que hablen primero mis ojos", a:"Lope de Vega"},
+  {n:"Lítotes", cat:"sem", sub:"Tropo (por semejanza)", d:"Atenúa un enunciado expresándolo de forma indirecta, generalmente negando lo contrario de lo que se afirma.", e:"que con no pequeño afán / sostuvieron esta seta", a:"Cristóbal de Castillejo"},
+  {n:"Ironía", cat:"sem", sub:"Tropo (por semejanza)", d:"Expresión en tono de burla de una significación contraria (o diferente) a la literal del enunciado.", e:"No busques lo moral ni lo decente / para tus dramas, ni tras ellos sudes", a:"Moratín"},
+  {n:"Sarcasmo", cat:"sem", sub:"Tropo (por semejanza)", d:"Clase de ironía con intención cruel, hostil o maliciosa.", e:"y a esos también poned / con respeto en la cárcel", a:"Calderón"},
+  {n:"Asteísmo", cat:"sem", sub:"Tropo (por semejanza)", d:"Expresión de una alabanza en forma de reprensión, o viceversa.", e:"¡Pero qué hermoso a despecho de estos contrastes!", a:"Luis Martín Santos"},
+  {n:"Alegoría", cat:"sem", sub:"Tropo (por semejanza)", d:"Metáfora continuada o cadena de metáforas correlativas que desarrollan un doble sentido, literal y figurado.", e:"Este mundo es el camino / para el otro, qu'es morada sin pesar", a:"Jorge Manrique"},
+  {n:"Metonimia", cat:"sem", sub:"Tropo (por contigüidad)", d:"Cambio de nombre o sustitución de significados entre términos cuyos referentes se relacionan por contigüidad.", e:"viene sin vara de mimbre / entre los cinco tricornios", a:"García Lorca"},
+  {n:"Sinécdoque", cat:"sem", sub:"Tropo (por contigüidad)", d:"Variante cuantitativa de la metonimia: intercambia términos de mayor y menor extensión conceptual (el todo por la parte, o viceversa).", e:"De la Asia fue terror, de Europa espanto", a:"Quevedo"},
+  {n:"Antonomasia", cat:"sem", sub:"Tropo (por contigüidad)", d:"Variedad de sinécdoque: intercambia nombres propios y comunes atribuyendo al referente el carácter de modelo.", e:"¡Déjame aquí ser Tarquino, / y serás después Lucrecia!", a:"Lope de Vega"},
+  {n:"Énfasis", cat:"sem", sub:"Tropo (por contigüidad)", d:"Variedad de sinécdoque: usa una palabra en un sentido más preciso o profundo que el habitual.", e:"que no es de caballero entendellas / de una manera y decillas de otra", a:"Montemayor"},
+  {n:"Perífrasis", cat:"sem", sub:"Tropo (por contigüidad)", d:"Expresión mediante un rodeo o circunloquio de un concepto que podría nombrarse con una sola palabra.", e:"¿Qué me ha de aprovechar ver la pintura / d'aquel que con las alas derretidas…?", a:"Garcilaso"},
+  {n:"Alusión", cat:"sem", sub:"Tropo (por contigüidad)", d:"Tipo de perífrasis que remite un elemento de la realidad a un sistema fijo de referencias (mitología, etc.).", e:"halló hospitalidad donde halló nido / de Júpiter el ave [el águila]", a:"Góngora"},
+  {n:"Sinonimia", cat:"sem", sub:"Recurrencia por sinonimia", d:"Repite términos sinónimos en un mismo contexto para realzar el significado que nombran.", e:"sin disgustos, sin quejas, sin enojos", a:"Lope de Vega"},
+  {n:"Expolición", cat:"sem", sub:"Recurrencia por sinonimia", d:"Amplificación ornamental de un contenido mediante distintos procedimientos que repiten la misma idea.", e:"que vendrán por lana y volverán trasquilados…", a:"Cervantes"},
+  {n:"Interpretación", cat:"sem", sub:"Recurrencia por sinonimia", d:"Técnica de repetición de enunciados sinónimos.", e:"cómo se passa la vida, / cómo se viene la muerte", a:"Jorge Manrique"},
+  {n:"Isodinamia", cat:"sem", sub:"Recurrencia por sinonimia", d:"Repite una idea mediante la negación de su contraria.", e:"Por muertas las dexaron, sabed, que non por vivas", a:"Cantar de Mio Cid"},
+  {n:"Antítesis", cat:"sem", sub:"Recurrencia por antonimia", d:"Enfrentamiento de términos antónimos dentro de un mismo contexto.", e:"Yo velo cuando tú duermes, yo lloro cuando tú cantas", a:"Cervantes"},
+  {n:"Cohabitación", cat:"sem", sub:"Recurrencia por antonimia", d:"Antítesis que consiste en la convivencia de contrarios en un mismo sujeto.", e:"quiere ser cielo, siendo infierno; serafín y gusano", a:"Quevedo"},
+  {n:"Oxímoron", cat:"sem", sub:"Recurrencia por antonimia", d:"Fusión de términos contrarios (que se excluyen mutuamente) en una misma unidad gramatical y de sentido.", e:"la música callada", a:"San Juan de la Cruz"},
+  {n:"Paradoja", cat:"sem", sub:"Recurrencia por antonimia", d:"Expresión de un pensamiento sorprendente por ser contrario a lo esperado o al sentido común.", e:"llamaremos a los enemigos buenos amigos", a:"Mateo Alemán"},
+  {n:"Paradiástole", cat:"sem", sub:"Recurrencia por antonimia", d:"Reúne en un contexto términos de significado igual o semejante que se separan y contraponen (también separación).", e:"que la injuria no es injuria / mientras calla la mujer", a:"Lope de Vega"},
+  {n:"Antimetábole", cat:"sem", sub:"Recurrencia por antonimia", d:"Antítesis entre enunciados que constan de los mismos elementos pero invirtiendo el orden y las funciones sintácticas.", e:"¿Siempre se ha de sentir lo que se dice? / ¿Nunca se ha de decir lo que se siente?", a:"Quevedo"},
+
+  {n:"Evidencia", cat:"prag", sub:"Referencial", d:"Suscita la impresión de 'poner ante los ojos' del lector u oyente el referente, de forma viva y detallada.", e:"Helo, helo por dó viene / el moro por la calzada", a:"Romancero"},
+  {n:"Definición", cat:"prag", sub:"Referencial", d:"Manifestación de evidencia que relaciona las características esenciales y diferenciadoras de un concepto.", e:"Es la mujer del hombre lo más bueno, / y locura decir que lo más malo", a:"Lope de Vega"},
+  {n:"Descripción", cat:"prag", sub:"Referencial", d:"Enunciado que describe vivamente la realidad representada según sus rasgos más destacados (prosopografía: físico; etopeya: carácter; cronografía: tiempo; topografía: lugar; pragmatografía: sucesos).", e:"Flora era una viejecilla pequeña y vivaracha, irascible, parlanchina…", a:"Pérez Galdós"},
+  {n:"Sentencia", cat:"prag", sub:"Referencial", d:"Expresión breve y rotunda de un pensamiento profundo que se pretende de validez general.", e:"Breve es la edad y la vejez es rara en prodigios", a:"Marcial"},
+  {n:"Epifonema", cat:"prag", sub:"Referencial", d:"Reflexión exclamativa que cierra, a modo de resumen y conclusión, un enunciado.", e:"¡Líbranos, señor!…", a:"Rubén Darío"},
+  {n:"Prosopopeya", cat:"prag", sub:"Ficción enunciativa", d:"Ficción de persona: atribución de cualidades humanas, y en particular el lenguaje, a seres irracionales, abstractos o inanimados.", e:"Venid a oír de rosas y azucenas / la alborotada esbelta risa", a:"Gerardo Diego"},
+  {n:"Metagoge", cat:"prag", sub:"Ficción enunciativa", d:"Prosopopeya limitada: atribución de cualidades sensoriales a elementos de la naturaleza (alegrarse la tierra, murmurar las fuentes).", e:"reír los cielos, murmurar las fuentes", a:"tradicional"},
+  {n:"Dialogismo", cat:"prag", sub:"Ficción enunciativa", d:"Ficción de diálogo: el autor finge que su discurso lo pronuncia otra persona (también sermocinación).", e:"—Compadre, quiero cambiar / mi caballo por su casa…", a:"García Lorca"},
+  {n:"Idolopeya", cat:"prag", sub:"Ficción enunciativa", d:"Dialogismo en que la persona cuyo discurso se imita ya está muerta.", e:"Enseñé, no me escucharon; / curé mal, no me entendieron…", a:"Lope de Vega"},
+  {n:"Sujeción", cat:"prag", sub:"Ficción enunciativa", d:"Ficción de diálogo que encadena preguntas y respuestas, normalmente en soliloquio.", e:"¿Qué es la vida? Un frenesí. / ¿Qué es la vida? Una ilusión", a:"Calderón"},
+  {n:"Optación", cat:"prag", sub:"Expresiva", d:"Enunciado desiderativo: expresión de un deseo, centrado en el hablante o proyectado hacia el oyente.", e:"¡Amado sea aquel que tiene chinches…!", a:"César Vallejo"},
+  {n:"Imprecación", cat:"prag", sub:"Expresiva", d:"Optación negativa (maldición) que recae sobre el destinatario del discurso.", e:"¡Ay muerte! ¡Muerta seas, muerta e malandante!", a:"Juan Ruiz"},
+  {n:"Execración", cat:"prag", sub:"Expresiva", d:"Maldición que recae sobre el propio hablante que la profiere.", e:"«¡Llueve, oh Dios! sobre mí persecuciones»", a:"Quevedo"},
+  {n:"Dubitación", cat:"prag", sub:"Expresiva", d:"Enunciado en que se finge no saber qué decir o cómo actuar, vacilando entre varias posibilidades.", e:"Un daño que nunca cansa, / un dolor vuelto con sombra…", a:"Juan de Mena"},
+  {n:"Comunicación", cat:"prag", sub:"Expresiva", d:"Variedad de dubitación en que se finge consultar al interlocutor sobre la duda planteada (también anacoenosis).", e:"Entre dos fuegos lançado, / donde amor es repartido…", a:"Jorge Manrique"},
+  {n:"Corrección", cat:"prag", sub:"Expresiva", d:"Sustitución de una palabra o expresión por otra más apropiada, exacta o adecuada a la intención del hablante.", e:"No me queréis, lo sé, y que os molesta / cuanto escribo. ¿Os molesta? Os ofende", a:"Luis Cernuda"},
+  {n:"Exclamación", cat:"prag", sub:"Expresiva", d:"Enunciados exclamativos que intensifican la expresión de sentimientos o estados de ánimo del hablante (también ecfonesis).", e:"¡Cómo retumban los remos, / madre, en el agua…!", a:"Lope de Vega"},
+  {n:"Apóstrofe", cat:"prag", sub:"Apelativa", d:"Personificación del destinatario del discurso, al que se apela con un giro brusco y efectivo.", e:"Árbol, amigo, ¿no me dices nada?", a:"Blas de Otero"},
+  {n:"Interrogación", cat:"prag", sub:"Apelativa", d:"Uso de la forma interrogativa, no para preguntar, sino para reforzar una afirmación o la expresión de un sentimiento.", e:"¿Qué se hizo el rey don Joan? / Los Infantes d'Aragón…", a:"Jorge Manrique"},
+  {n:"Anticipación", cat:"prag", sub:"Apelativa", d:"Refutación de antemano de una objeción prevista en el interlocutor, sin que este la haya formulado (también prolepsis).", e:"¿Por qué volvéis a la memoria mía…?", a:"Espronceda"},
+  {n:"Concesión", cat:"prag", sub:"Apelativa", d:"El orador concede algo aparentemente perjudicial a su causa para reforzar una argumentación que prosigue victoriosa.", e:"Yo os quiero confesar, don Juan, primero…", a:"L. L. de Argensola"},
+  {n:"Permisión", cat:"prag", sub:"Apelativa", d:"Como recurso dialéctico, se ofrece al interlocutor la realización de algo que obviamente no se desea.", e:"…segad esta garganta, / siempre sedienta de la sangre vuestra", a:"Ercilla"},
+  {n:"Suspensión", cat:"prag", sub:"Apelativa", d:"Mantiene en suspenso el ánimo del oyente, tras lo cual, frecuentemente, se distiende con una salida de tono (también sustentación).", e:"Esto oyó un valentón, y dijo…", a:"Cervantes"},
+  {n:"Deprecación", cat:"prag", sub:"Apelativa", d:"Expresión retórica de petición, ruego o súplica.", e:"Ruega generoso, piadoso, orgulloso; / ruega casto, puro, celeste, animoso", a:"L. L. de Argensola"},
+  {n:"Obsecración", cat:"prag", sub:"Apelativa", d:"Enunciados imperativos especialmente vehementes o virulentos (también obstestación).", e:"¡Ven, ven, muerte, amor; ven pronto, te destruyo!", a:"Vicente Aleixandre"},
+  {n:"Conminación", cat:"prag", sub:"Apelativa", d:"Expresión retórica de amenazas.", e:"«Ahora ya, ¡cobarde!, la escarpada muerte te da alcance…»", a:"Homero"},
+  {n:"Parresia", cat:"prag", sub:"Apelativa", d:"Hablar con atrevimiento o libertad excesiva, para amonestar o reprender, pidiendo o no la venia (también licencia).", e:"—Sí, ¡voto a Dios!, y aunque fuera general…", a:"Calderón"},
+];
+
+const CAT_LABEL = { fono: "Fonológica", gram: "Gramatical", sem: "Semántica", prag: "Pragmática" };
+const CAT_BADGE = { fono: "badge-fono", gram: "badge-gram", sem: "badge-sem", prag: "badge-prag" };
+const CAT_COLOR = { fono: "var(--light)", gram: "#a67fd4", sem: "var(--teal)", prag: "#ff8a93" };
+
+// ============================================================
+// STATE
+// ============================================================
+const STATE = { xp: 0, correct: 0, total: 0, streak: 0, maxStreak: 0, level: 1 };
+let quizFilter = 'todas';
+let currentQ = null;
+
+function save() { try { localStorage.setItem('figurasIB', JSON.stringify(STATE)); } catch(e){} }
+function load() { try { const d = localStorage.getItem('figurasIB'); if (d) Object.assign(STATE, JSON.parse(d)); } catch(e){} }
+
+function updateUI() {
+  document.getElementById('topXP').textContent = STATE.xp;
+  document.getElementById('topStreak').textContent = STATE.streak;
+  document.getElementById('topLevel').textContent = 'Nivel ' + STATE.level;
+  document.getElementById('miniLevel').textContent = STATE.level;
+  document.getElementById('miniXP').textContent = STATE.xp + ' XP';
+  const need = STATE.level * 100;
+  document.getElementById('miniProgress').style.width = Math.min(100, (STATE.xp % need) / need * 100) + '%';
+  ['fono','gram','sem','prag'].forEach(c => {
+    const el = document.getElementById('count-' + c);
+    if (el) el.textContent = FIGURAS_DATA.filter(f => f.cat === c).length + ' figuras';
+  });
+}
+
+function addXP(amount) {
+  STATE.xp += amount;
+  const needed = STATE.level * 100;
+  if (STATE.xp >= needed * STATE.level) { STATE.level++; showNotification('¡Subiste a nivel ' + STATE.level + '!', 'level'); }
+  save(); updateUI();
+}
+
+function showNotification(text, type) {
+  const n = document.createElement('div');
+  n.className = 'notification notif-' + type;
+  n.textContent = text;
+  document.body.appendChild(n);
+  setTimeout(() => n.remove(), 2500);
+}
+
+// ============================================================
+// GRID DE FIGURAS POR CATEGORÍA
+// ============================================================
+function renderGrid(cat) {
+  const grid = document.getElementById('grid-' + cat);
+  const items = FIGURAS_DATA.filter(f => f.cat === cat);
+  grid.innerHTML = items.map(f => `
+    <div class="rule-card">
+      <div class="rule-tag ${CAT_BADGE[f.cat]}">${f.sub}</div>
+      <div class="rule-title">${f.n}</div>
+      <div class="rule-desc">${f.d}</div>
+      <div class="rule-examples">
+        <div class="rule-example">"${f.e}"<em>${f.a}</em></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// QUIZ
+// ============================================================
+function setQuizFilter(cat, evt) {
+  quizFilter = cat;
+  document.querySelectorAll('#sec-quiz .section-tab').forEach(t => t.classList.remove('active'));
+  if (evt && evt.target) evt.target.classList.add('active');
+  loadQuiz();
+}
+
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+function loadQuiz() {
+  const pool = quizFilter === 'todas' ? FIGURAS_DATA : FIGURAS_DATA.filter(f => f.cat === quizFilter);
+  const correct = pool[Math.floor(Math.random() * pool.length)];
+  let sameCat = FIGURAS_DATA.filter(f => f.cat === correct.cat && f.n !== correct.n);
+  const distractors = shuffle(sameCat).slice(0, 3);
+  while (distractors.length < 3) {
+    const extra = FIGURAS_DATA[Math.floor(Math.random() * FIGURAS_DATA.length)];
+    if (extra.n !== correct.n && !distractors.find(d => d.n === extra.n)) distractors.push(extra);
+  }
+  const options = shuffle([correct, ...distractors]);
+  currentQ = { correct, options };
+
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = `
+    <div class="exercise-card">
+      <div class="ex-meta">
+        <span class="ex-type-badge ${CAT_BADGE[correct.cat]}">${CAT_LABEL[correct.cat]}</span>
+        <span class="diff-stars">★★☆</span>
+      </div>
+      <div class="ex-question">"${correct.e}"</div>
+      <div class="ex-author">— ${correct.a}</div>
+      <div class="ex-instruction">¿Qué figura retórica es este ejemplo?</div>
+      <div class="options-grid" id="quizOptions">
+        ${options.map((o, i) => `
+          <button class="option-btn" onclick="checkAnswer(${i})" data-name="${o.n}">
+            <span class="option-letter">${String.fromCharCode(65+i)}</span> ${o.n}
+          </button>
+        `).join('')}
+      </div>
+      <div class="feedback-box" id="quizFeedback">
+        <div class="feedback-title" id="quizFeedbackTitle"></div>
+        <div class="feedback-text" id="quizFeedbackText"></div>
+      </div>
+      <div class="ex-actions">
+        <button class="btn-skip" onclick="loadQuiz()">Saltar →</button>
+      </div>
+    </div>
+  `;
+}
+
+function checkAnswer(idx) {
+  const chosen = currentQ.options[idx];
+  const isCorrect = chosen.n === currentQ.correct.n;
+  document.querySelectorAll('#quizOptions .option-btn').forEach((btn, i) => {
+    btn.disabled = true;
+    if (currentQ.options[i].n === currentQ.correct.n) btn.classList.add('correct');
+    else if (i === idx) btn.classList.add('incorrect');
+  });
+
+  const box = document.getElementById('quizFeedback');
+  box.classList.add('show', isCorrect ? 'feedback-correct' : 'feedback-incorrect');
+  box.classList.remove(isCorrect ? 'feedback-incorrect' : 'feedback-correct');
+  document.getElementById('quizFeedbackTitle').textContent = isCorrect ? '¡Correcto!' : 'No es esa — es ' + currentQ.correct.n;
+  document.getElementById('quizFeedbackText').textContent = currentQ.correct.d;
+
+  STATE.total++;
+  if (isCorrect) {
+    STATE.correct++; STATE.streak++; STATE.maxStreak = Math.max(STATE.maxStreak, STATE.streak);
+    addXP(10 + Math.min(STATE.streak, 10));
+    showCombo(STATE.streak);
+  } else { STATE.streak = 0; save(); updateUI(); }
+
+  const actions = document.querySelector('#quizContainer .ex-actions');
+  actions.innerHTML = `<button class="btn-skip" onclick="loadQuiz()">Continuar →</button><button class="btn-next show" onclick="loadQuiz()">Siguiente pregunta →</button>`;
+}
+
+function showCombo(n) {
+  const el = document.getElementById('comboNum');
+  el.textContent = n + '×';
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 1000);
+}
+
+// ============================================================
+// DICCIONARIO
+// ============================================================
+function searchDict(query) {
+  const q = query.toLowerCase().trim();
+  const card = document.getElementById('dictCard');
+  if (q.length < 2) { card.classList.remove('show'); return; }
+  const found = FIGURAS_DATA.find(f => f.n.toLowerCase().includes(q) || q.includes(f.n.toLowerCase()));
+  if (found) renderDictCard(found);
+  else { card.innerHTML = `<p style="color:rgba(255,255,255,0.4)">No se encontró "${query}". Prueba con otro nombre.</p>`; card.classList.add('show'); }
+}
+
+function renderDictCard(f) {
+  const card = document.getElementById('dictCard');
+  card.classList.add('show');
+  card.innerHTML = `
+    <div class="dict-word">${f.n}</div>
+    <div class="dict-type ${CAT_BADGE[f.cat]}">${CAT_LABEL[f.cat]} — ${f.sub}</div>
+    <div class="dict-def">${f.d}</div>
+    <div class="dict-example">"${f.e}"</div>
+    <div class="dict-origin">— ${f.a}</div>
+  `;
+}
+
+function loadWordChips() {
+  const chips = document.getElementById('wordChips');
+  chips.innerHTML = shuffle(FIGURAS_DATA).slice(0, 24).map(f =>
+    `<span class="word-chip" onclick="document.getElementById('dictInput').value='${f.n}';searchDict('${f.n}')">${f.n}</span>`
+  ).join('');
+}
+
+// ============================================================
+// PROGRESO
+// ============================================================
+function loadProgress() {
+  const container = document.getElementById('progressRings');
+  const accuracy = STATE.total > 0 ? Math.round(STATE.correct / STATE.total * 100) : 0;
+  container.innerHTML = `
+    <div class="ring-card"><h4>Total XP</h4><div class="ring-num">${STATE.xp}</div><div class="ring-label">puntos</div></div>
+    <div class="ring-card"><h4>Nivel</h4><div class="ring-num">${STATE.level}</div><div class="ring-label">nivel actual</div></div>
+    <div class="ring-card"><h4>Precisión</h4><div class="ring-num">${accuracy}%</div><div class="ring-label">${STATE.correct}/${STATE.total} correctas</div></div>
+    <div class="ring-card"><h4>Racha máx.</h4><div class="ring-num">${STATE.maxStreak}</div><div class="ring-label">respuestas seguidas</div></div>
+  `;
+  container.innerHTML += `<div style="width:100%;text-align:center;margin-top:1rem"><button class="btn-secondary" onclick="if(confirm('¿Resetear tu progreso en Figuras IB?')){localStorage.removeItem('figurasIB');location.reload()}">Reiniciar progreso</button></div>`;
+}
+
+// ============================================================
+// NAVEGACIÓN
+// ============================================================
+function showSection(sec) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + sec).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => { if (n.getAttribute('onclick')?.includes(`'${sec}'`)) n.classList.add('active'); });
+
+  if (['fono','gram','sem','prag'].includes(sec)) renderGrid(sec);
+  else if (sec === 'quiz') loadQuiz();
+  else if (sec === 'diccionario') loadWordChips();
+  else if (sec === 'progreso') loadProgress();
+
+  if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+  window.scrollTo(0, 0);
+}
+
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
+function launchApp() {
+  document.getElementById('splash').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  showSection('inicio');
+  updateUI();
+}
+
+function createFloatingLetters() {
+  const container = document.getElementById('floatingLetters');
+  const letters = 'metáforahipérbatonironíaquiasmoantítesisóxímoron¡!¿?—«»';
+  for (let i = 0; i < 30; i++) {
+    const el = document.createElement('div');
+    el.className = 'fl';
+    el.textContent = letters[Math.floor(Math.random() * letters.length)];
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.fontSize = (Math.random() * 50 + 18) + 'px';
+    el.style.animationDuration = (Math.random() * 20 + 15) + 's';
+    el.style.animationDelay = -(Math.random() * 20) + 's';
+    container.appendChild(el);
+  }
+}
+
+// INIT
+load();
+createFloatingLetters();
+updateUI();
+</script>
+</body>
+</html>

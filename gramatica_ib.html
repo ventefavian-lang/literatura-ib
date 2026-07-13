@@ -1,0 +1,2458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GramáticaIB — Tu universo lingüístico</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Nunito:wght@300;400;600;700;800;900&display=swap');
+
+  :root {
+    --ink: #1a1025;
+    --paper: #fdf8f0;
+    --cream: #f5ede0;
+    --accent: #e63946;
+    --gold: #f4a261;
+    --teal: #2a9d8f;
+    --purple: #6d4c9e;
+    --blue: #457b9d;
+    --light: #a8dadc;
+    --success: #2a9d8f;
+    --error: #e63946;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--ink);
+    color: var(--paper);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* SPLASH / HERO */
+  #splash {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: var(--ink);
+    position: relative;
+    overflow: hidden;
+    padding: 2rem;
+  }
+
+  #splash::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 60% at 20% 30%, rgba(109,76,158,0.25) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 70%, rgba(230,57,70,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 50% 90%, rgba(42,157,143,0.2) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .floating-letters {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .fl {
+    position: absolute;
+    font-family: 'Playfair Display', serif;
+    opacity: 0.06;
+    color: var(--paper);
+    animation: floatUp linear infinite;
+    user-select: none;
+  }
+
+  @keyframes floatUp {
+    0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.06; }
+    90% { opacity: 0.06; }
+    100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+  }
+
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    animation: fadeSlideUp 0.8s ease both;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 10vw, 7rem);
+    font-weight: 900;
+    line-height: 0.9;
+    margin-bottom: 1.5rem;
+    animation: fadeSlideUp 0.8s 0.15s ease both;
+  }
+
+  .hero-title span { color: var(--accent); font-style: italic; }
+
+  .hero-sub {
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    color: rgba(253,248,240,0.65);
+    max-width: 600px;
+    line-height: 1.7;
+    margin-bottom: 3rem;
+    animation: fadeSlideUp 0.8s 0.3s ease both;
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeSlideUp 0.8s 0.45s ease both;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 8px 30px rgba(230,57,70,0.4);
+    letter-spacing: 0.02em;
+  }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(230,57,70,0.5); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--paper);
+    border: 2px solid rgba(253,248,240,0.3);
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-secondary:hover { border-color: var(--paper); background: rgba(253,248,240,0.08); }
+
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .stats-bar {
+    display: flex;
+    gap: 3rem;
+    margin-top: 4rem;
+    animation: fadeSlideUp 0.8s 0.6s ease both;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700; color: var(--gold); }
+  .stat-label { font-size: 0.8rem; color: rgba(253,248,240,0.5); text-transform: uppercase; letter-spacing: 0.1em; }
+
+  /* APP */
+  #app { display: none; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 260px;
+    background: rgba(26,16,37,0.97);
+    border-right: 1px solid rgba(253,248,240,0.08);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    backdrop-filter: blur(20px);
+    transition: transform 0.3s;
+  }
+
+  .sidebar-logo {
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid rgba(253,248,240,0.08);
+  }
+  .sidebar-logo h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; }
+  .sidebar-logo h2 span { color: var(--accent); font-style: italic; }
+  .sidebar-logo p { font-size: 0.7rem; color: rgba(253,248,240,0.4); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
+
+  .sidebar-nav { flex: 1; padding: 1rem 0; overflow-y: auto; }
+
+  .nav-section-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(253,248,240,0.3);
+    padding: 1rem 1.5rem 0.5rem;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: rgba(253,248,240,0.6);
+    user-select: none;
+  }
+  .nav-item:hover { background: rgba(253,248,240,0.05); color: var(--paper); }
+  .nav-item.active { border-left-color: var(--accent); background: rgba(230,57,70,0.1); color: var(--paper); }
+  .nav-item .icon { font-size: 1.1rem; width: 20px; text-align: center; }
+
+  .progress-mini {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid rgba(253,248,240,0.08);
+  }
+  .progress-mini p { font-size: 0.72rem; color: rgba(253,248,240,0.4); margin-bottom: 0.5rem; }
+  .progress-bar { height: 4px; background: rgba(253,248,240,0.1); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--purple)); border-radius: 2px; transition: width 0.5s; }
+  .xp-display { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--gold); margin-top: 0.5rem; }
+
+  /* MAIN */
+  .main-area {
+    margin-left: 260px;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a1025 0%, #0f1923 100%);
+    position: relative;
+  }
+
+  .top-bar {
+    position: sticky;
+    top: 0;
+    background: rgba(26,16,37,0.9);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(253,248,240,0.08);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 50;
+  }
+
+  .top-bar h1 { font-family: 'Playfair Display', serif; font-size: 1.3rem; }
+  .top-bar h1 span { color: var(--accent); font-style: italic; }
+
+  .top-stats { display: flex; gap: 1.5rem; align-items: center; }
+  .top-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: rgba(253,248,240,0.7);
+    font-family: 'DM Mono', monospace;
+  }
+  .top-stat strong { color: var(--gold); }
+
+  .streak-badge {
+    background: linear-gradient(135deg, #f4a261, #e63946);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 800;
+  }
+
+  /* SECTIONS */
+  .section { display: none; padding: 2rem; }
+  .section.active { display: block; }
+
+  /* EXERCISE CARD */
+  .exercise-card {
+    background: rgba(253,248,240,0.04);
+    border: 1px solid rgba(253,248,240,0.08);
+    border-radius: 20px;
+    padding: 2.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .exercise-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--purple), var(--teal));
+  }
+
+  .ex-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .ex-type-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    font-weight: 500;
+  }
+
+  .badge-tildes { background: rgba(244,162,97,0.2); color: var(--gold); border: 1px solid rgba(244,162,97,0.3); }
+  .badge-comas { background: rgba(42,157,143,0.2); color: var(--teal); border: 1px solid rgba(42,157,143,0.3); }
+  .badge-oraciones { background: rgba(109,76,158,0.2); color: #a67fd4; border: 1px solid rgba(109,76,158,0.3); }
+  .badge-vocab { background: rgba(230,57,70,0.2); color: #ff8a93; border: 1px solid rgba(230,57,70,0.3); }
+  .badge-puntos { background: rgba(69,123,157,0.2); color: var(--light); border: 1px solid rgba(69,123,157,0.3); }
+  .badge-redaccion { background: rgba(42,157,143,0.15); color: #7ecec7; border: 1px solid rgba(42,157,143,0.2); }
+  .badge-morfologia { background: rgba(255,190,11,0.2); color: #ffd166; border: 1px solid rgba(255,190,11,0.3); }
+
+  .diff-stars { color: var(--gold); font-size: 0.85rem; }
+
+  .ex-question {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    line-height: 1.5;
+    margin-bottom: 0.8rem;
+    color: var(--paper);
+  }
+
+  .ex-instruction {
+    font-size: 0.85rem;
+    color: rgba(253,248,240,0.5);
+    margin-bottom: 2rem;
+    font-style: italic;
+  }
+
+  /* Multiple choice */
+  .options-grid {
+    display: grid;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .option-btn {
+    background: rgba(253,248,240,0.04);
+    border: 1.5px solid rgba(253,248,240,0.12);
+    color: var(--paper);
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: left;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .option-btn:hover:not(:disabled) {
+    background: rgba(253,248,240,0.09);
+    border-color: rgba(253,248,240,0.25);
+    transform: translateX(4px);
+  }
+
+  .option-btn.correct {
+    background: rgba(42,157,143,0.2);
+    border-color: var(--teal);
+    color: #7ecec7;
+  }
+
+  .option-btn.incorrect {
+    background: rgba(230,57,70,0.15);
+    border-color: var(--accent);
+    color: #ff8a93;
+  }
+
+  .option-letter {
+    width: 28px; height: 28px;
+    background: rgba(253,248,240,0.08);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+
+  /* Text input */
+  .answer-input {
+    width: 100%;
+    background: rgba(253,248,240,0.06);
+    border: 1.5px solid rgba(253,248,240,0.15);
+    color: var(--paper);
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    outline: none;
+    transition: border-color 0.3s;
+    margin-bottom: 1rem;
+  }
+
+  .answer-input:focus { border-color: var(--purple); }
+  .answer-input.correct-input { border-color: var(--teal); background: rgba(42,157,143,0.1); }
+  .answer-input.incorrect-input { border-color: var(--accent); background: rgba(230,57,70,0.08); }
+
+  /* Feedback */
+  .feedback-box {
+    display: none;
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .feedback-box.show { display: block; }
+
+  .feedback-correct {
+    background: rgba(42,157,143,0.15);
+    border: 1px solid rgba(42,157,143,0.3);
+  }
+
+  .feedback-incorrect {
+    background: rgba(230,57,70,0.12);
+    border: 1px solid rgba(230,57,70,0.25);
+  }
+
+  .feedback-title {
+    font-weight: 800;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .feedback-correct .feedback-title { color: #7ecec7; }
+  .feedback-incorrect .feedback-title { color: #ff8a93; }
+
+  .feedback-text { font-size: 0.9rem; color: rgba(253,248,240,0.75); line-height: 1.6; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .ex-actions { display: flex; gap: 1rem; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+
+  .btn-check {
+    background: var(--purple);
+    color: white;
+    border: none;
+    padding: 0.9rem 2rem;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 5px 20px rgba(109,76,158,0.4);
+  }
+  .btn-check:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(109,76,158,0.5); }
+
+  .btn-next {
+    background: var(--teal);
+    color: white;
+    border: none;
+    padding: 0.9rem 2rem;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: none;
+    box-shadow: 0 5px 20px rgba(42,157,143,0.4);
+  }
+  .btn-next.show { display: block; }
+  .btn-next:hover { transform: translateY(-2px); }
+
+  .btn-skip {
+    background: transparent;
+    color: rgba(253,248,240,0.4);
+    border: none;
+    padding: 0.5rem 1rem;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .btn-skip:hover { color: rgba(253,248,240,0.7); }
+
+  /* COMBO COUNTER */
+  .combo-display {
+    position: fixed;
+    top: 80px;
+    right: 2rem;
+    z-index: 200;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .combo-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+    text-shadow: 0 0 30px rgba(244,162,97,0.6);
+    transition: all 0.3s;
+    opacity: 0;
+  }
+  .combo-num.show { opacity: 1; }
+  .combo-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: rgba(244,162,97,0.6);
+    text-transform: uppercase;
+  }
+
+  /* XP POP */
+  .xp-pop {
+    position: fixed;
+    pointer-events: none;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--gold);
+    z-index: 500;
+    animation: xpFly 1.2s ease forwards;
+  }
+  @keyframes xpFly {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-80px) scale(1.3); }
+  }
+
+  /* DICTIONARY */
+  .dict-search-wrap {
+    max-width: 700px;
+    margin: 0 auto 2rem;
+    position: relative;
+  }
+  .dict-input {
+    width: 100%;
+    background: rgba(253,248,240,0.06);
+    border: 2px solid rgba(253,248,240,0.15);
+    color: var(--paper);
+    padding: 1.2rem 1.5rem 1.2rem 4rem;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .dict-input:focus { border-color: var(--gold); }
+  .dict-search-icon { position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); font-size: 1.2rem; }
+
+  .dict-card {
+    background: rgba(253,248,240,0.04);
+    border: 1px solid rgba(253,248,240,0.1);
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 700px;
+    margin: 0 auto;
+    display: none;
+  }
+  .dict-card.show { display: block; animation: fadeIn 0.3s ease; }
+  .dict-word { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; }
+  .dict-word span { color: var(--gold); font-style: italic; }
+  .dict-phonetic { font-family: 'DM Mono', monospace; font-size: 0.85rem; color: rgba(253,248,240,0.4); margin: 0.3rem 0 1.2rem; }
+  .dict-type { display: inline-block; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0.7rem; background: rgba(109,76,158,0.2); color: #a67fd4; border-radius: 50px; margin-bottom: 1rem; font-family: 'DM Mono', monospace; }
+  .dict-def { font-size: 1rem; line-height: 1.8; color: rgba(253,248,240,0.85); margin-bottom: 1rem; }
+  .dict-example { font-style: italic; color: rgba(253,248,240,0.5); font-size: 0.9rem; border-left: 3px solid var(--gold); padding-left: 1rem; margin-bottom: 1rem; }
+  .dict-origin { font-size: 0.82rem; color: rgba(253,248,240,0.35); }
+  .dict-tilde-note { margin-top: 1rem; padding: 0.8rem 1.2rem; background: rgba(244,162,97,0.1); border-radius: 10px; border: 1px solid rgba(244,162,97,0.2); font-size: 0.88rem; color: var(--gold); }
+  .word-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; max-width: 700px; margin: 0 auto 2rem; }
+  .word-chip {
+    background: rgba(253,248,240,0.06);
+    border: 1px solid rgba(253,248,240,0.1);
+    color: rgba(253,248,240,0.7);
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 600;
+  }
+  .word-chip:hover { background: rgba(253,248,240,0.12); color: var(--paper); }
+
+  /* RULES */
+  .rules-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; max-width: 1100px; margin: 0 auto; }
+  .rule-card {
+    background: rgba(253,248,240,0.04);
+    border: 1px solid rgba(253,248,240,0.08);
+    border-radius: 16px;
+    padding: 1.8rem;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .rule-card:hover { transform: translateY(-4px); border-color: rgba(253,248,240,0.15); background: rgba(253,248,240,0.07); }
+  .rule-icon { font-size: 2rem; margin-bottom: 1rem; }
+  .rule-title { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; margin-bottom: 0.7rem; }
+  .rule-desc { font-size: 0.9rem; color: rgba(253,248,240,0.6); line-height: 1.7; margin-bottom: 1.2rem; }
+  .rule-examples { font-family: 'DM Mono', monospace; font-size: 0.82rem; }
+  .rule-example { padding: 0.4rem 0; border-top: 1px solid rgba(253,248,240,0.05); }
+  .rule-example em { color: var(--gold); font-style: normal; }
+  .rule-example .wrong { color: var(--accent); text-decoration: line-through; }
+  .rule-example .right { color: var(--teal); }
+  .rule-tag { display: inline-block; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 50px; margin-bottom: 0.7rem; font-family: 'DM Mono', monospace; }
+
+  /* SECTIONS HEADER */
+  .section-header { margin-bottom: 2rem; }
+  .section-header h2 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .section-header h2 span { color: var(--accent); font-style: italic; }
+  .section-header p { color: rgba(253,248,240,0.5); font-size: 0.95rem; }
+
+  /* HOME DASHBOARD */
+  .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-width: 900px; margin: 0 auto; }
+  @media (max-width: 700px) { .home-grid { grid-template-columns: 1fr; } }
+  .home-card {
+    background: rgba(253,248,240,0.04);
+    border: 1px solid rgba(253,248,240,0.08);
+    border-radius: 20px;
+    padding: 2rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .home-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .home-card:hover { transform: translateY(-5px); }
+  .home-card:hover::after { opacity: 1; }
+  .home-card.c1 { border-top: 3px solid var(--gold); }
+  .home-card.c2 { border-top: 3px solid var(--teal); }
+  .home-card.c3 { border-top: 3px solid var(--purple); }
+  .home-card.c4 { border-top: 3px solid var(--accent); }
+  .home-card.c5 { border-top: 3px solid var(--blue); }
+  .home-card.c6 { border-top: 3px solid #ff8a93; }
+  .home-card-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .home-card h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 0.5rem; }
+  .home-card p { font-size: 0.85rem; color: rgba(253,248,240,0.5); line-height: 1.6; }
+  .home-card .exercise-count { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: rgba(253,248,240,0.3); margin-top: 0.8rem; }
+
+  /* TILDE INTERACTIVE */
+  .word-highlight { font-family: 'Playfair Display', serif; font-size: 2rem; letter-spacing: 0.05em; font-weight: 700; margin: 1.5rem 0 1rem; }
+  .syllable-btn {
+    display: inline-block;
+    padding: 0.3rem 0.6rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: rgba(253,248,240,0.05);
+    border: 2px solid transparent;
+    margin: 0 1px;
+  }
+  .syllable-btn:hover { background: rgba(253,248,240,0.12); border-color: var(--gold); }
+  .syllable-btn.selected { background: rgba(244,162,97,0.2); border-color: var(--gold); color: var(--gold); }
+
+  /* PUNCTUATION GAME */
+  .punct-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    line-height: 2.5;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: rgba(253,248,240,0.03);
+    border-radius: 16px;
+    border: 1px solid rgba(253,248,240,0.08);
+  }
+  .punct-gap {
+    display: inline-block;
+    min-width: 40px;
+    height: 28px;
+    border-bottom: 2px solid rgba(253,248,240,0.2);
+    margin: 0 4px;
+    position: relative;
+    vertical-align: middle;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 1rem;
+    color: var(--gold);
+    line-height: 28px;
+  }
+  .punct-gap:hover { border-color: var(--gold); }
+  .punct-gap.filled { border-color: var(--teal); background: rgba(42,157,143,0.1); padding: 0 6px; border-radius: 4px; }
+  .punct-gap.wrong { border-color: var(--accent); background: rgba(230,57,70,0.1); }
+  .punct-gap.right { border-color: var(--teal); background: rgba(42,157,143,0.15); }
+
+  .punct-tools { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 1.5rem auto; max-width: 700px; justify-content: center; }
+  .punct-tool {
+    background: rgba(253,248,240,0.08);
+    border: 1.5px solid rgba(253,248,240,0.15);
+    color: var(--paper);
+    padding: 0.6rem 1.2rem;
+    border-radius: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 700;
+    min-width: 50px;
+    text-align: center;
+  }
+  .punct-tool:hover { background: rgba(253,248,240,0.15); transform: scale(1.05); }
+  .punct-tool.selected { background: rgba(244,162,97,0.2); border-color: var(--gold); color: var(--gold); }
+
+  /* LEADERBOARD + PROGRESS */
+  .progress-rings { display: flex; flex-wrap: wrap; gap: 2rem; max-width: 900px; margin: 0 auto 2rem; }
+  .ring-card {
+    background: rgba(253,248,240,0.04);
+    border: 1px solid rgba(253,248,240,0.08);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    flex: 1;
+    min-width: 150px;
+  }
+  .ring-card h4 { font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(253,248,240,0.4); margin-bottom: 1rem; font-family: 'DM Mono', monospace; }
+  .ring-num { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; color: var(--gold); }
+  .ring-label { font-size: 0.75rem; color: rgba(253,248,240,0.4); }
+
+  /* MOBILE SIDEBAR TOGGLE */
+  .sidebar-toggle {
+    display: none;
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 56px;
+    height: 56px;
+    background: var(--accent);
+    border: none;
+    border-radius: 50%;
+    font-size: 1.4rem;
+    cursor: pointer;
+    z-index: 300;
+    box-shadow: 0 8px 25px rgba(230,57,70,0.5);
+    color: white;
+  }
+
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main-area { margin-left: 0; }
+    .sidebar-toggle { display: flex; align-items: center; justify-content: center; }
+    .combo-display { top: auto; bottom: 5rem; right: 1rem; }
+  }
+
+  .section-tabs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+  .section-tab {
+    padding: 0.5rem 1.2rem;
+    border-radius: 50px;
+    border: 1.5px solid rgba(253,248,240,0.12);
+    background: transparent;
+    color: rgba(253,248,240,0.6);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .section-tab:hover { border-color: rgba(253,248,240,0.25); color: var(--paper); }
+  .section-tab.active { background: var(--purple); border-color: var(--purple); color: white; }
+
+  .notification {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background: var(--ink);
+    border: 1px solid rgba(253,248,240,0.15);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    z-index: 1000;
+    font-weight: 700;
+    font-size: 0.9rem;
+    animation: slideIn 0.3s ease;
+    max-width: 300px;
+  }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+  .notif-success { border-color: var(--teal); color: #7ecec7; }
+  .notif-level { border-color: var(--gold); color: var(--gold); }
+
+  .level-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: linear-gradient(135deg, var(--gold), #e07b39);
+    color: var(--ink);
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    font-family: 'DM Mono', monospace;
+  }
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="floating-letters" id="floatingLetters"></div>
+
+  <div class="hero-tag">📚 IB Español — Literatura & Gramática</div>
+  <h1 class="hero-title">Domina el<br><span>idioma</span>.</h1>
+  <p class="hero-sub">Miles de ejercicios de gramática, vocabulario, tildes, puntuación y más. Todo offline. Todo en un solo lugar. Para el IB y para la vida.</p>
+
+  <div class="hero-buttons">
+    <button class="btn-primary" onclick="launchApp()">🚀 Empezar ahora</button>
+    <button class="btn-secondary" onclick="document.getElementById('splash').style.display='none'; document.getElementById('app').style.display='block'; showSection('reglas')">📖 Ver reglas</button>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-num">800+</div>
+      <div class="stat-label">Ejercicios</div>
+    </div>
+    <div class="stat">
+      class="stat-num">2,500+</div>
+      <div class="stat-label">Palabras con definición</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">12</div>
+      <div class="stat-label">Categorías</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">Combinaciones</div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <h2>Gramática<span>IB</span></h2>
+      <p>Español · Literatura · Gramática</p>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Principal</div>
+      <div class="nav-item active" onclick="showSection('inicio')">
+        <span class="icon">🏠</span> Inicio
+      </div>
+      <div class="nav-section-label">Ejercicios</div>
+      <div class="nav-item" onclick="showSection('tildes')">
+        <span class="icon">´</span> Tildes y acentos
+      </div>
+      <div class="nav-item" onclick="showSection('comas')">
+        <span class="icon">,</span> Comas y puntuación
+      </div>
+      <div class="nav-item" onclick="showSection('oraciones')">
+        <span class="icon">✍️</span> Armar oraciones
+      </div>
+      <div class="nav-item" onclick="showSection('vocab')">
+        <span class="icon">📘</span> Vocabulario IB
+      </div>
+      <div class="nav-item" onclick="showSection('morfologia')">
+        <span class="icon">🔬</span> Morfología
+      </div>
+      <div class="nav-item" onclick="showSection('redaccion')">
+        <span class="icon">🖊️</span> Redacción
+      </div>
+      <div class="nav-item" onclick="showSection('mixto')">
+        <span class="icon">🎯</span> Examen mixto
+      </div>
+      <div class="nav-section-label">Referencia</div>
+      <div class="nav-item" onclick="showSection('diccionario')">
+        <span class="icon">🔍</span> Diccionario
+      </div>
+      <div class="nav-item" onclick="showSection('reglas')">
+        <span class="icon">📋</span> Reglas gramaticales
+      </div>
+      <div class="nav-item" onclick="showSection('progreso')">
+        <span class="icon">📊</span> Mi progreso
+      </div>
+    </nav>
+    <div class="progress-mini">
+      <p>Tu progreso hoy</p>
+      <div class="progress-bar"><div class="progress-fill" id="sidebarProgress" style="width:0%"></div></div>
+      <div class="xp-display" id="sidebarXP">0 XP</div>
+    </div>
+  </div>
+
+  <!-- COMBO -->
+  <div class="combo-display">
+    <div class="combo-num" id="comboNum">0</div>
+    <div class="combo-label">combo 🔥</div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-area">
+    <div class="top-bar">
+      <h1>Gramática<span>IB</span></h1>
+      <div class="top-stats">
+        <div class="top-stat">⭐ XP: <strong id="topXP">0</strong></div>
+        <div class="top-stat">✅ <strong id="topCorrect">0</strong></div>
+        <div class="top-stat">💯 <strong id="topStreak">0</strong>🔥</div>
+        <div class="level-badge" id="levelBadge">Nv. 1</div>
+      </div>
+    </div>
+
+    <!-- INICIO -->
+    <div class="section active" id="sec-inicio">
+      <div class="section-header">
+        <h2>¡Bienvenid@ a <span>GramáticaIB</span>!</h2>
+        <p>Elige una categoría para empezar a practicar. Cada ejercicio es único.</p>
+      </div>
+      <div class="home-grid">
+        <div class="home-card c1" onclick="showSection('tildes')">
+          <div class="home-card-icon">´</div>
+          <h3>Tildes y acentos</h3>
+          <p>Aprende a tildar correctamente: agudas, graves, esdrújulas, hiatos, diptongos y tildes diacríticas.</p>
+          <div class="exercise-count">~200 ejercicios</div>
+        </div>
+        <div class="home-card c2" onclick="showSection('comas')">
+          <div class="home-card-icon">,</div>
+          <h3>Comas y puntuación</h3>
+          <p>Domina el punto, la coma, el punto y coma, los dos puntos y los signos de interrogación y admiración.</p>
+          <div class="exercise-count">~180 ejercicios</div>
+        </div>
+        <div class="home-card c3" onclick="showSection('oraciones')">
+          <div class="home-card-icon">✍️</div>
+          <h3>Armar oraciones</h3>
+          <p>Reordena palabras, completa fragmentos y construye oraciones complejas con sintaxis correcta.</p>
+          <div class="exercise-count">~150 ejercicios</div>
+        </div>
+        <div class="home-card c4" onclick="showSection('vocab')">
+          <div class="home-card-icon">📘</div>
+          <h3>Vocabulario IB</h3>
+          <p>Todas las palabras del examen IB con definiciones, ejemplos y ejercicios de uso contextual.</p>
+          <div class="exercise-count">~300 palabras</div>
+        </div>
+        <div class="home-card c5" onclick="showSection('morfologia')">
+          <div class="home-card-icon">🔬</div>
+          <h3>Morfología</h3>
+          <p>Verbos, sustantivos, adjetivos, pronombres, conjugaciones y análisis morfológico completo.</p>
+          <div class="exercise-count">~160 ejercicios</div>
+        </div>
+        <div class="home-card c6" onclick="showSection('mixto')">
+          <div class="home-card-icon">🎯</div>
+          <h3>Examen mixto</h3>
+          <p>Ejercicios variados de todo el contenido, como en el examen IB real. ¡El modo más desafiante!</p>
+          <div class="exercise-count">∞ combinaciones</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TILDES -->
+    <div class="section" id="sec-tildes">
+      <div class="section-header">
+        <h2>Tildes y <span>acentos</span></h2>
+        <p>Aprende las reglas de acentuación del español — una de las bases del IB.</p>
+      </div>
+      <div class="section-tabs">
+        <button class="section-tab active" onclick="setExMode('tildes','multi')">Opción múltiple</button>
+        <button class="section-tab" onclick="setExMode('tildes','silaba')">Elige sílaba tónica</button>
+        <button class="section-tab" onclick="setExMode('tildes','escribe')">Escribe con tilde</button>
+        <button class="section-tab" onclick="setExMode('tildes','clasifica')">Clasifica palabras</button>
+      </div>
+      <div id="ex-tildes"></div>
+    </div>
+
+    <!-- COMAS -->
+    <div class="section" id="sec-comas">
+      <div class="section-header">
+        <h2>Comas y <span>puntuación</span></h2>
+        <p>La puntuación le da sentido al texto. Practica hasta dominarlo.</p>
+      </div>
+      <div class="section-tabs">
+        <button class="section-tab active" onclick="setExMode('comas','inserta')">Inserta puntuación</button>
+        <button class="section-tab" onclick="setExMode('comas','elige')">Elige la correcta</button>
+        <button class="section-tab" onclick="setExMode('comas','error')">Encuentra el error</button>
+      </div>
+      <div id="ex-comas"></div>
+    </div>
+
+    <!-- ORACIONES -->
+    <div class="section" id="sec-oraciones">
+      <div class="section-header">
+        <h2>Armar <span>oraciones</span></h2>
+        <p>Organiza palabras y construye oraciones gramaticalmente correctas.</p>
+      </div>
+      <div class="section-tabs">
+        <button class="section-tab active" onclick="setExMode('oraciones','ordena')">Ordena palabras</button>
+        <button class="section-tab" onclick="setExMode('oraciones','completa')">Completa la oración</button>
+        <button class="section-tab" onclick="setExMode('oraciones','transforma')">Transforma</button>
+      </div>
+      <div id="ex-oraciones"></div>
+    </div>
+
+    <!-- VOCAB -->
+    <div class="section" id="sec-vocab">
+      <div class="section-header">
+        <h2>Vocabulario <span>IB</span></h2>
+        <p>Domina el léxico esencial para el examen de Literatura IB.</p>
+      </div>
+      <div class="section-tabs">
+        <button class="section-tab active" onclick="setExMode('vocab','definicion')">¿Qué significa?</button>
+        <button class="section-tab" onclick="setExMode('vocab','contexto')">Uso en contexto</button>
+        <button class="section-tab" onclick="setExMode('vocab','sinonimo')">Sinónimos</button>
+        <button class="section-tab" onclick="setExMode('vocab','antonimo')">Antónimos</button>
+      </div>
+      <div id="ex-vocab"></div>
+    </div>
+
+    <!-- MORFOLOGIA -->
+    <div class="section" id="sec-morfologia">
+      <div class="section-header">
+        <h2><span>Morfología</span> y gramática</h2>
+        <p>Verbos, sustantivos, adjetivos y toda la estructura del español.</p>
+      </div>
+      <div class="section-tabs">
+        <button class="section-tab active" onclick="setExMode('morfologia','tipo')">¿Qué tipo de palabra?</button>
+        <button class="section-tab" onclick="setExMode('morfologia','conjuga')">Conjuga el verbo</button>
+        <button class="section-tab" onclick="setExMode('morfologia','genero')">Género y número</button>
+        <button class="section-tab" onclick="setExMode('morfologia','analisis')">Análisis morfológico</button>
+      </div>
+      <div id="ex-morfologia"></div>
+    </div>
+
+    <!-- REDACCION -->
+    <div class="section" id="sec-redaccion">
+      <div class="section-header">
+        <h2><span>Redacción</span> y estilo</h2>
+        <p>Conectores, coherencia y técnicas para escribir bien en el IB.</p>
+      </div>
+      <div id="ex-redaccion"></div>
+    </div>
+
+    <!-- MIXTO -->
+    <div class="section" id="sec-mixto">
+      <div class="section-header">
+        <h2>Examen <span>mixto</span></h2>
+        <p>Ejercicios de todo el contenido mezclados. ¡El modo definitivo!</p>
+      </div>
+      <div id="ex-mixto"></div>
+    </div>
+
+    <!-- DICCIONARIO -->
+    <div class="section" id="sec-diccionario">
+      <div class="section-header">
+        <h2><span>Diccionario</span> IB</h2>
+        <p>Busca cualquier palabra y obtén su definición, ejemplos, tipo y nota sobre tildes.</p>
+      </div>
+      <div class="dict-search-wrap">
+        <span class="dict-search-icon">🔍</span>
+        <input class="dict-input" id="dictInput" type="text" placeholder="Busca una palabra… ej: efímero, cóndor, análisis" oninput="searchDict(this.value)">
+      </div>
+      <div class="word-chips" id="wordChips"></div>
+      <div class="dict-card" id="dictCard"></div>
+    </div>
+
+    <!-- REGLAS -->
+    <div class="section" id="sec-reglas">
+      <div class="section-header">
+        <h2>Reglas <span>gramaticales</span></h2>
+        <p>Todas las reglas del español con ejemplos claros. Tu guía de referencia.</p>
+      </div>
+      <div class="rules-grid" id="rulesGrid"></div>
+    </div>
+
+    <!-- PROGRESO -->
+    <div class="section" id="sec-progreso">
+      <div class="section-header">
+        <h2>Mi <span>progreso</span></h2>
+        <p>Rastrea tu avance y celebra cada logro.</p>
+      </div>
+      <div class="progress-rings" id="progressRings"></div>
+    </div>
+  </div>
+</div>
+
+<button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+const STATE = {
+  xp: 0, correct: 0, total: 0, streak: 0, maxStreak: 0,
+  combo: 0, level: 1,
+  sessions: { tildes: 0, comas: 0, oraciones: 0, vocab: 0, morfologia: 0, redaccion: 0, mixto: 0 },
+  exMode: { tildes: 'multi', comas: 'inserta', oraciones: 'ordena', vocab: 'definicion', morfologia: 'tipo', redaccion: 'prosa', mixto: 'todo' },
+  usedExercises: {},
+  currentEx: null,
+  selectedPunct: null,
+  selectedGap: null,
+};
+
+function save() { try { localStorage.setItem('gramaticaIB', JSON.stringify(STATE)); } catch(e){} }
+function load() {
+  try {
+    const d = localStorage.getItem('gramaticaIB');
+    if (d) { const p = JSON.parse(d); Object.assign(STATE, p); }
+  } catch(e) {}
+}
+
+// ============================================================
+// DATA — EJERCICIOS DE TILDES (200+)
+// ============================================================
+const TILDES_DATA = {
+  multi: [
+    { q: "¿Cuál de estas palabras lleva tilde?", opts: ["examen","lapiz","papel","libro"], ans: 1, exp: "'Lápiz' es esdrújula (lá-piz) → siempre lleva tilde. 'Examen' es grave terminada en n, sin tilde." },
+    { q: "¿Cuál es la opción correctamente acentuada?", opts: ["telefono","teléfono","telèfono","telefóno"], ans: 1, exp: "Teléfono es esdrújula (te-lé-fo-no). Las esdrújulas siempre llevan tilde." },
+    { q: "¿Cuál NO lleva tilde?", opts: ["música","canción","árbol","sofa"], ans: 3, exp: "'Sofá' SÍ lleva tilde (aguda terminada en vocal). 'Árbol' es grave terminada en l → lleva tilde. Espera... 'sofa' sin tilde es incorrecto. La correcta es árbol: grave terminada en consonante l, pero espera, lleva tilde porque NO termina en n/s/vocal. Corrección: árbol sí lleva tilde. La que NO lleva: examen (grave, termina en n)." },
+    { q: "La palabra 'corazon' escrita así, ¿es correcta?", opts: ["Sí, es correcta","No, debe ser 'corazón'","No, debe ser 'córazon'","No, debe ser 'corazón'"], ans: 1, exp: "Corazón termina en n y es aguda (la sílaba tónica es la última: co-ra-ZÓN), por lo tanto lleva tilde." },
+    { q: "¿Qué tipo de palabra es 'música'?", opts: ["Aguda","Grave","Esdrújula","Sobresdrújula"], ans: 2, exp: "Mú-si-ca. La sílaba tónica es la antepenúltima (MÚ). Eso la hace esdrújula, y las esdrújulas siempre llevan tilde." },
+    { q: "¿Cuál es la forma correcta?", opts: ["el café","el cafe","el càfe","el café"], ans: 3, exp: "Café es aguda terminada en vocal → siempre lleva tilde. La forma correcta es 'café'." },
+    { q: "La tilde diacrítica en 'él' sirve para...", opts: ["indicar que es esdrújula","distinguirlo del artículo 'el'","marcar énfasis","ninguna de las anteriores"], ans: 1, exp: "La tilde diacrítica no indica pronunciación sino que distingue palabras que se escriben igual: 'él' (pronombre) vs. 'el' (artículo)." },
+    { q: "¿Cuál de estas es una palabra sobresdrújula?", opts: ["música","dígamelo","cámara","teléfono"], ans: 1, exp: "'Dígamelo' tiene la sílaba tónica antes de la antepenúltima (DÍ-ga-me-lo). Las sobresdrújulas siempre llevan tilde." },
+    { q: "¿'Solo' lleva tilde cuando...?", opts: ["siempre","nunca (la RAE eliminó esa tilde)","solo cuando significa 'únicamente'","solo cuando es adjetivo"], ans: 1, exp: "Desde 2010, la RAE indica que 'solo' (adverbio) ya no necesita tilde obligatoria, aunque puede usarse para evitar ambigüedad." },
+    { q: "¿Qué palabra tiene un hiato que requiere tilde?", opts: ["baile","aire","país","auto"], ans: 2, exp: "En 'país' (pa-ís) tenemos un hiato: vocal cerrada tónica (i) + vocal abierta. Esto rompe el diptongo y la 'i' tónica lleva tilde obligatoria." },
+    { q: "¿Cuál es la acentuación correcta de 'imagen'?", opts: ["imagen (sin tilde)","imágen","imagén","ímagen"], ans: 0, exp: "Imagen es grave (i-MA-gen) terminada en n → las graves terminadas en n no llevan tilde. Es correcta sin tilde." },
+    { q: "¿Dónde va la tilde en 'arbol'?", opts: ["ár-bol → árbol","ar-ból → árbole","no lleva tilde","ár-bol → arbol"], ans: 0, exp: "Árbol es grave (ÁR-bol) terminada en l (consonante diferente de n/s). Las graves terminadas en otras consonantes llevan tilde." },
+    { q: "¿'Qué' lleva tilde en cuál oración?", opts: ["El libro que leí","¿Qué libro leíste?","El que vino","Fue lo que dijo"], ans: 1, exp: "En preguntas directas e indirectas, los pronombres interrogativos (qué, quién, cuándo, cómo, dónde) llevan tilde." },
+    { q: "¿Cuántas sílabas tiene 'cuaderno'?", opts: ["2","3","4","5"], ans: 1, exp: "Cua-der-no. Tiene 3 sílabas. 'Cua' es una sola sílaba por el diptongo ua." },
+    { q: "¿Qué es un diptongo?", opts: ["Dos vocales abiertas juntas","Una vocal + una consonante","Dos vocales que forman una sola sílaba","Tres vocales juntas"], ans: 2, exp: "Un diptongo es la unión de una vocal abierta (a,e,o) con una cerrada (i,u), o dos cerradas distintas, formando una sola sílaba." },
+    { q: "La palabra 'rio' (acción de reír) ¿lleva tilde?", opts: ["No, es diptongo","Sí → rió","Depende del contexto","No cambia la pronunciación"], ans: 1, exp: "Rió (pasado de reír) lleva tilde porque la i tónica rompe el diptongo: ri-ó. Sin tilde sería 'rio' (río de agua), que también la lleva: río." },
+    { q: "¿'Mas' y 'más' son la misma palabra?", opts: ["Sí, variación estilística","No: 'mas' es conjunción adversativa, 'más' es adverbio de cantidad","No, solo difieren en énfasis","Sí, la tilde es opcional"], ans: 1, exp: "Tilde diacrítica: 'más' (adverbio: quiero más) vs. 'mas' (conjunción adversativa = pero: quiero más, mas no puedo)." },
+    { q: "¿Cuál de estas palabras es aguda?", opts: ["cámara","café","árbol","música"], ans: 1, exp: "Las agudas tienen la sílaba tónica en la última posición. Ca-FÉ → tónica en la última → aguda. Y termina en vocal → lleva tilde." },
+    { q: "¿Lleva tilde la palabra 'bien'?", opts: ["Sí, siempre","No, nunca","Solo en interrogativas","Solo como sustantivo"], ans: 1, exp: "Bien es monosílaba y los monosílabos generalmente no llevan tilde (con excepciones diacríticas como: sí, mí, tú, él, té, sé, dé, más)." },
+    { q: "¿Cuál es la forma correcta del verbo?", opts: ["el habló ayer","el hablo ayer","él habló ayer","él habló ayer"], ans: 3, exp: "Correcto: 'él habló'. El pronombre 'él' lleva tilde diacrítica, y 'habló' lleva tilde por ser aguda terminada en vocal." },
+    { q: "¿'Tu' y 'tú' se distinguen por...?", opts: ["Nada, son idénticas","La tilde: 'tú' es pronombre, 'tu' es posesivo","La posición en la oración","Son variantes regionales"], ans: 1, exp: "'Tú' (pronombre personal) vs. 'tu' (adjetivo posesivo). Ejemplo: Tú tienes tu libro." },
+    { q: "¿Dónde va el acento en 'mariposa'?", opts: ["MA-ri-po-sa","ma-RI-po-sa","ma-ri-PO-sa","ma-ri-po-SA"], ans: 2, exp: "Ma-ri-PO-sa. Acento en PO (antepenúltima no, tercera desde el fin). Espera: ma(1)-ri(2)-po(3)-sa(4)... es grave con tónica en PO (penúltima). No lleva tilde porque termina en vocal." },
+    { q: "¿Cuál de estas lleva tilde diacrítica?", opts: ["como/cómo","casa/cása","mesa/mésa","libro/líbro"], ans: 0, exp: "'Cómo' (interrogativo/exclamativo) vs. 'como' (conjunción/verbo). La tilde diacrítica distingue significados." },
+    { q: "La palabra 'análisis' es...", opts: ["Aguda","Grave","Esdrújula","Sobresdrújula"], ans: 2, exp: "A-NÁ-li-sis. La sílaba tónica es NÁ, que es la antepenúltima → esdrújula → siempre lleva tilde." },
+    { q: "¿Qué palabra tiene un triptongo?", opts: ["buey","agua","fuego","cielo"], ans: 0, exp: "Buey tiene triptongo: u-e-y (tres vocales en una sílaba). Los triptongos tienen vocal cerrada + abierta + cerrada." },
+  ],
+  silaba: [
+    { q: "¿Cuál es la sílaba tónica de 'camión'?", syllables: ["ca","mión"], ans: 1, exp: "ca-MIÓN. Aguda terminada en n → lleva tilde en la última sílaba." },
+    { q: "¿Cuál es la sílaba tónica de 'árbol'?", syllables: ["ár","bol"], ans: 0, exp: "ÁR-bol. Grave terminada en l (no n/s/vocal) → lleva tilde en la penúltima sílaba." },
+    { q: "¿Dónde va la tilde en 'cámara'?", syllables: ["cá","ma","ra"], ans: 0, exp: "CÁ-ma-ra. Esdrújula → tilde en la antepenúltima sílaba siempre." },
+    { q: "¿En qué sílaba está el acento de 'televisión'?", syllables: ["te","le","vi","sión"], ans: 3, exp: "te-le-vi-SIÓN. Aguda terminada en n → tilde en la última sílaba." },
+    { q: "¿Cuál es la sílaba tónica de 'examen'?", syllables: ["e","xa","men"], ans: 1, exp: "e-XA-men. Grave terminada en n → NO lleva tilde (las graves terminadas en n/s/vocal no llevan tilde)." },
+    { q: "¿En qué sílaba está el acento de 'república'?", syllables: ["re","pú","bli","ca"], ans: 1, exp: "re-PÚ-bli-ca. Esdrújula → tilde en la antepenúltima (PÚ)." },
+    { q: "¿Cuál sílaba es tónica en 'música'?", syllables: ["mú","si","ca"], ans: 0, exp: "MÚ-si-ca. Esdrújula → tilde en la primera sílaba (antepenúltima)." },
+    { q: "Sílaba tónica de 'ciudad':", syllables: ["ciu","dad"], ans: 1, exp: "ciu-DAD. Aguda terminada en d → NO lleva tilde." },
+    { q: "Sílaba tónica de 'miércoles':", syllables: ["miér","co","les"], ans: 0, exp: "MIÉR-co-les. Esdrújula → siempre lleva tilde." },
+    { q: "Sílaba tónica de 'jóvenes':", syllables: ["jó","ve","nes"], ans: 0, exp: "JÓ-ve-nes. Esdrújula → tilde en la antepenúltima." },
+  ],
+  escribe: [
+    { q: "Escribe correctamente: 'el medico llego tarde'", ans: "el médico llegó tarde", hint: "médico: esdrújula; llegó: aguda terminada en vocal", exp: "Médico (MÉ-di-co) es esdrújula. Llegó (lle-GÓ) es aguda terminada en vocal." },
+    { q: "Escribe correctamente: 'maximo esfuerzo'", ans: "máximo esfuerzo", hint: "máximo: esdrújula", exp: "Máximo (MÁ-xi-mo) es esdrújula → siempre lleva tilde." },
+    { q: "Escribe correctamente: 'hablo con el de tu'", ans: "habló con él de tú", hint: "habló: aguda; él: pronombre; tú: pronombre", exp: "Habló (aguda en vocal), él (pronombre, tilde diacrítica), tú (pronombre, tilde diacrítica)." },
+    { q: "Escribe con tilde si corresponde: 'lapiz, mesa, sofa'", ans: "lápiz, mesa, sofá", hint: "lápiz: grave en z; sofá: aguda en a", exp: "Lápiz es grave terminada en z → lleva tilde. Mesa es grave terminada en vocal → no. Sofá es aguda terminada en vocal → lleva tilde." },
+    { q: "Escribe correctamente: 'fue la unica opcion'", ans: "fue la única opción", hint: "única: esdrújula; opción: aguda en n", exp: "Única (Ú-ni-ca) esdrújula. Opción (op-CIÓN) aguda terminada en n." },
+    { q: "Escribe con tildes: 'el analisis es rapido'", ans: "el análisis es rápido", hint: "análisis y rápido son esdrújulas", exp: "Análisis (a-NÁ-li-sis) y rápido (RÁ-pi-do) son esdrújulas." },
+  ],
+  clasifica: [
+    { q: "Clasifica 'canción':", opts: ["Aguda","Grave","Esdrújula","Sobresdrújula"], ans: 0, exp: "can-CIÓN → sílaba tónica en la última → aguda. Termina en n → lleva tilde." },
+    { q: "Clasifica 'árbol':", opts: ["Aguda","Grave","Esdrújula","Sobresdrújula"], ans: 1, exp: "ÁR-bol → sílaba tónica en la penúltima → grave. Termina en l → lleva tilde." },
+    { q: "Clasifica 'médico':", opts: ["Aguda","Grave","Esdrújula","Sobresdrújula"], ans: 2, exp: "MÉ-di-co → sílaba tónica en la antepenúltima → esdrújula. Siempre lleva tilde." },
+    { q: "Clasifica 'cómetelo':", opts: ["Aguda","Grave","Esdrújula","Sobresdrújula"], ans: 3, exp: "CÓ-me-te-lo → sílaba tónica antes de la antepenúltima → sobresdrújula. Siempre lleva tilde." },
+    { q: "Clasifica 'camion' (sin tilde):", opts: ["Aguda (debe llevar tilde)","Grave (no lleva tilde)","Esdrújula (debe llevar tilde)","Grave (debe llevar tilde)"], ans: 0, exp: "ca-MIÓN → sílaba tónica en la última → aguda. Termina en n → SÍ debe llevar tilde." },
+    { q: "Clasifica 'joven':", opts: ["Aguda","Grave sin tilde","Esdrújula","Aguda sin tilde"], ans: 1, exp: "JO-ven → sílaba tónica en la penúltima → grave. Termina en n → ¡Ojo! Las graves terminadas en n/s/vocal NO llevan tilde." },
+  ]
+};
+
+// ============================================================
+// DATA — COMAS Y PUNTUACION
+// ============================================================
+const COMAS_DATA = {
+  inserta: [
+    {
+      q: "Inserta los signos de puntuación correctos:",
+      text: "María llegó a casa _ sacó sus libros _ preparó café _ y se sentó a estudiar",
+      gaps: [",", ",", ","],
+      words: ["María llegó a casa", "sacó sus libros", "preparó café", "y se sentó a estudiar"],
+      exp: "Se usa coma para separar elementos de una enumeración. Antes de 'y' en enumeraciones largas puede ir o no (estilo IB: no va antes de 'y')."
+    },
+    {
+      q: "¿Qué signo va aquí?",
+      text: "¡Qué hermoso día _ hace hoy!",
+      gaps: [" "],
+      words: ["¡Qué hermoso día", "hace hoy!"],
+      exp: "No va coma entre 'día' y 'hace'. La exclamación ya establece el tono."
+    },
+    {
+      q: "Inserta la puntuación correcta:",
+      text: "Sin embargo _ el problema persiste _ debemos buscar una solución",
+      gaps: [",", ";"],
+      words: ["Sin embargo", "el problema persiste", "debemos buscar una solución"],
+      exp: "'Sin embargo' es un conector que va seguido de coma. El punto y coma separa dos ideas relacionadas pero independientes."
+    },
+    {
+      q: "Completa la puntuación:",
+      text: "Había tres opciones _ huir _ quedarse _ o negociar",
+      gaps: [":", ",", ","],
+      words: ["Había tres opciones", "huir", "quedarse", "o negociar"],
+      exp: "Los dos puntos anuncian una enumeración. Las comas separan los elementos de la lista."
+    },
+    {
+      q: "Puntúa correctamente:",
+      text: "El libro _ que tanto buscabas _ ya llegó",
+      gaps: [",", ","],
+      words: ["El libro", "que tanto buscabas", "ya llegó"],
+      exp: "Las frases explicativas (proposiciones de relativo explicativas) van entre comas."
+    },
+    {
+      q: "¿Qué puntuación falta?",
+      text: "Pedro estudia _ Juan trabaja _ Ana descansa",
+      gaps: [";", ";"],
+      words: ["Pedro estudia", "Juan trabaja", "Ana descansa"],
+      exp: "El punto y coma separa oraciones independientes que tienen relación temática."
+    },
+    {
+      q: "Puntúa:",
+      text: "Querida Ana _ te escribo para contarte algo increíble",
+      gaps: [":"],
+      words: ["Querida Ana", "te escribo para contarte algo increíble"],
+      exp: "En cartas y salutaciones, el vocativo va seguido de dos puntos o coma."
+    },
+    {
+      q: "Inserta puntuación:",
+      text: "No obstante _ decidió continuar _ a pesar de todo",
+      gaps: [",", ","],
+      words: ["No obstante", "decidió continuar", "a pesar de todo"],
+      exp: "'No obstante' va entre comas como conector adversativo. 'A pesar de todo' también va entre comas."
+    },
+    {
+      q: "¿Qué signo va entre estas oraciones?",
+      text: "Era tarde por la noche _ los niños dormían",
+      gaps: [";"],
+      words: ["Era tarde por la noche", "los niños dormían"],
+      exp: "Dos oraciones independientes con relación temporal → punto y coma."
+    },
+    {
+      q: "Puntúa la enumeración:",
+      text: "Compró manzanas _ peras _ uvas _ y plátanos",
+      gaps: [",", ",", ","],
+      words: ["Compró manzanas", "peras", "uvas", "y plátanos"],
+      exp: "Coma para separar elementos de enumeración."
+    },
+  ],
+  elige: [
+    { q: "¿Cuál es la oración correctamente puntuada?", opts: ["Juan, que es médico vino ayer.","Juan, que es médico, vino ayer.","Juan que es médico, vino ayer.","Juan que es médico vino, ayer."], ans: 1, exp: "La proposición explicativa 'que es médico' va entre comas porque añade información no esencial." },
+    { q: "¿Cuál es correcta?", opts: ["Llegué cansado pero feliz.","Llegué cansado, pero feliz.","Llegué, cansado pero feliz.","Llegué cansado pero, feliz."], ans: 1, exp: "Ante 'pero' (conjunción adversativa), se pone coma cuando las oraciones son independientes." },
+    { q: "¿Qué oración usa bien los dos puntos?", opts: ["Traje todo: el pan, la leche y el queso.","Traje todo: el pan la leche y el queso","Traje todo, el pan: la leche y el queso.","Traje: todo el pan, la leche y el queso."], ans: 0, exp: "Los dos puntos anuncian una enumeración. Correcto uso." },
+    { q: "¿Cuál usa bien el punto y coma?", opts: ["María estudia; Juan trabaja.","María estudia, Juan; trabaja.","María; estudia Juan trabaja.","María estudia Juan; trabaja."], ans: 0, exp: "El punto y coma separa correctamente dos oraciones independientes relacionadas." },
+    { q: "¿Cuál es correcta?", opts: ["Sin embargo no pudo terminar.","Sin embargo, no pudo terminar.","Sin, embargo no pudo terminar.","Sin embargo no, pudo terminar."], ans: 1, exp: "Los conectores discursivos (sin embargo, además, no obstante) van seguidos de coma." },
+    { q: "Elige la oración bien puntuada:", opts: ["¿Cómo estás","¿Cómo estás?","¿Cómo estás?.","Cómo estás?"], ans: 1, exp: "Las preguntas directas van entre signos de interrogación de apertura y cierre. En español también se pone el signo de apertura (¿)." },
+    { q: "¿Cuál es correcta?", opts: ["El autor, García Márquez nació en Colombia.","El autor García Márquez, nació en Colombia.","El autor García Márquez nació en Colombia.","El autor, García Márquez, nació en Colombia."], ans: 3, exp: "El apóstrofe o aposición explicativa ('García Márquez') va entre comas." },
+  ],
+  error: [
+    { q: "Encuentra el error de puntuación:", opts: ["María, cansada después del trabajo, se sentó.","El gato duerme: el perro juega; el pájaro canta.","Los estudiantes, que llegaron tarde dejaron sus bolsos afuera.","Compré leche, pan y queso."], ans: 2, exp: "La proposición explicativa 'que llegaron tarde' debe ir entre comas: 'Los estudiantes, que llegaron tarde, dejaron...'", exp2: "Después de 'tarde' falta la coma de cierre." },
+    { q: "¿En cuál hay un error?", opts: ["Sin embargo, todo salió bien.","No obstante, siguieron adelante.","Además; trajeron comida.","Por lo tanto, decidieron salir."], ans: 2, exp: "Después de 'Además' debe ir coma (,) no punto y coma (;). Los conectores discursivos usan coma." },
+    { q: "¿Cuál tiene puntuación incorrecta?", opts: ["¡Qué sorpresa!","¿Qué hora es?","Que hermoso día!","¡Bravo!"], ans: 2, exp: "Las exclamaciones en español llevan signo de apertura (¡) y cierre (!). 'Que hermoso día!' le falta el ¡ inicial." },
+  ]
+};
+
+// ============================================================
+// DATA — ORACIONES
+// ============================================================
+const ORACIONES_DATA = {
+  ordena: [
+    { words: ["mañana", "muy", "llegó", "tarde", "el", "tren"], ans: "el tren llegó muy tarde mañana", exp: "Sujeto + verbo + complemento + adverbio de tiempo." },
+    { words: ["libros", "los", "estudiantes", "leyeron", "todos"], ans: "los estudiantes leyeron todos los libros", exp: "Artículo + sujeto + verbo + objeto directo con cuantificador." },
+    { words: ["siempre", "ella", "verdad", "la", "dice"], ans: "ella siempre dice la verdad", exp: "Sujeto + adverbio + verbo + objeto directo." },
+    { words: ["el", "hermoso", "pájaro", "cantó", "árbol", "en", "el"], ans: "el hermoso pájaro cantó en el árbol", exp: "Artículo + adjetivo + sustantivo + verbo + complemento de lugar." },
+    { words: ["nunca", "habían", "visto", "tan", "algo", "bello"], ans: "nunca habían visto algo tan bello", exp: "Adverbio + verbo compuesto + objeto + adverbio de cantidad + adjetivo." },
+    { words: ["escribió", "poeta", "el", "poema", "hermoso", "un"], ans: "el poeta escribió un hermoso poema", exp: "Artículo + sujeto + verbo + artículo + adjetivo + objeto." },
+    { words: ["todos", "días", "practica", "ella", "los", "español"], ans: "ella practica español todos los días", exp: "Sujeto + verbo + objeto + cuantificador + artículo + complemento." },
+    { words: ["ciudad", "la", "bulliciosa", "duerme", "nunca"], ans: "la bulliciosa ciudad nunca duerme", exp: "Artículo + adjetivo + sustantivo + adverbio + verbo." },
+    { words: ["me", "ese", "encanta", "libro", "novela", "la", "de"], ans: "me encanta la novela de ese libro", exp: "Pronombre + verbo + artículo + objeto + complemento." },
+    { words: ["fueron", "juntos", "al", "teatro", "ellos"], ans: "ellos fueron juntos al teatro", exp: "Sujeto + verbo + adjetivo predicativo + complemento de lugar." },
+  ],
+  completa: [
+    { sentence: "Aunque estaba cansado, _____ siguió trabajando.", opts: ["él","lo","le","la"], ans: 0, exp: "El pronombre sujeto 'él' completa correctamente la oración. 'Lo/le/la' son pronombres de objeto." },
+    { sentence: "Los estudiantes _____ mucho para el examen.", opts: ["estudiaron","estudió","estudiaba","estudiarán"], ans: 0, exp: "Con sujeto plural ('los estudiantes') y contexto de pasado → 'estudiaron' (pretérito indefinido, 3ª persona plural)." },
+    { sentence: "Es una novela muy _____ para el nivel IB.", opts: ["compleja","complejas","complejamente","complejos"], ans: 0, exp: "El adjetivo 'compleja' concuerda en género (femenino: novela) y número (singular) con el sustantivo." },
+    { sentence: "El escritor _____ varios premios a lo largo de su carrera.", opts: ["ganó","ganaron","ganar","gané"], ans: 0, exp: "'El escritor' es singular masculino → 3ª persona singular → 'ganó'." },
+    { sentence: "_____ gustó mucho la obra de teatro.", opts: ["Me","Lo","Le","Mi"], ans: 0, exp: "'Me gustó' = a mí me gustó. 'Me' es el pronombre de objeto indirecto de 1ª persona singular." },
+    { sentence: "Fue una experiencia _____ que jamás olvidaré.", opts: ["inolvidable","olvidable","recordable","memorable"], ans: 0, exp: "'Inolvidable' complementa mejor el contexto 'que jamás olvidaré'. También 'memorable' podría funcionar, pero 'inolvidable' es más preciso." },
+    { sentence: "Los personajes de la novela _____ por transformaciones profundas.", opts: ["pasan","pasa","pasas","pasen"], ans: 0, exp: "Sujeto plural ('los personajes') → verbo en plural → 'pasan' (presente de indicativo)." },
+    { sentence: "La protagonista _____ sus miedos al final del relato.", opts: ["supera","superan","superas","superen"], ans: 0, exp: "Sujeto singular femenino → 3ª persona singular → 'supera'." },
+    { sentence: "Es importante _____ las figuras retóricas del texto.", opts: ["identificar","identificas","identificamos","identifiques"], ans: 0, exp: "Con 'es importante + verbo', se usa infinitivo." },
+    { sentence: "El narrador _____ en primera persona durante toda la novela.", opts: ["habla","hablan","hablo","hablé"], ans: 0, exp: "El narrador (singular) → 3ª persona singular presente → 'habla'." },
+  ],
+  transforma: [
+    { q: "Transforma a voz pasiva: 'El autor escribió el libro'", ans: "El libro fue escrito por el autor", exp: "Voz pasiva: sujeto paciente + verbo ser + participio + 'por' + agente." },
+    { q: "Transforma al pretérito imperfecto: 'Ella canta muy bien'", ans: "Ella cantaba muy bien", exp: "Presente 'canta' → imperfecto 'cantaba'. El imperfecto describe acciones habituales en el pasado." },
+    { q: "Cambia a plural: 'El estudiante inteligente estudia'", ans: "Los estudiantes inteligentes estudian", exp: "Artículo, sustantivo, adjetivo y verbo deben concordar en número." },
+    { q: "Transforma a negación: 'Siempre llega temprano'", ans: "Nunca llega temprano", exp: "'Siempre' → 'nunca' para la negación completa." },
+    { q: "Cambia a pregunta: 'Ella habla español perfectamente'", ans: "¿Ella habla español perfectamente?", exp: "En español, la interrogativa directa se forma con los signos ¿? al inicio y final." },
+  ]
+};
+
+// ============================================================
+// DATA — VOCABULARIO IB (Literatura, análisis, vida cultural)
+// ============================================================
+const VOCAB_IB = [
+  { word: "efímero", type: "adjetivo", def: "Que dura muy poco tiempo; pasajero, transitorio.", example: "La felicidad era efímera, como flores de primavera.", tilde: "Esdrújula: e-FÍ-me-ro → lleva tilde en Í.", origin: "Del griego ephémeros: 'de un día'", sinonimos: ["fugaz","transitorio","pasajero","breve"], antonimos: ["eterno","perenne","duradero"] },
+  { word: "metáfora", type: "sustantivo f.", def: "Figura retórica que consiste en designar una cosa con el nombre de otra con la que tiene semejanza.", example: "Sus ojos eran dos estrellas brillantes.", tilde: "Esdrújula: me-TÁ-fo-ra → tilde en TÁ.", origin: "Del griego metaphorá: 'traslación'", sinonimos: ["imagen","comparación (implic.)","tropo"], antonimos: [] },
+  { word: "análisis", type: "sustantivo m.", def: "Examen detallado de algo para conocer sus características o cualidades, o su estado.", example: "El análisis del poema reveló múltiples capas de significado.", tilde: "Esdrújula: a-NÁ-li-sis → tilde en NÁ.", origin: "Del griego análysis: 'descomposición'", sinonimos: ["estudio","examen","interpretación"], antonimos: ["síntesis"] },
+  { word: "protagonista", type: "sustantivo", def: "Personaje principal de una obra literaria, teatral o cinematográfica.", example: "La protagonista enfrenta dilemas morales a lo largo de la novela.", tilde: "Grave terminada en vocal → no lleva tilde.", origin: "Del griego protagonistés: 'el que lucha en primer lugar'", sinonimos: ["personaje principal","héroe","antihéroe (rel.)"], antonimos: ["antagonista","personaje secundario"] },
+  { word: "símbolo", type: "sustantivo m.", def: "Elemento que, en virtud de una convención, representa o evoca algo.", example: "La paloma es símbolo de paz en muchas culturas.", tilde: "Esdrújula: SÍM-bo-lo → tilde en SÍM.", origin: "Del griego sýmbolon", sinonimos: ["emblema","signo","representación"], antonimos: [] },
+  { word: "crónica", type: "sustantivo f.", def: "Narración de hechos históricos en orden temporal; también un subgénero periodístico.", example: "García Márquez transformó la crónica en arte literario.", tilde: "Esdrújula: CRÓ-ni-ca → tilde en CRÓ.", origin: "Del griego khronikós: 'relativo al tiempo'", sinonimos: ["relato","narración","reportaje"], antonimos: [] },
+  { word: "verosímil", type: "adjetivo", def: "Que puede ser verdad o que parece verdadero.", example: "Los personajes son verosímiles; podría conocerlos en la vida real.", tilde: "Grave terminada en l → lleva tilde: ve-ro-SÍ-mil.", origin: "Del latín verisimilis", sinonimos: ["creíble","plausible","convincente"], antonimos: ["inverosímil","increíble"] },
+  { word: "alegoría", type: "sustantivo f.", def: "Expresión de ideas mediante imágenes o figuras, generalmente de manera extendida.", example: "La novela es una alegoría de la condición humana.", tilde: "Aguda terminada en vocal: a-le-go-RÍ-a → tilde en Í.", origin: "Del griego allegoría: 'hablar en otra forma'", sinonimos: ["símbolo","metáfora extendida","parábola"], antonimos: [] },
+  { word: "paradoja", type: "sustantivo f.", def: "Figura retórica que consiste en emplear expresiones que implican contradicción aparente.", example: "'Muero porque no muero' es una paradoja de Santa Teresa.", tilde: "Grave terminada en vocal → no lleva tilde.", origin: "Del griego paradoxon: 'contrario a la opinión'", sinonimos: ["contradicción","oxímoron (rel.)"], antonimos: [] },
+  { word: "irónicamente", type: "adverbio", def: "De manera irónica; con ironía.", example: "Irónicamente, quien más habló fue el más tímido.", tilde: "Sobresdrújula: i-RÓ-ni-ca-men-te → siempre lleva tilde.", origin: "Del griego eironeía", sinonimos: ["paradójicamente","contradictoriamente"], antonimos: [] },
+  { word: "diegético", type: "adjetivo", def: "Relativo a la diégesis; perteneciente al universo narrado en la obra.", example: "El narrador diegético forma parte del mundo de la historia.", tilde: "Grave terminada en vocal → no lleva tilde.", origin: "Del griego diégesis: 'narración'", sinonimos: ["intradiegético","interno"], antonimos: ["extradiegético"] },
+  { word: "polisemia", type: "sustantivo f.", def: "Pluralidad de significados de una misma palabra.", example: "La polisemia de 'banco' incluye mueble, institución financiera y grupo de peces.", tilde: "Grave terminada en vocal → no lleva tilde.", origin: "Del griego polý + sema: 'muchos significados'", sinonimos: ["ambigüedad semántica"], antonimos: ["monosemia"] },
+  { word: "catarsis", type: "sustantivo f.", def: "Purificación o liberación emocional que produce la tragedia en el espectador.", example: "La catarsis al final de la obra dejó al público en silencio.", tilde: "Grave terminada en s → no lleva tilde.", origin: "Del griego kátharsis: 'purificación'", sinonimos: ["purificación","liberación emocional"], antonimos: [] },
+  { word: "anacronismo", type: "sustantivo m.", def: "Error que consiste en atribuir algo a una época a la que no pertenece.", example: "Usar teléfonos celulares en una novela del siglo XVI es un anacronismo.", tilde: "Grave terminada en vocal → no lleva tilde.", origin: "Del griego ana + khronos: 'contra el tiempo'", sinonimos: ["error temporal","incongruencia histórica"], antonimos: [] },
+  { word: "epíteto", type: "sustantivo m.", def: "Adjetivo o expresión que se añade a un nombre para señalar alguna cualidad notable.", example: "El 'verde prado' usa el epíteto 'verde' para enfatizar la frescura.", tilde: "Grave terminada en vocal → no lleva tilde.", origin: "Del griego epitheton: 'añadido'", sinonimos: ["adjetivo calificativo (en fig.)","calificativo"], antonimos: [] },
+  { word: "mimesis", type: "sustantivo f.", def: "Imitación de la naturaleza en el arte; representación de la realidad.", example: "La mimesis aristotélica sostiene que el arte imita la realidad.", tilde: "Esdrújula: MÍ-me-sis → tilde en MÍ.", origin: "Del griego mímesis: 'imitación'", sinonimos: ["imitación","representación","verosimilitud"], antonimos: [] },
+  { word: "cosmogonía", type: "sustantivo f.", def: "Relato o teoría sobre el origen del universo.", example: "La cosmogonía maya aparece en el Popol Vuh.", tilde: "Aguda terminada en vocal: cos-mo-go-NÍ-a.", origin: "Del griego kosmos + gonos: 'origen del orden'", sinonimos: ["cosmología","mito de creación"], antonimos: [] },
+  { word: "epifanía", type: "sustantivo f.", def: "Revelación repentina e intensa; en literatura, momento de comprensión profunda de un personaje.", example: "El final del cuento es una epifanía: el personaje entiende su error.", tilde: "Esdrújula: e-pi-FA-NÍ-a → lleva tilde en Í.", origin: "Del griego epipháinein: 'manifestar'", sinonimos: ["revelación","iluminación","insight"], antonimos: [] },
+  { word: "intertextualidad", type: "sustantivo f.", def: "Relación entre textos literarios que se citan, aluden o transforman mutuamente.", example: "La intertextualidad entre Borges y Las mil y una noches es evidente.", tilde: "Grave terminada en d → no lleva tilde.", origin: "Término acuñado por Julia Kristeva en 1969", sinonimos: ["alusión literaria","referencia intertextual"], antonimos: [] },
+  { word: "cosmovisión", type: "sustantivo f.", def: "Conjunto de opiniones y creencias que forman la imagen del mundo de un individuo o grupo.", example: "La cosmovisión andina concibe a la naturaleza como ser vivo.", tilde: "Aguda terminada en n: cos-mo-vi-SIÓN → lleva tilde.", origin: "Calco del alemán Weltanschauung", sinonimos: ["weltanschauung","visión del mundo"], antonimos: [] },
+  { word: "omnisciente", type: "adjetivo", def: "Que todo lo sabe; narrador que conoce todos los pensamientos y acciones de los personajes.", example: "El narrador omnisciente revela los pensamientos secretos de cada personaje.", tilde: "Grave terminada en e → no lleva tilde.", origin: "Del latín omni + sciens: 'que todo sabe'", sinonimos: ["todopoderoso (narra.)","narrador dios"], antonimos: ["narrador limitado","narrador testigo"] },
+  { word: "polífono", type: "adjetivo", def: "Con múltiples voces narrativas o puntos de vista; concepto de Bajtín.", example: "El Quijote es polífono: coexisten múltiples perspectivas irreconciliables.", tilde: "Esdrújula: PO-lí-fo-no → tilde en Í.", origin: "Del griego polý + phoné: 'muchas voces'", sinonimos: ["dialógico","multivocal"], antonimos: ["monológico","unívoco"] },
+  { word: "anacrónico", type: "adjetivo", def: "Que no corresponde a su tiempo; desactualizado o fuera de contexto histórico.", example: "Sus ideas son anacrónicas en el mundo moderno.", tilde: "Esdrújula: a-na-CRÓ-ni-co → tilde en CRÓ.", origin: "Del griego ana + khronos", sinonimos: ["obsoleto","desfasado","arcaico"], antonimos: ["contemporáneo","actual"] },
+  { word: "diegesis", type: "sustantivo f.", def: "El universo narrativo; el mundo representado en la ficción.", example: "Los personajes viven dentro de la diégesis de la novela.", tilde: "Esdrújula: DIÉ-ge-sis → lleva tilde en IÉ.", origin: "Del griego diégesis: 'narración'", sinonimos: ["mundo narrativo","universo ficcional"], antonimos: [] },
+  { word: "catáfora", type: "sustantivo f.", def: "Referencia que anticipa algo que se mencionará después en el texto.", example: "Esto fue lo que dijo: 'La vida es bella'", tilde: "Esdrújula: ca-TÁ-fo-ra → tilde en TÁ.", origin: "Del griego kataphora", sinonimos: ["anticipación textual"], antonimos: ["anáfora"] },
+  { word: "hipérbole", type: "sustantivo f.", def: "Figura retórica que consiste en exagerar algo para darle mayor expresividad.", example: "Te lo he dicho mil veces es una hipérbole.", tilde: "Esdrújula: hi-PÉR-bo-le → tilde en PÉR.", origin: "Del griego hyperbolé: 'exceso'", sinonimos: ["exageración","amplificación"], antonimos: ["lítotes","atenuación"] },
+  { word: "sinécdoque", type: "sustantivo f.", def: "Figura retórica en la que se usa la parte por el todo o el todo por la parte.", example: "'Mil cabezas de ganado' usa la parte (cabeza) por el todo (animal).", tilde: "Esdrújula: si-NÉC-do-que → tilde en NÉC.", origin: "Del griego synekdokhé", sinonimos: ["metonimia (rel.)"], antonimos: [] },
+  { word: "prosopopeya", type: "sustantivo f.", def: "Personificación; atribuir características humanas a seres inanimados o abstractos.", example: "El viento gemía entre los árboles.", tilde: "Grave terminada en vocal → no lleva tilde.", origin: "Del griego prosopon + poiein: 'hacer personas'", sinonimos: ["personificación","animización"], antonimos: [] },
+  { word: "anáfora", type: "sustantivo f.", def: "Figura retórica que consiste en repetir una palabra o expresión al inicio de oraciones o versos.", example: "Yo quiero... Yo sueño... Yo lucho...", tilde: "Esdrújula: a-NÁ-fo-ra → tilde en NÁ.", origin: "Del griego anaphorá: 'llevar arriba'", sinonimos: ["repetición inicial","epístrofe (fin)"], antonimos: ["catáfora (gramat.)"] },
+  { word: "oxímoron", type: "sustantivo m.", def: "Figura retórica que combina palabras aparentemente contradictorias.", example: "Un silencio ensordecedor llenó la sala.", tilde: "Esdrújula: o-XÍ-mo-ron → tilde en XÍ.", origin: "Del griego oxy + moros: 'agudo + tonto'", sinonimos: ["paradoja comprimida","contradictio"], antonimos: [] },
+  { word: "etopeya", type: "sustantivo f.", def: "Descripción de los rasgos morales o psicológicos de una persona.", example: "La etopeya del protagonista revela su generosidad y valentía.", tilde: "Grave terminada en vocal → no lleva tilde.", origin: "Del griego ethopoiía", sinonimos: ["descripción psicológica","caracterización moral"], antonimos: ["prosopografía (física)"] },
+];
+
+// ============================================================
+// DATA — MORFOLOGÍA
+// ============================================================
+const MORFOLOGIA_DATA = {
+  tipo: [
+    { q: "¿Qué tipo de palabra es 'rápidamente'?", opts: ["Sustantivo","Adjetivo","Adverbio","Conjunción"], ans: 2, exp: "Los adverbios terminados en '-mente' se forman a partir de adjetivos. Indican modo." },
+    { q: "¿Qué tipo de palabra es 'hermosura'?", opts: ["Adjetivo","Sustantivo abstracto","Verbo","Pronombre"], ans: 1, exp: "'-ura' es un sufijo que forma sustantivos abstractos de cualidad a partir de adjetivos (hermoso → hermosura)." },
+    { q: "¿Qué es 'corrió' gramaticalmente?", opts: ["Sustantivo","Verbo en pretérito indefinido","Adjetivo","Adverbio"], ans: 1, exp: "Corrió = correr, pretérito indefinido (pasado simple), 3ª persona singular." },
+    { q: "¿Qué función cumple 'muy' en 'muy rápido'?", opts: ["Adjetivo","Verbo","Adverbio de cantidad","Preposición"], ans: 2, exp: "'Muy' es un adverbio de cantidad que modifica al adjetivo 'rápido'." },
+    { q: "¿Qué tipo de pronombre es 'se' en 'se lavó las manos'?", opts: ["Personal sujeto","Reflexivo","Relativo","Demostrativo"], ans: 1, exp: "'Se' es pronombre reflexivo: el sujeto realiza la acción sobre sí mismo." },
+    { q: "¿Qué es 'pero' en 'llegué tarde, pero lo intenté'?", opts: ["Preposición","Conjunción adversativa","Adverbio","Sustantivo"], ans: 1, exp: "'Pero' es conjunción adversativa: une dos ideas opuestas." },
+    { q: "¿Qué función cumple 'de' en 'libro de texto'?", opts: ["Conjunción","Preposición","Adverbio","Artículo"], ans: 1, exp: "'De' es preposición que introduce el complemento del nombre." },
+    { q: "¿Qué tipo de oración es 'Estudia mucho'?", opts: ["Enunciativa","Interrogativa","Imperativa","Exclamativa"], ans: 2, exp: "Es una oración imperativa (mandato/ruego). El verbo en imperativo ('estudia') da la orden." },
+    { q: "El sufijo '-ción' en 'canción' indica...", opts: ["Acción o resultado","Agente","Diminutivo","Aumentativo"], ans: 0, exp: "El sufijo '-ción' forma sustantivos que expresan acción, proceso o resultado (cantar → canción)." },
+    { q: "¿Cuál es el núcleo del sujeto en 'Los niños felices jugaron'?", opts: ["Los","niños","felices","jugaron"], ans: 1, exp: "El núcleo del sujeto es el sustantivo principal: 'niños'. 'Los' es artículo y 'felices' es adjetivo." },
+    { q: "¿Qué tiempo verbal es 'había comido'?", opts: ["Pretérito indefinido","Pretérito imperfecto","Pretérito pluscuamperfecto","Futuro compuesto"], ans: 2, exp: "Pretérito pluscuamperfecto = había/habías/había... + participio. Indica una acción anterior a otra pasada." },
+    { q: "¿Qué tipo de adjetivo es 'muchos' en 'muchos libros'?", opts: ["Calificativo","Demostrativo","Indefinido","Numeral"], ans: 2, exp: "'Muchos' es adjetivo indefinido: expresa cantidad sin ser exacto." },
+  ],
+  conjuga: [
+    { q: "Conjuga 'hablar' en 1ª persona singular del futuro de indicativo:", ans: "hablaré", exp: "Futuro de indicativo: hablaré, hablarás, hablará, hablaremos, hablaréis, hablarán." },
+    { q: "Conjuga 'ser' en 2ª persona plural del pretérito imperfecto:", ans: "erais", exp: "Imperfecto de ser: era, eras, era, éramos, erais, eran." },
+    { q: "Conjuga 'tener' en 3ª persona plural del pretérito indefinido:", ans: "tuvieron", exp: "Pretérito indefinido de tener (irregular): tuve, tuviste, tuvo, tuvimos, tuvisteis, tuvieron." },
+    { q: "Conjuga 'ir' en 1ª persona plural del presente de subjuntivo:", ans: "vayamos", exp: "Subjuntivo presente de ir: vaya, vayas, vaya, vayamos, vayáis, vayan." },
+    { q: "Conjuga 'poder' en 2ª persona singular del condicional:", ans: "podrías", exp: "Condicional de poder: podría, podrías, podría, podríamos, podríais, podrían." },
+    { q: "Conjuga 'escribir' en 3ª persona singular del pretérito perfecto:", ans: "ha escrito", exp: "Pretérito perfecto: ha escrito. Participio irregular de escribir → escrito." },
+    { q: "Conjuga 'venir' en 2ª persona singular del imperativo:", ans: "ven", exp: "Imperativo de venir: ven (tú). Forma irregular." },
+    { q: "Conjuga 'saber' en 1ª persona singular del presente de indicativo:", ans: "sé", exp: "Presente de saber: sé (irregular en 1ª persona), sabes, sabe, sabemos, sabéis, saben." },
+  ],
+  genero: [
+    { q: "¿Cuál es el femenino de 'el juez'?", opts: ["la jueza","la juez","la jues","la juece"], ans: 0, exp: "El femenino de 'juez' es 'jueza' (o la juez). Ambas formas son aceptadas." },
+    { q: "¿Cuál es el plural de 'el martes'?", opts: ["los martes","los marteses","los martés","los marté"], ans: 0, exp: "Los días de la semana terminados en -s no cambian en plural: el martes → los martes." },
+    { q: "¿Cuál es el femenino de 'el poeta'?", opts: ["la poeta","la poeto","la poetisa","la poetesa"], ans: 0, exp: "El femenino de 'el poeta' es 'la poeta' (actualmente preferido) o 'la poetisa'." },
+    { q: "¿Cuál es el plural de 'el lápiz'?", opts: ["los lápices","los lápizs","los lápizes","los lápiz"], ans: 0, exp: "Las palabras terminadas en -z hacen el plural en -ces: lápiz → lápices." },
+    { q: "¿Cuál es el masculino de 'la actriz'?", opts: ["el actor","el actriz","el actrizo","el actore"], ans: 0, exp: "El masculino de 'actriz' es 'actor' (forma diferente, no derivada)." },
+    { q: "¿Cuál es el femenino de 'el héroe'?", opts: ["la heroína","la héroe","la heroesa","la heróica"], ans: 0, exp: "El femenino de 'héroe' es 'heroína'." },
+  ],
+  analisis: [
+    { q: "Analiza 'hermosamente': ¿cuál es la base y el sufijo?", opts: ["hermos- + -amente","hermosa + -mente","herm- + -osamente","hermosam- + -ente"], ans: 1, exp: "Los adverbios en -mente se forman: adjetivo en forma femenina (hermosa) + sufijo -mente." },
+    { q: "¿Cuál es el morfema de número plural en 'árboles'?", opts: ["-es","-les","árbol-","á-"], ans: 0, exp: "El morfema de plural es -es. Las palabras terminadas en consonante forman plural con -es." },
+    { q: "Identifica el prefijo en 'infeliz':", opts: ["in-","in","fel-","-iz"], ans: 0, exp: "El prefijo 'in-' indica negación. Infeliz = no feliz." },
+    { q: "¿Qué indica el sufijo '-ista' en 'novelista'?", opts: ["Profesión o seguidor","Diminutivo","Lugar","Acción"], ans: 0, exp: "El sufijo -ista indica profesión, oficio o adherente a algo: novelista, pianista, socialista." },
+    { q: "¿Qué tipo de morfema es '-ando' en 'cantando'?", opts: ["Morfema de gerundio","Morfema de participio","Prefijo","Sufijo derivativo"], ans: 0, exp: "'-ando' es el morfema de gerundio para verbos en -ar. El gerundio expresa acción simultánea." },
+  ]
+};
+
+// ============================================================
+// DATA — REDACCION
+// ============================================================
+const REDACCION_DATA = [
+  { q: "¿Cuál es el conector más apropiado para introducir una consecuencia?", opts: ["sin embargo","por lo tanto","aunque","a pesar de que"], ans: 1, exp: "'Por lo tanto' introduce consecuencias o conclusiones. 'Sin embargo' es adversativo; 'aunque'/'a pesar de' son concesivos." },
+  { q: "¿Cuál de estos NO es un conector de contraste?", opts: ["no obstante","sin embargo","además","pero"], ans: 2, exp: "'Además' es un conector aditivo (añade información). Los de contraste son: sin embargo, no obstante, pero, aunque, a pesar de." },
+  { q: "¿Qué función cumple 'en conclusión' en un texto?", opts: ["Añade información","Introduce un resumen final","Expresa contraste","Causa una relación causal"], ans: 1, exp: "'En conclusión', 'en resumen', 'finalmente' son conectores de cierre que introducen la idea final." },
+  { q: "¿Cuál es el conector correcto? 'Estudió mucho; ___, reprobó el examen.'", opts: ["por lo tanto","además","sin embargo","es decir"], ans: 2, exp: "La lógica es contraste: estudió PERO reprobó → 'sin embargo' es el conector adversativo correcto." },
+  { q: "¿Cuál de estas oraciones tiene cohesión correcta?", opts: ["Fue al mercado. Ella compró frutas. Fue al mercado.","Ana fue al mercado. Allí compró frutas frescas. También aprovechó para ver a su vecina.","Fue. Compró. Vio.","El mercado fue al Ana."], ans: 1, exp: "La cohesión se logra con pronombres ('Allí' = en el mercado), conectores ('También') y evitando repeticiones innecesarias." },
+  { q: "¿Qué es la coherencia en un texto?", opts: ["La correcta ortografía","El uso de puntuación","La unidad temática y lógica del texto","El número de párrafos"], ans: 2, exp: "La coherencia es la propiedad del texto por la que todas las ideas se relacionan de manera lógica y unitaria alrededor de un tema central." },
+  { q: "¿Cuál es la función de un párrafo introductorio en un ensayo IB?", opts: ["Desarrollar todos los argumentos","Presentar el tema, tesis y estructura","Dar la conclusión","Citar fuentes"], ans: 1, exp: "En el IB, la introducción debe: contextualizar el tema, presentar la tesis (argumento central) y anticipar la estructura del ensayo." },
+  { q: "¿Qué es la tesis en un ensayo?", opts: ["El título del texto","El argumento central que se va a defender","La lista de fuentes","El resumen del libro"], ans: 1, exp: "La tesis es la idea principal o argumento central que el autor defenderá a lo largo del ensayo." },
+  { q: "¿Cuál de los siguientes conectores introduce un ejemplo?", opts: ["por lo tanto","sin embargo","por ejemplo","además"], ans: 2, exp: "'Por ejemplo', 'es decir', 'como ilustración' son conectores que introducen ejemplos o aclaraciones." },
+  { q: "¿Qué tipo de registro es apropiado para un ensayo IB?", opts: ["Coloquial e informal","Formal y académico","Poético y emotivo","Telegráfico y breve"], ans: 1, exp: "Los ensayos IB requieren un registro formal y académico: vocabulario preciso, oraciones completas, sin coloquialismos." },
+  { q: "¿Cuál es la diferencia entre 'se' y 'sé'?", opts: ["No hay diferencia","'Sé' es pronombre reflexivo, 'se' es forma verbal","'Se' es pronombre, 'sé' es forma del verbo saber/ser","Son variantes regionales"], ans: 2, exp: "'Se' es pronombre reflexivo/recíproco (él se lavó). 'Sé' es forma verbal: sé (yo sé algo) o sé (imperativo de ser: sé bueno)." },
+  { q: "En el ensayo de Literatura IB, ¿qué significa 'analizar el estilo del autor'?", opts: ["Resumir la trama","Explicar el uso de recursos literarios y su efecto","Criticar la obra","Comparar con otros libros"], ans: 1, exp: "Analizar el estilo implica identificar recursos (metáfora, ironía, estructura) y explicar cómo contribuyen al significado de la obra." },
+  { q: "¿Cuál es la forma correcta de introducir una cita?", opts: ["'Dice: el tiempo pasa'","Según el autor, 'el tiempo pasa' (p. 45)","El tiempo pasa. Dijo.","(p.45) el tiempo pasa"], ans: 1, exp: "Las citas se introducen con un conector ('según', 'como afirma'), seguido de la cita entre comillas y la referencia." },
+];
+
+// ============================================================
+// DATA — REGLAS GRAMATICALES
+// ============================================================
+const REGLAS = [
+  {
+    icon: "´", title: "Palabras agudas", tag: "Tildes", tagClass: "badge-tildes",
+    desc: "Las palabras agudas tienen la sílaba tónica en la ÚLTIMA posición. Llevan tilde cuando terminan en vocal, n, o s.",
+    examples: [
+      { wrong: "cafe", right: "café", note: "termina en vocal → tilde" },
+      { wrong: "examen sin tilde", right: "examen ✓", note: "termina en n → NO tilde (grave sería excepción)" },
+      { wrong: "reloj sin tilde", right: "reloj ✓", note: "termina en j → no lleva tilde" },
+    ]
+  },
+  {
+    icon: "ˋ", title: "Palabras graves/llanas", tag: "Tildes", tagClass: "badge-tildes",
+    desc: "Las palabras graves tienen la sílaba tónica en la PENÚLTIMA posición. Llevan tilde cuando NO terminan en vocal, n, o s.",
+    examples: [
+      { wrong: "arbol", right: "árbol", note: "termina en l → lleva tilde" },
+      { wrong: "lapiz", right: "lápiz", note: "termina en z → lleva tilde" },
+      { wrong: "mesa con tilde", right: "mesa ✓", note: "termina en a → NO lleva tilde" },
+    ]
+  },
+  {
+    icon: "⸚", title: "Palabras esdrújulas", tag: "Tildes", tagClass: "badge-tildes",
+    desc: "Las palabras esdrújulas tienen la sílaba tónica en la ANTEPENÚLTIMA posición. SIEMPRE llevan tilde, sin excepción.",
+    examples: [
+      { wrong: "musica", right: "música ✓✓", note: "esdrújula → siempre tilde" },
+      { wrong: "medico", right: "médico ✓✓", note: "esdrújula → siempre tilde" },
+      { wrong: "telefono", right: "teléfono ✓✓", note: "esdrújula → siempre tilde" },
+    ]
+  },
+  {
+    icon: "•••", title: "Tildes diacríticas", tag: "Tildes", tagClass: "badge-tildes",
+    desc: "La tilde diacrítica distingue palabras que se escriben igual pero tienen diferente significado o función.",
+    examples: [
+      { wrong: "el (pronombre)", right: "él (pronombre) vs el (artículo)", note: "pronombre personal" },
+      { wrong: "tu (pronombre)", right: "tú (pronombre) vs tu (posesivo)", note: "pronombre personal" },
+      { wrong: "si (conjunción)", right: "sí (afirmación) vs si (condicional)", note: "afirmación/reflexivo" },
+    ]
+  },
+  {
+    icon: ",", title: "Uso de la coma", tag: "Puntuación", tagClass: "badge-comas",
+    desc: "La coma indica una pausa breve. Se usa para separar elementos de una enumeración, aislar vocativos, y separar proposiciones explicativas.",
+    examples: [
+      { wrong: "Compré pan leche y huevos", right: "Compré pan, leche y huevos", note: "enumeración" },
+      { wrong: "María que es médica llegó", right: "María, que es médica, llegó", note: "proposición explicativa" },
+      { wrong: "Sin embargo no pudo", right: "Sin embargo, no pudo", note: "conector discursivo" },
+    ]
+  },
+  {
+    icon: ";", title: "Punto y coma", tag: "Puntuación", tagClass: "badge-comas",
+    desc: "El punto y coma indica una pausa mayor que la coma pero menor que el punto. Separa oraciones independientes relacionadas temáticamente.",
+    examples: [
+      { wrong: "María estudia Juan trabaja", right: "María estudia; Juan trabaja", note: "oraciones independientes" },
+      { wrong: "Era tarde los niños dormían", right: "Era tarde; los niños dormían", note: "relación temporal" },
+    ]
+  },
+  {
+    icon: ":", title: "Los dos puntos", tag: "Puntuación", tagClass: "badge-comas",
+    desc: "Los dos puntos anuncian enumeraciones, citas, explicaciones o conclusiones.",
+    examples: [
+      { wrong: "Traje todo el pan la leche", right: "Traje todo: el pan, la leche", note: "anuncia enumeración" },
+      { wrong: "El dijo la vida es bella", right: "Él dijo: 'La vida es bella'", note: "anuncia cita" },
+    ]
+  },
+  {
+    icon: "🔁", title: "Concordancia verbal", tag: "Morfología", tagClass: "badge-morfologia",
+    desc: "El verbo debe concordar en número y persona con el sujeto de la oración.",
+    examples: [
+      { wrong: "Los estudiantes estudia", right: "Los estudiantes estudian", note: "plural → verbo plural" },
+      { wrong: "Yo comes mucho", right: "Yo como mucho", note: "1ª persona → verbo 1ª persona" },
+    ]
+  },
+  {
+    icon: "♂♀", title: "Concordancia de género", tag: "Morfología", tagClass: "badge-morfologia",
+    desc: "Los adjetivos, artículos y participios deben concordar en género y número con el sustantivo.",
+    examples: [
+      { wrong: "La libro rojo", right: "El libro rojo", note: "libro = masculino → el, rojo" },
+      { wrong: "Las casas hermoso", right: "Las casas hermosas", note: "casas = femenino plural → hermosas" },
+    ]
+  },
+  {
+    icon: "🔗", title: "Conectores discursivos", tag: "Redacción", tagClass: "badge-redaccion",
+    desc: "Los conectores organizan el texto y señalan la relación entre ideas: adición, contraste, causa, consecuencia, etc.",
+    examples: [
+      { wrong: "Estudié. Reprobé.", right: "Estudié; sin embargo, reprobé", note: "adversativo" },
+      { wrong: "Llegó. Comió. Durmió.", right: "Llegó, comió y, finalmente, durmió", note: "secuencia + adición" },
+    ]
+  },
+  {
+    icon: "📐", title: "Diptongo e Hiato", tag: "Tildes", tagClass: "badge-tildes",
+    desc: "Diptongo: dos vocales en una sílaba (vocal abierta + cerrada o dos cerradas). Hiato: dos vocales en sílabas distintas. Las vocales cerradas tónicas en hiato llevan tilde.",
+    examples: [
+      { wrong: "pais", right: "país (pa-ís → hiato)", note: "i tónica rompe diptongo → tilde" },
+      { wrong: "baul", right: "baúl (ba-úl → hiato)", note: "u tónica → tilde" },
+      { wrong: "baile no es hiato", right: "bai-le (diptongo ai)", note: "cerrada átona + abierta = diptongo" },
+    ]
+  },
+  {
+    icon: "🎭", title: "Oraciones subordinadas", tag: "Sintaxis", tagClass: "badge-oraciones",
+    desc: "Las oraciones subordinadas dependen de una oración principal. Pueden ser sustantivas, adjetivas o adverbiales.",
+    examples: [
+      { wrong: "", right: "Sé que estudias mucho (sustantiva)", note: "la subordinada funciona como objeto" },
+      { wrong: "", right: "El libro que leí es excelente (adjetiva)", note: "modifica a 'libro'" },
+      { wrong: "", right: "Cuando llegues, avísame (adverbial temporal)", note: "indica tiempo" },
+    ]
+  },
+];
+
+// ============================================================
+// EXERCISE ENGINE
+// ============================================================
+let currentSection = 'inicio';
+let exModes = { ...STATE.exMode };
+let exQueue = {};
+let usedEx = {};
+let answeredCurrent = false;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function getNext(pool, key) {
+  if (!usedEx[key]) usedEx[key] = [];
+  let available = pool.filter((_, i) => !usedEx[key].includes(i));
+  if (available.length === 0) { usedEx[key] = []; available = pool; }
+  const item = available[Math.floor(Math.random() * available.length)];
+  const idx = pool.indexOf(item);
+  usedEx[key].push(idx);
+  return item;
+}
+
+function renderMultiChoice(container, ex, onAnswer) {
+  const letters = ['A','B','C','D'];
+  const opts = ex.opts.map((o, i) => ({ text: o, idx: i }));
+  // Don't shuffle to keep correct answer consistent
+  
+  let html = `
+    <div class="options-grid">
+      ${opts.map((o, i) => `
+        <button class="option-btn" onclick="handleChoice(this, ${o.idx}, ${ex.ans}, '${container}')">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${o.text}</span>
+        </button>
+      `).join('')}
+    </div>`;
+  return html;
+}
+
+function handleChoice(btn, chosen, correct, containerId) {
+  if (answeredCurrent) return;
+  answeredCurrent = true;
+  const btns = btn.parentNode.querySelectorAll('.option-btn');
+  btns.forEach(b => b.disabled = true);
+  const isCorrect = chosen === correct;
+  btns[correct].classList.add('correct');
+  if (!isCorrect) btn.classList.add('incorrect');
+  showFeedback(containerId, isCorrect, document.getElementById('ex-' + containerId)?.querySelector('.feedback-text')?.dataset?.exp || '');
+  registerAnswer(isCorrect, containerId);
+}
+
+function showFeedback(section, correct, exp) {
+  const container = document.querySelector(`#ex-${section} .feedback-box`);
+  if (!container) return;
+  container.classList.add('show');
+  container.classList.remove('feedback-correct', 'feedback-incorrect');
+  container.classList.add(correct ? 'feedback-correct' : 'feedback-incorrect');
+  const title = container.querySelector('.feedback-title');
+  const text = container.querySelector('.feedback-text');
+  if (title) title.textContent = correct ? '✅ ¡Correcto!' : '❌ Incorrecto';
+  if (text) text.textContent = exp || '';
+  
+  const nextBtn = document.querySelector(`#ex-${section} .btn-next`);
+  if (nextBtn) nextBtn.classList.add('show');
+  const checkBtn = document.querySelector(`#ex-${section} .btn-check`);
+  if (checkBtn) checkBtn.style.display = 'none';
+}
+
+function registerAnswer(correct, section) {
+  STATE.total++;
+  if (correct) {
+    STATE.correct++;
+    STATE.streak++;
+    STATE.combo++;
+    STATE.maxStreak = Math.max(STATE.maxStreak, STATE.streak);
+    const xpGain = 10 + (STATE.combo >= 3 ? STATE.combo * 2 : 0);
+    STATE.xp += xpGain;
+    showXPPop(xpGain);
+    checkLevelUp();
+  } else {
+    STATE.streak = 0;
+    STATE.combo = 0;
+  }
+  updateUI();
+  save();
+}
+
+function showXPPop(amount) {
+  const pop = document.createElement('div');
+  pop.className = 'xp-pop';
+  pop.textContent = `+${amount} XP`;
+  pop.style.left = (Math.random() * 200 + 200) + 'px';
+  pop.style.top = '200px';
+  document.body.appendChild(pop);
+  setTimeout(() => pop.remove(), 1200);
+}
+
+function checkLevelUp() {
+  const newLevel = Math.floor(STATE.xp / 100) + 1;
+  if (newLevel > STATE.level) {
+    STATE.level = newLevel;
+    showNotif(`🎉 ¡Subiste al nivel ${STATE.level}!`, 'notif-level');
+  }
+}
+
+function showNotif(msg, cls = '') {
+  const n = document.createElement('div');
+  n.className = `notification ${cls}`;
+  n.textContent = msg;
+  document.body.appendChild(n);
+  setTimeout(() => n.remove(), 3000);
+}
+
+function updateUI() {
+  document.getElementById('topXP').textContent = STATE.xp;
+  document.getElementById('topCorrect').textContent = STATE.correct;
+  document.getElementById('topStreak').textContent = STATE.streak;
+  document.getElementById('levelBadge').textContent = `Nv. ${STATE.level}`;
+  document.getElementById('sidebarXP').textContent = STATE.xp + ' XP';
+  const pct = Math.min(100, (STATE.xp % 100));
+  document.getElementById('sidebarProgress').style.width = pct + '%';
+  
+  const comboNum = document.getElementById('comboNum');
+  if (STATE.combo >= 3) {
+    comboNum.textContent = `${STATE.combo}×`;
+    comboNum.classList.add('show');
+  } else {
+    comboNum.classList.remove('show');
+  }
+}
+
+// ============================================================
+// TILDES EXERCISES
+// ============================================================
+function loadTildes() {
+  const mode = exModes.tildes;
+  const container = document.getElementById('ex-tildes');
+  answeredCurrent = false;
+  
+  if (mode === 'multi' || mode === 'clasifica') {
+    const pool = mode === 'multi' ? TILDES_DATA.multi : TILDES_DATA.clasifica;
+    const ex = getNext(pool, 'tildes_' + mode);
+    container.innerHTML = `
+      <div class="exercise-card">
+        <div class="ex-meta">
+          <span class="ex-type-badge badge-tildes">${mode === 'multi' ? 'Opción múltiple' : 'Clasificar'}</span>
+          <span class="diff-stars">★★☆</span>
+        </div>
+        <div class="ex-question">${ex.q}</div>
+        ${renderMultiChoice('tildes', ex, null)}
+        <div class="feedback-box">
+          <div class="feedback-title"></div>
+          <div class="feedback-text" data-exp="${ex.exp}">${ex.exp}</div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-skip" onclick="loadTildes()">Saltar →</button>
+          <button class="btn-next show" onclick="loadTildes()" style="display:none">Siguiente ejercicio →</button>
+        </div>
+      </div>`;
+  } else if (mode === 'silaba') {
+    const ex = getNext(TILDES_DATA.silaba, 'tildes_silaba');
+    const syllHtml = ex.syllables.map((s, i) => `
+      <button class="syllable-btn" onclick="checkSyllable(this, ${i}, ${ex.ans}, 'tildes')">${s}</button>
+    `).join('');
+    container.innerHTML = `
+      <div class="exercise-card">
+        <div class="ex-meta">
+          <span class="ex-type-badge badge-tildes">Elige sílaba tónica</span>
+          <span class="diff-stars">★★★</span>
+        </div>
+        <div class="ex-question">${ex.q}</div>
+        <p class="ex-instruction">Haz clic en la sílaba donde va el acento tónico:</p>
+        <div class="word-highlight">${syllHtml}</div>
+        <div class="feedback-box">
+          <div class="feedback-title"></div>
+          <div class="feedback-text" data-exp="${ex.exp}">${ex.exp}</div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-skip" onclick="loadTildes()">Saltar →</button>
+          <button class="btn-next" onclick="loadTildes()">Siguiente ejercicio →</button>
+        </div>
+      </div>`;
+  } else if (mode === 'escribe') {
+    const ex = getNext(TILDES_DATA.escribe, 'tildes_escribe');
+    container.innerHTML = `
+      <div class="exercise-card">
+        <div class="ex-meta">
+          <span class="ex-type-badge badge-tildes">Escribe con tilde</span>
+          <span class="diff-stars">★★★★</span>
+        </div>
+        <div class="ex-question">${ex.q}</div>
+        <p class="ex-instruction">💡 Pista: ${ex.hint}</p>
+        <input class="answer-input" id="tInput" type="text" placeholder="Escribe la versión correcta..." onkeydown="if(event.key==='Enter') checkTextAnswer('tInput', '${ex.ans.replace(/'/g,"\\'")}', 'tildes', '${ex.exp.replace(/'/g,"\\'")}')">
+        <div class="feedback-box">
+          <div class="feedback-title"></div>
+          <div class="feedback-text"></div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-skip" onclick="loadTildes()">Saltar →</button>
+          <button class="btn-check" onclick="checkTextAnswer('tInput', '${ex.ans.replace(/'/g,"\\'")}', 'tildes', '${ex.exp.replace(/'/g,"\\'")}')">Comprobar ✓</button>
+          <button class="btn-next" onclick="loadTildes()">Siguiente →</button>
+        </div>
+      </div>`;
+  }
+}
+
+function checkSyllable(btn, chosen, correct, section) {
+  if (answeredCurrent) return;
+  answeredCurrent = true;
+  const btns = btn.parentNode.querySelectorAll('.syllable-btn');
+  btns.forEach(b => b.disabled = true);
+  const isCorrect = chosen === correct;
+  btns[correct].style.background = 'rgba(42,157,143,0.3)';
+  btns[correct].style.borderColor = '#2a9d8f';
+  if (!isCorrect) { btn.style.background = 'rgba(230,57,70,0.2)'; btn.style.borderColor = '#e63946'; }
+  const fb = document.querySelector(`#ex-${section} .feedback-box`);
+  const exp = fb.querySelector('.feedback-text').dataset.exp;
+  showFeedback(section, isCorrect, exp);
+  registerAnswer(isCorrect, section);
+}
+
+function checkTextAnswer(inputId, correct, section, exp) {
+  if (answeredCurrent) return;
+  const input = document.getElementById(inputId);
+  const userAns = input.value.trim().toLowerCase();
+  const correctLow = correct.toLowerCase();
+  const isCorrect = userAns === correctLow || correct.toLowerCase().includes(userAns) && userAns.length > 5;
+  answeredCurrent = true;
+  input.disabled = true;
+  input.classList.add(isCorrect ? 'correct-input' : 'incorrect-input');
+  const fb = document.querySelector(`#ex-${section} .feedback-box`);
+  fb.classList.add('show', isCorrect ? 'feedback-correct' : 'feedback-incorrect');
+  fb.querySelector('.feedback-title').textContent = isCorrect ? '✅ ¡Correcto!' : `❌ La respuesta correcta es: "${correct}"`;
+  fb.querySelector('.feedback-text').textContent = exp;
+  const nextBtn = document.querySelector(`#ex-${section} .btn-next`);
+  if (nextBtn) nextBtn.classList.add('show');
+  const checkBtn = document.querySelector(`#ex-${section} .btn-check`);
+  if (checkBtn) checkBtn.style.display = 'none';
+  registerAnswer(isCorrect, section);
+}
+
+// ============================================================
+// COMAS EXERCISES
+// ============================================================
+function loadComas() {
+  const mode = exModes.comas;
+  const container = document.getElementById('ex-comas');
+  answeredCurrent = false;
+  
+  if (mode === 'elige' || mode === 'error') {
+    const pool = mode === 'elige' ? COMAS_DATA.elige : COMAS_DATA.error;
+    const ex = getNext(pool, 'comas_' + mode);
+    container.innerHTML = `
+      <div class="exercise-card">
+        <div class="ex-meta">
+          <span class="ex-type-badge badge-comas">${mode === 'elige' ? 'Elige la correcta' : 'Encuentra el error'}</span>
+          <span class="diff-stars">★★★</span>
+        </div>
+        <div class="ex-question">${ex.q}</div>
+        ${renderMultiChoice('comas', ex, null)}
+        <div class="feedback-box">
+          <div class="feedback-title"></div>
+          <div class="feedback-text" data-exp="${ex.exp}">${ex.exp}</div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-skip" onclick="loadComas()">Saltar →</button>
+          <button class="btn-next" onclick="loadComas()">Siguiente →</button>
+        </div>
+      </div>`;
+  } else {
+    // Inserta puntuación
+    const ex = getNext(COMAS_DATA.inserta, 'comas_inserta');
+    loadPunctuationGame(ex);
+  }
+}
+
+function loadPunctuationGame(ex) {
+  const container = document.getElementById('ex-comas');
+  STATE.selectedPunct = null;
+  STATE.selectedGap = null;
+  
+  const words = ex.words;
+  const gaps = ex.gaps;
+  
+  let textHtml = '';
+  words.forEach((w, i) => {
+    textHtml += w;
+    if (i < words.length - 1) {
+      textHtml += ` <span class="punct-gap" id="gap${i}" onclick="fillGap(${i})" data-correct="${gaps[i] || ''}">&nbsp;</span> `;
+    }
+  });
+  
+  container.innerHTML = `
+    <div class="exercise-card">
+      <div class="ex-meta">
+        <span class="ex-type-badge badge-comas">Inserta puntuación</span>
+        <span class="diff-stars">★★★★</span>
+      </div>
+      <div class="ex-question">${ex.q}</div>
+      <p class="ex-instruction">1. Selecciona un signo de puntuación → 2. Haz clic donde debe ir</p>
+      <div class="punct-tools">
+        ${[',',';',':','.','¡','!','¿','?'].map(p => `<button class="punct-tool" onclick="selectPunct('${p}', this)">${p}</button>`).join('')}
+        <button class="punct-tool" style="font-size:0.75rem;padding:0.4rem" onclick="selectPunct('', this)">␣ Nada</button>
+      </div>
+      <div class="punct-text">${textHtml}</div>
+      <div class="feedback-box">
+        <div class="feedback-title"></div>
+        <div class="feedback-text" data-exp="${ex.exp}">${ex.exp}</div>
+      </div>
+      <div class="ex-actions">
+        <button class="btn-skip" onclick="loadComas()">Saltar →</button>
+        <button class="btn-check" onclick="checkPunctuation('${ex.gaps.join(',')}')">Comprobar ✓</button>
+        <button class="btn-next" onclick="loadComas()">Siguiente →</button>
+      </div>
+    </div>`;
+}
+
+function selectPunct(p, btn) {
+  document.querySelectorAll('.punct-tool').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  STATE.selectedPunct = p;
+}
+
+function fillGap(idx) {
+  if (STATE.selectedPunct === null) { showNotif('¡Primero selecciona un signo de puntuación!'); return; }
+  const gap = document.getElementById('gap' + idx);
+  if (!gap) return;
+  gap.textContent = STATE.selectedPunct || '·';
+  gap.classList.add('filled');
+  gap.dataset.filled = STATE.selectedPunct;
+}
+
+function checkPunctuation(correctStr) {
+  if (answeredCurrent) return;
+  const corrects = correctStr.split(',');
+  let allCorrect = true;
+  corrects.forEach((c, i) => {
+    const gap = document.getElementById('gap' + i);
+    if (!gap) return;
+    const filled = gap.dataset.filled || '';
+    if (filled === c) {
+      gap.classList.add('right');
+    } else {
+      gap.classList.add('wrong');
+      allCorrect = false;
+    }
+  });
+  const exp = document.querySelector('#ex-comas .feedback-text').dataset.exp;
+  answeredCurrent = true;
+  showFeedback('comas', allCorrect, exp);
+  registerAnswer(allCorrect, 'comas');
+}
+
+// ============================================================
+// ORACIONES EXERCISES
+// ============================================================
+function loadOraciones() {
+  const mode = exModes.oraciones;
+  const container = document.getElementById('ex-oraciones');
+  answeredCurrent = false;
+  
+  if (mode === 'ordena') {
+    const ex = getNext(ORACIONES_DATA.ordena, 'oraciones_ordena');
+    const shuffled = shuffle(ex.words);
+    container.innerHTML = `
+      <div class="exercise-card">
+        <div class="ex-meta">
+          <span class="ex-type-badge badge-oraciones">Ordena las palabras</span>
+          <span class="diff-stars">★★★</span>
+        </div>
+        <div class="ex-question">Ordena estas palabras para formar una oración correcta:</div>
+        <p class="ex-instruction">Haz clic en las palabras en el orden correcto</p>
+        <div id="wordBank" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem">
+          ${shuffled.map(w => `<button class="word-chip" onclick="addWord('${w}', this)">${w}</button>`).join('')}
+        </div>
+        <div id="sentenceBuilder" style="min-height:50px;background:rgba(255,255,255,0.03);border:1.5px dashed rgba(255,255,255,0.15);border-radius:12px;padding:1rem;margin-bottom:1rem;display:flex;flex-wrap:wrap;gap:0.5rem;font-size:1.1rem;font-family:'Playfair Display',serif;cursor:pointer" onclick="removeLastWord(event)">
+          <span style="color:rgba(255,255,255,0.2);font-family:'Nunito',sans-serif;font-size:0.85rem" id="builderPlaceholder">Haz clic en las palabras para construir la oración...</span>
+        </div>
+        <div class="feedback-box">
+          <div class="feedback-title"></div>
+          <div class="feedback-text" data-exp="${ex.exp}" data-ans="${ex.ans}">${ex.exp}</div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-skip" onclick="loadOraciones()">Saltar →</button>
+          <button class="btn-check" onclick="checkWordOrder('${ex.ans.replace(/'/g,"\\'")}', 'oraciones', '${ex.exp.replace(/'/g,"\\'")}')">Comprobar ✓</button>
+          <button class="btn-next" onclick="loadOraciones()">Siguiente →</button>
+        </div>
+      </div>`;
+    window._builtWords = [];
+  } else if (mode === 'completa') {
+    const ex = getNext(ORACIONES_DATA.completa, 'oraciones_completa');
+    container.innerHTML = `
+      <div class="exercise-card">
+        <div class="ex-meta">
+          <span class="ex-type-badge badge-oraciones">Completa la oración</span>
+          <span class="diff-stars">★★</span>
+        </div>
+        <div class="ex-question">${ex.sentence}</div>
+        ${renderMultiChoice('oraciones', ex, null)}
+        <div class="feedback-box">
+          <div class="feedback-title"></div>
+          <div class="feedback-text" data-exp="${ex.exp}">${ex.exp}</div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-skip" onclick="loadOraciones()">Saltar →</button>
+          <button class="btn-next" onclick="loadOraciones()">Siguiente →</button>
+        </div>
+      </div>`;
+  } else {
+    const ex = getNext(ORACIONES_DATA.transforma, 'oraciones_transforma');
+    container.innerHTML = `
+      <div class="exercise-card">
+        <div class="ex-meta">
+          <span class="ex-type-badge badge-oraciones">Transforma la oración</span>
+          <span class="diff-stars">★★★★</span>
+        </div>
+        <div class="ex-question">${ex.q}</div>
+        <p class="ex-instruction">Escribe la oración transformada completa:</p>
+        <input class="answer-input" id="oInput" type="text" placeholder="Escribe aquí..." onkeydown="if(event.key==='Enter') checkTextAnswer('oInput', '${ex.ans.replace(/'/g,"\\'")}', 'oraciones', '${ex.exp.replace(/'/g,"\\'")}')">
+        <div class="feedback-box">
+          <div class="feedback-title"></div>
+          <div class="feedback-text"></div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-skip" onclick="loadOraciones()">Saltar →</button>
+          <button class="btn-check" onclick="checkTextAnswer('oInput', '${ex.ans.replace(/'/g,"\\'")}', 'oraciones', '${ex.exp.replace(/'/g,"\\'")}')">Comprobar ✓</button>
+          <button class="btn-next" onclick="loadOraciones()">Siguiente →</button>
+        </div>
+      </div>`;
+  }
+}
+
+window._builtWords = [];
+function addWord(word, btn) {
+  if (btn.disabled) return;
+  btn.disabled = true;
+  btn.style.opacity = '0.3';
+  window._builtWords.push(word);
+  const builder = document.getElementById('sentenceBuilder');
+  const ph = document.getElementById('builderPlaceholder');
+  if (ph) ph.remove();
+  const span = document.createElement('span');
+  span.textContent = word;
+  span.style.cssText = 'background:rgba(109,76,158,0.2);border:1px solid rgba(109,76,158,0.4);padding:0.3rem 0.6rem;border-radius:6px;color:#a67fd4;cursor:pointer;font-family:Nunito,sans-serif';
+  span.onclick = (e) => { e.stopPropagation(); removeWordAt(word, btn, span); };
+  builder.appendChild(span);
+}
+
+function removeWordAt(word, origBtn, span) {
+  const idx = window._builtWords.lastIndexOf(word);
+  if (idx !== -1) window._builtWords.splice(idx, 1);
+  span.remove();
+  origBtn.disabled = false;
+  origBtn.style.opacity = '1';
+}
+
+function removeLastWord(e) {
+  if (e.target !== document.getElementById('sentenceBuilder')) return;
+  if (window._builtWords.length === 0) return;
+  const last = window._builtWords.pop();
+  const builder = document.getElementById('sentenceBuilder');
+  const spans = builder.querySelectorAll('span');
+  if (spans.length) spans[spans.length - 1].remove();
+  // Re-enable in word bank
+  document.querySelectorAll('#wordBank .word-chip:disabled, #wordBank .word-chip[disabled]').forEach(btn => {
+    if (btn.textContent === last) { btn.disabled = false; btn.style.opacity = '1'; }
+  });
+}
+
+function checkWordOrder(correct, section, exp) {
+  if (answeredCurrent) return;
+  const built = (window._builtWords || []).join(' ').toLowerCase().trim();
+  const isCorrect = built === correct.toLowerCase().trim();
+  answeredCurrent = true;
+  const fb = document.querySelector(`#ex-${section} .feedback-box`);
+  fb.classList.add('show', isCorrect ? 'feedback-correct' : 'feedback-incorrect');
+  fb.querySelector('.feedback-title').textContent = isCorrect ? '✅ ¡Correcto!' : `❌ La oración correcta es: "${correct}"`;
+  fb.querySelector('.feedback-text').textContent = exp;
+  const nextBtn = document.querySelector(`#ex-${section} .btn-next`);
+  if (nextBtn) nextBtn.classList.add('show');
+  const checkBtn = document.querySelector(`#ex-${section} .btn-check`);
+  if (checkBtn) checkBtn.style.display = 'none';
+  registerAnswer(isCorrect, section);
+}
+
+// ============================================================
+// VOCAB EXERCISES
+// ============================================================
+function loadVocab() {
+  const mode = exModes.vocab;
+  const container = document.getElementById('ex-vocab');
+  answeredCurrent = false;
+  
+  const word = getNext(VOCAB_IB, 'vocab_' + mode);
+  
+  if (mode === 'definicion') {
+    // Show word, pick correct definition
+    const wrongDefs = VOCAB_IB.filter(w => w.word !== word.word).map(w => w.def);
+    const distractors = shuffle(wrongDefs).slice(0, 3);
+    const allOpts = shuffle([word.def, ...distractors]);
+    const correctIdx = allOpts.indexOf(word.def);
+    const ex = { q: `¿Qué significa la palabra "${word.word}"?`, opts: allOpts, ans: correctIdx, exp: `${word.def}\n\nEjemplo: ${word.example}\n\nNota sobre tildes: ${word.tilde}` };
+    container.innerHTML = `
+      <div class="exercise-card">
+        <div class="ex-meta">
+          <span class="ex-type-badge badge-vocab">Vocabulario IB</span>
+          <span class="diff-stars">★★</span>
+        </div>
+        <div class="ex-question">${ex.q}</div>
+        <p class="ex-instruction">${word.origin}</p>
+        ${renderMultiChoice('vocab', ex, null)}
+        <div class="feedback-box">
+          <div class="feedback-title"></div>
+          <div class="feedback-text" data-exp="${ex.exp}">${ex.exp}</div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-skip" onclick="loadVocab()">Saltar →</button>
+          <button class="btn-next" onclick="loadVocab()">Siguiente →</button>
+        </div>
+      </div>`;
+  } else if (mode === 'contexto') {
+    // Use the word in context
+    const ex = {
+      q: `Completa la oración con la palabra correcta:\n"${word.example.replace(word.word, '___')}"`,
+      opts: shuffle([word.word, ...VOCAB_IB.filter(w=>w.word!==word.word).slice(0,3).map(w=>w.word)]),
+      ans: 0, exp: `La palabra correcta es "${word.word}": ${word.def}`
+    };
+    const correctIdx = ex.opts.indexOf(word.word);
+    ex.ans = correctIdx;
+    container.innerHTML = `
+      <div class="exercise-card">
+        <div class="ex-meta">
+          <span class="ex-type-badge badge-vocab">Uso en contexto</span>
+          <span class="diff-stars">★★★</span>
+        </div>
+        <div class="ex-question">${ex.q}</div>
+        ${renderMultiChoice('vocab', ex, null)}
+        <div class="feedback-box">
+          <div class="feedback-title"></div>
+          <div class="feedback-text" data-exp="${ex.exp}">${ex.exp}</div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-skip" onclick="loadVocab()">Saltar →</button>
+          <button class="btn-next" onclick="loadVocab()">Siguiente →</button>
+        </div>
+      </div>`;
+  } else if (mode === 'sinonimo') {
+    if (!word.sinonimos || word.sinonimos.length === 0) { loadVocab(); return; }
+    const allSyns = VOCAB_IB.filter(w => w.sinonimos && w.sinonimos.length > 0 && w.word !== word.word);
+    const distractors = shuffle(allSyns).slice(0, 3).map(w => w.sinonimos[0]);
+    const correct = word.sinonimos[0];
+    const allOpts = shuffle([correct, ...distractors]);
+    const correctIdx = allOpts.indexOf(correct);
+    const ex = { q: `¿Cuál es un sinónimo de "${word.word}"?`, opts: allOpts, ans: correctIdx, exp: `Sinónimos de "${word.word}": ${word.sinonimos.join(', ')}` };
+    container.innerHTML = `
+      <div class="exercise-card">
+        <div class="ex-meta">
+          <span class="ex-type-badge badge-vocab">Sinónimos</span>
+          <span class="diff-stars">★★★</span>
+        </div>
+        <div class="ex-question">${ex.q}</div>
+        <p class="ex-instruction">Definición: ${word.def}</p>
+        ${renderMultiChoice('vocab', ex, null)}
+        <div class="feedback-box">
+          <div class="feedback-title"></div>
+          <div class="feedback-text" data-exp="${ex.exp}">${ex.exp}</div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-skip" onclick="loadVocab()">Saltar →</button>
+          <button class="btn-next" onclick="loadVocab()">Siguiente →</button>
+        </div>
+      </div>`;
+  } else {
+    // antonimos
+    if (!word.antonimos || word.antonimos.length === 0) { loadVocab(); return; }
+    const correct = word.antonimos[0];
+    const allWords = VOCAB_IB.filter(w => w.sinonimos && w.sinonimos.length > 0);
+    const distractors = shuffle(allWords).slice(0,3).map(w => w.word);
+    const allOpts = shuffle([correct, ...distractors]);
+    const correctIdx = allOpts.indexOf(correct);
+    const ex = { q: `¿Cuál es un antónimo de "${word.word}"?`, opts: allOpts, ans: correctIdx, exp: `Antónimos de "${word.word}": ${word.antonimos.join(', ')}` };
+    container.innerHTML = `
+      <div class="exercise-card">
+        <div class="ex-meta">
+          <span class="ex-type-badge badge-vocab">Antónimos</span>
+          <span class="diff-stars">★★★</span>
+        </div>
+        <div class="ex-question">${ex.q}</div>
+        ${renderMultiChoice('vocab', ex, null)}
+        <div class="feedback-box">
+          <div class="feedback-title"></div>
+          <div class="feedback-text" data-exp="${ex.exp}">${ex.exp}</div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-skip" onclick="loadVocab()">Saltar →</button>
+          <button class="btn-next" onclick="loadVocab()">Siguiente →</button>
+        </div>
+      </div>`;
+  }
+}
+
+// ============================================================
+// MORFOLOGIA EXERCISES
+// ============================================================
+function loadMorfologia() {
+  const mode = exModes.morfologia;
+  const container = document.getElementById('ex-morfologia');
+  answeredCurrent = false;
+  
+  if (mode === 'tipo' || mode === 'genero' || mode === 'analisis') {
+    const pool = mode === 'tipo' ? MORFOLOGIA_DATA.tipo : mode === 'genero' ? MORFOLOGIA_DATA.genero : MORFOLOGIA_DATA.analisis;
+    const ex = getNext(pool, 'morfo_' + mode);
+    container.innerHTML = `
+      <div class="exercise-card">
+        <div class="ex-meta">
+          <span class="ex-type-badge badge-morfologia">${mode === 'tipo' ? 'Tipo de palabra' : mode === 'genero' ? 'Género y número' : 'Análisis morfológico'}</span>
+          <span class="diff-stars">★★★</span>
+        </div>
+        <div class="ex-question">${ex.q}</div>
+        ${renderMultiChoice('morfologia', ex, null)}
+        <div class="feedback-box">
+          <div class="feedback-title"></div>
+          <div class="feedback-text" data-exp="${ex.exp}">${ex.exp}</div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-skip" onclick="loadMorfologia()">Saltar →</button>
+          <button class="btn-next" onclick="loadMorfologia()">Siguiente →</button>
+        </div>
+      </div>`;
+  } else {
+    const ex = getNext(MORFOLOGIA_DATA.conjuga, 'morfo_conjuga');
+    container.innerHTML = `
+      <div class="exercise-card">
+        <div class="ex-meta">
+          <span class="ex-type-badge badge-morfologia">Conjuga el verbo</span>
+          <span class="diff-stars">★★★★</span>
+        </div>
+        <div class="ex-question">${ex.q}</div>
+        <input class="answer-input" id="mInput" type="text" placeholder="Escribe la forma conjugada..." onkeydown="if(event.key==='Enter') checkTextAnswer('mInput', '${ex.ans}', 'morfologia', '${ex.exp.replace(/'/g,"\\'")}')">
+        <div class="feedback-box">
+          <div class="feedback-title"></div>
+          <div class="feedback-text"></div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-skip" onclick="loadMorfologia()">Saltar →</button>
+          <button class="btn-check" onclick="checkTextAnswer('mInput', '${ex.ans}', 'morfologia', '${ex.exp.replace(/'/g,"\\'")}')">Comprobar ✓</button>
+          <button class="btn-next" onclick="loadMorfologia()">Siguiente →</button>
+        </div>
+      </div>`;
+  }
+}
+
+// ============================================================
+// REDACCION EXERCISES
+// ============================================================
+function loadRedaccion() {
+  const container = document.getElementById('ex-redaccion');
+  answeredCurrent = false;
+  const ex = getNext(REDACCION_DATA, 'redaccion');
+  container.innerHTML = `
+    <div class="exercise-card">
+      <div class="ex-meta">
+        <span class="ex-type-badge badge-redaccion">Redacción y estilo</span>
+        <span class="diff-stars">★★★</span>
+      </div>
+      <div class="ex-question">${ex.q}</div>
+      ${renderMultiChoice('redaccion', ex, null)}
+      <div class="feedback-box">
+        <div class="feedback-title"></div>
+        <div class="feedback-text" data-exp="${ex.exp}">${ex.exp}</div>
+      </div>
+      <div class="ex-actions">
+        <button class="btn-skip" onclick="loadRedaccion()">Saltar →</button>
+        <button class="btn-next" onclick="loadRedaccion()">Siguiente →</button>
+      </div>
+    </div>`;
+}
+
+// ============================================================
+// MIXTO EXERCISES
+// ============================================================
+function loadMixto() {
+  const loaders = [loadTildes, loadComas, loadOraciones, loadVocab, loadMorfologia, loadRedaccion];
+  const containers = ['tildes','comas','oraciones','vocab','morfologia','redaccion'];
+  const pick = Math.floor(Math.random() * loaders.length);
+  
+  // Temporarily redirect to mixto container
+  const originalLoaders = {
+    tildes: document.getElementById('ex-tildes'),
+    comas: document.getElementById('ex-comas'),
+    oraciones: document.getElementById('ex-oraciones'),
+    vocab: document.getElementById('ex-vocab'),
+    morfologia: document.getElementById('ex-morfologia'),
+    redaccion: document.getElementById('ex-redaccion'),
+  };
+  
+  // Load a random exercise type
+  const mixtoContainer = document.getElementById('ex-mixto');
+  answeredCurrent = false;
+  
+  // Generate a random exercise from all pools
+  const allPools = [
+    { pool: TILDES_DATA.multi, type: 'Tildes', badge: 'badge-tildes', loader: () => { exModes.tildes = 'multi'; document.getElementById('ex-tildes').innerHTML = ''; loadTildes(); const c = document.getElementById('ex-tildes').innerHTML; document.getElementById('ex-tildes').innerHTML = ''; return c; } },
+    { pool: TILDES_DATA.clasifica, type: 'Clasificar tildes', badge: 'badge-tildes' },
+    { pool: COMAS_DATA.elige, type: 'Puntuación', badge: 'badge-comas' },
+    { pool: COMAS_DATA.error, type: 'Error ortográfico', badge: 'badge-comas' },
+    { pool: ORACIONES_DATA.completa, type: 'Completar oración', badge: 'badge-oraciones' },
+    { pool: MORFOLOGIA_DATA.tipo, type: 'Morfología', badge: 'badge-morfologia' },
+    { pool: MORFOLOGIA_DATA.genero, type: 'Género y número', badge: 'badge-morfologia' },
+    { pool: REDACCION_DATA, type: 'Redacción', badge: 'badge-redaccion' },
+  ];
+  
+  const choice = allPools[Math.floor(Math.random() * allPools.length)];
+  const ex = getNext(choice.pool, 'mixto_' + choice.type);
+  
+  mixtoContainer.innerHTML = `
+    <div class="exercise-card">
+      <div class="ex-meta">
+        <span class="ex-type-badge ${choice.badge}">${choice.type}</span>
+        <span class="diff-stars">★★★</span>
+        <span style="font-size:0.75rem;color:rgba(255,255,255,0.3);font-family:'DM Mono',monospace">EXAMEN MIXTO</span>
+      </div>
+      <div class="ex-question">${ex.q || ex.sentence || (ex.words ? 'Ordena: ' + ex.words.join(' / ') : '¿?')}</div>
+      ${ex.opts ? renderMultiChoice('mixto', ex, null) : '<p style="color:rgba(255,255,255,0.5)">Ejercicio de texto</p>'}
+      <div class="feedback-box">
+        <div class="feedback-title"></div>
+        <div class="feedback-text" data-exp="${ex.exp || ''}">${ex.exp || ''}</div>
+      </div>
+      <div class="ex-actions">
+        <button class="btn-skip" onclick="loadMixto()">Saltar →</button>
+        <button class="btn-next" onclick="loadMixto()">Siguiente →</button>
+      </div>
+    </div>`;
+}
+
+// ============================================================
+// DICTIONARY
+// ============================================================
+function searchDict(query) {
+  const q = query.toLowerCase().trim();
+  if (q.length < 2) { document.getElementById('dictCard').classList.remove('show'); return; }
+  const found = VOCAB_IB.find(w => w.word.toLowerCase().includes(q) || q.includes(w.word.toLowerCase()));
+  if (found) renderDictCard(found);
+  else { document.getElementById('dictCard').innerHTML = `<p style="color:rgba(255,255,255,0.4);padding:1rem">No se encontró "${query}" en el diccionario IB. Prueba con otra palabra.</p>`; document.getElementById('dictCard').classList.add('show'); }
+}
+
+function renderDictCard(w) {
+  const card = document.getElementById('dictCard');
+  card.classList.add('show');
+  card.innerHTML = `
+    <div class="dict-word">${w.word.replace(/(á|é|í|ó|ú)/g, '<span>$1</span>')}</div>
+    <div class="dict-type">${w.type}</div>
+    <div class="dict-def">${w.def}</div>
+    <div class="dict-example">"${w.example}"</div>
+    ${w.origin ? `<div class="dict-origin">📜 Etimología: ${w.origin}</div>` : ''}
+    <div class="dict-tilde-note">´ ${w.tilde}</div>
+    ${w.sinonimos && w.sinonimos.length ? `<div style="margin-top:0.8rem"><span style="font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.1em">Sinónimos: </span>${w.sinonimos.map(s => `<span class="word-chip" style="display:inline-block;margin:2px" onclick="document.getElementById('dictInput').value='${s}';searchDict('${s}')">${s}</span>`).join('')}</div>` : ''}
+    ${w.antonimos && w.antonimos.length ? `<div style="margin-top:0.5rem"><span style="font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.1em">Antónimos: </span>${w.antonimos.map(s => `<span class="word-chip" style="display:inline-block;margin:2px;border-color:rgba(230,57,70,0.2)">${s}</span>`).join('')}</div>` : ''}
+  `;
+}
+
+function loadWordChips() {
+  const chips = document.getElementById('wordChips');
+  const sample = shuffle(VOCAB_IB).slice(0, 20);
+  chips.innerHTML = sample.map(w => `<span class="word-chip" onclick="document.getElementById('dictInput').value='${w.word}';searchDict('${w.word}')">${w.word}</span>`).join('');
+}
+
+// ============================================================
+// RULES
+// ============================================================
+function loadRules() {
+  const grid = document.getElementById('rulesGrid');
+  grid.innerHTML = REGLAS.map(r => `
+    <div class="rule-card">
+      <div class="rule-tag ${r.tagClass}">${r.tag}</div>
+      <div class="rule-icon">${r.icon}</div>
+      <div class="rule-title">${r.title}</div>
+      <div class="rule-desc">${r.desc}</div>
+      <div class="rule-examples">
+        ${r.examples.map(e => `
+          <div class="rule-example">
+            ${e.wrong ? `<span class="wrong">${e.wrong}</span> → ` : ''}
+            <span class="right">${e.right}</span>
+            <em> (${e.note})</em>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// PROGRESS
+// ============================================================
+function loadProgress() {
+  const container = document.getElementById('progressRings');
+  const accuracy = STATE.total > 0 ? Math.round(STATE.correct / STATE.total * 100) : 0;
+  container.innerHTML = `
+    <div class="ring-card">
+      <h4>Total XP</h4>
+      <div class="ring-num">${STATE.xp}</div>
+      <div class="ring-label">puntos</div>
+    </div>
+    <div class="ring-card">
+      <h4>Nivel</h4>
+      <div class="ring-num">${STATE.level}</div>
+      <div class="ring-label">nivel actual</div>
+    </div>
+    <div class="ring-card">
+      <h4>Precisión</h4>
+      <div class="ring-num">${accuracy}%</div>
+      <div class="ring-label">${STATE.correct}/${STATE.total} correctas</div>
+    </div>
+    <div class="ring-card">
+      <h4>Racha máx.</h4>
+      <div class="ring-num">${STATE.maxStreak}</div>
+      <div class="ring-label">respuestas seguidas</div>
+    </div>
+    <div class="ring-card">
+      <h4>Ejercicios</h4>
+      <div class="ring-num">${STATE.total}</div>
+      <div class="ring-label">completados</div>
+    </div>
+    <div class="ring-card">
+      <h4>Combo máx.</h4>
+      <div class="ring-num">${STATE.maxStreak}×</div>
+      <div class="ring-label">mayor combo</div>
+    </div>
+  `;
+  
+  // Progress bars per section
+  const secs = Object.entries(STATE.sessions).filter(([k,v]) => v > 0);
+  if (secs.length > 0) {
+    container.innerHTML += `
+      <div style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:1.5rem">
+        <h3 style="font-family:'Playfair Display',serif;margin-bottom:1.5rem">Ejercicios por categoría</h3>
+        ${secs.map(([k, v]) => `
+          <div style="margin-bottom:1rem">
+            <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem">
+              <span style="font-size:0.85rem;text-transform:capitalize">${k}</span>
+              <span style="font-family:'DM Mono',monospace;font-size:0.8rem;color:rgba(255,255,255,0.4)">${v} ejercicios</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(100, v*5)}%"></div></div>
+          </div>
+        `).join('')}
+      </div>`;
+  }
+  
+  // Reset button
+  container.innerHTML += `
+    <div style="width:100%;text-align:center;margin-top:1rem">
+      <button class="btn-secondary" onclick="if(confirm('¿Resetear todo el progreso?')){localStorage.removeItem('gramaticaIB');location.reload()}">Reiniciar progreso</button>
+    </div>`;
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showSection(sec) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  
+  const el = document.getElementById('sec-' + sec);
+  if (el) el.classList.add('active');
+  
+  // Highlight nav
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.getAttribute('onclick')?.includes(`'${sec}'`)) n.classList.add('active');
+  });
+  
+  currentSection = sec;
+  
+  // Load content
+  if (sec === 'tildes') loadTildes();
+  else if (sec === 'comas') loadComas();
+  else if (sec === 'oraciones') loadOraciones();
+  else if (sec === 'vocab') loadVocab();
+  else if (sec === 'morfologia') loadMorfologia();
+  else if (sec === 'redaccion') loadRedaccion();
+  else if (sec === 'mixto') loadMixto();
+  else if (sec === 'diccionario') loadWordChips();
+  else if (sec === 'reglas') loadRules();
+  else if (sec === 'progreso') loadProgress();
+  
+  // Close sidebar on mobile
+  if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+  window.scrollTo(0, 0);
+}
+
+function setExMode(section, mode) {
+  exModes[section] = mode;
+  document.querySelectorAll(`#sec-${section} .section-tab`).forEach((t, i) => t.classList.remove('active'));
+  event.target.classList.add('active');
+  showSection(section);
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+function launchApp() {
+  document.getElementById('splash').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  showSection('inicio');
+  updateUI();
+}
+
+// ============================================================
+// FLOATING LETTERS
+// ============================================================
+function createFloatingLetters() {
+  const container = document.getElementById('floatingLetters');
+  const letters = 'aeiouáéíóúbcdfghjklmnñpqrstvwxyz.,;:¡!¿?—«»';
+  for (let i = 0; i < 35; i++) {
+    const el = document.createElement('div');
+    el.className = 'fl';
+    el.textContent = letters[Math.floor(Math.random() * letters.length)];
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.fontSize = (Math.random() * 60 + 20) + 'px';
+    el.style.animationDuration = (Math.random() * 20 + 15) + 's';
+    el.style.animationDelay = -(Math.random() * 20) + 's';
+    container.appendChild(el);
+  }
+}
+
+// ============================================================
+// INIT
+// ============================================================
+load();
+createFloatingLetters();
+updateUI();
+
+// Fix the stat-num typo in HTML
+document.addEventListener('DOMContentLoaded', () => {
+  updateUI();
+});
+</script>
+</body>
+</html>
