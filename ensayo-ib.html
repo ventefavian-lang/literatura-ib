@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EnsayoIB — Construye tu argumento</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Nunito:wght@300;400;600;700;800;900&display=swap');
+
+  :root {
+    --ink: #1a1025; --paper: #fdf8f0; --cream: #f5ede0; --accent: #e63946; --gold: #f4a261;
+    --teal: #2a9d8f; --purple: #6d4c9e; --blue: #457b9d; --light: #a8dadc;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Nunito', sans-serif; background: var(--ink); color: var(--paper); min-height: 100vh; overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+
+  #splash {
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; background: var(--ink); position: relative; overflow: hidden; padding: 2rem;
+  }
+  #splash::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 30%, rgba(109,76,158,0.28) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 70%, rgba(244,162,97,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 50% 90%, rgba(230,57,70,0.15) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .floating-letters { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .fl { position: absolute; font-family: 'Playfair Display', serif; opacity: 0.06; color: var(--paper); animation: floatUp linear infinite; user-select: none; }
+  @keyframes floatUp { 0% { transform: translateY(110vh) rotate(0deg); opacity: 0; } 10% { opacity: 0.06; } 90% { opacity: 0.06; } 100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; } }
+
+  .hero-tag { font-family: 'DM Mono', monospace; font-size: 0.75rem; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin-bottom: 1.5rem; animation: fadeSlideUp 0.8s ease both; }
+  .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(3rem, 10vw, 7rem); font-weight: 900; line-height: 0.9; margin-bottom: 1.5rem; animation: fadeSlideUp 0.8s 0.15s ease both; }
+  .hero-title span { color: var(--accent); font-style: italic; }
+  .hero-sub { font-size: clamp(1rem, 2.5vw, 1.3rem); color: rgba(253,248,240,0.65); max-width: 620px; line-height: 1.7; margin-bottom: 3rem; animation: fadeSlideUp 0.8s 0.3s ease both; }
+  .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; animation: fadeSlideUp 0.8s 0.45s ease both; }
+  .btn-primary { background: var(--accent); color: white; border: none; padding: 1rem 2.5rem; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: all 0.3s; box-shadow: 0 8px 30px rgba(230,57,70,0.4); letter-spacing: 0.02em; }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(230,57,70,0.5); }
+  .btn-secondary { background: transparent; color: var(--paper); border: 2px solid rgba(253,248,240,0.3); padding: 1rem 2.5rem; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: all 0.3s; }
+  .btn-secondary:hover { border-color: var(--paper); background: rgba(253,248,240,0.08); }
+  @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .stats-bar { display: flex; gap: 3rem; margin-top: 4rem; animation: fadeSlideUp 0.8s 0.6s ease both; flex-wrap: wrap; justify-content: center; }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700; color: var(--gold); }
+  .stat-label { font-size: 0.8rem; color: rgba(253,248,240,0.5); text-transform: uppercase; letter-spacing: 0.1em; }
+  .back-link { position: absolute; top: 1.5rem; left: 1.5rem; font-family: 'DM Mono', monospace; font-size: 0.8rem; color: rgba(253,248,240,0.5); letter-spacing: 0.05em; z-index: 5; }
+  .back-link:hover { color: var(--paper); }
+
+  #app { display: none; min-height: 100vh; }
+  .sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 260px; background: rgba(26,16,37,0.97); border-right: 1px solid rgba(253,248,240,0.08); z-index: 100; display: flex; flex-direction: column; backdrop-filter: blur(20px); transition: transform 0.3s; }
+  .sidebar-logo { padding: 1.5rem 1.5rem 1rem; border-bottom: 1px solid rgba(253,248,240,0.08); }
+  .sidebar-logo h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; }
+  .sidebar-logo h2 span { color: var(--accent); font-style: italic; }
+  .sidebar-logo p { font-size: 0.7rem; color: rgba(253,248,240,0.4); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
+  .sidebar-nav { flex: 1; padding: 1rem 0; overflow-y: auto; }
+  .nav-section-label { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(253,248,240,0.3); padding: 1rem 1.5rem 0.5rem; font-family: 'DM Mono', monospace; }
+  .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 1.5rem; cursor: pointer; transition: all 0.2s; border-left: 3px solid transparent; font-weight: 600; font-size: 0.9rem; color: rgba(253,248,240,0.6); user-select: none; }
+  .nav-item:hover { background: rgba(253,248,240,0.05); color: var(--paper); }
+  .nav-item.active { border-left-color: var(--accent); background: rgba(230,57,70,0.1); color: var(--paper); }
+  .nav-item .icon { font-size: 1.1rem; width: 20px; text-align: center; }
+  .progress-mini { padding: 1rem 1.5rem; border-top: 1px solid rgba(253,248,240,0.08); }
+  .progress-mini p { font-size: 0.72rem; color: rgba(253,248,240,0.4); margin-bottom: 0.5rem; }
+  .progress-bar { height: 4px; background: rgba(253,248,240,0.1); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--purple)); border-radius: 2px; transition: width 0.5s; }
+  .xp-display { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--gold); margin-top: 0.5rem; }
+
+  .main-area { margin-left: 260px; min-height: 100vh; background: linear-gradient(135deg, #1a1025 0%, #0f1923 100%); position: relative; }
+  .top-bar { position: sticky; top: 0; background: rgba(26,16,37,0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(253,248,240,0.08); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; z-index: 50; }
+  .top-bar h1 { font-family: 'Playfair Display', serif; font-size: 1.3rem; }
+  .top-bar h1 span { color: var(--accent); font-style: italic; }
+  .top-stats { display: flex; gap: 1.5rem; align-items: center; }
+  .top-stat { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: rgba(253,248,240,0.7); font-family: 'DM Mono', monospace; }
+  .top-stat strong { color: var(--gold); }
+  .streak-badge { background: linear-gradient(135deg, #f4a261, #e63946); color: white; padding: 0.3rem 0.8rem; border-radius: 50px; font-size: 0.8rem; font-weight: 800; }
+
+  .section { display: none; padding: 2rem; }
+  .section.active { display: block; }
+
+  .exercise-card { background: rgba(253,248,240,0.04); border: 1px solid rgba(253,248,240,0.08); border-radius: 20px; padding: 2.5rem; max-width: 800px; margin: 0 auto; position: relative; overflow: hidden; }
+  .exercise-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--purple), var(--teal)); }
+  .ex-meta { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .ex-type-badge { font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.3rem 0.8rem; border-radius: 50px; font-weight: 500; }
+  .badge-valida { background: rgba(42,157,143,0.2); color: var(--teal); border: 1px solid rgba(42,157,143,0.3); }
+  .badge-general { background: rgba(109,76,158,0.2); color: #a67fd4; border: 1px solid rgba(109,76,158,0.3); }
+  .diff-stars { color: var(--gold); font-size: 0.85rem; }
+  .ex-question { font-family: 'Playfair Display', serif; font-size: 1.3rem; line-height: 1.6; margin-bottom: 0.4rem; color: var(--paper); font-style: italic; }
+  .ex-instruction { font-size: 0.85rem; color: rgba(253,248,240,0.5); margin-bottom: 2rem; }
+
+  .options-grid { display: grid; gap: 0.8rem; margin-bottom: 1.5rem; }
+  .option-btn { background: rgba(253,248,240,0.04); border: 1.5px solid rgba(253,248,240,0.12); color: var(--paper); padding: 1rem 1.5rem; border-radius: 12px; cursor: pointer; text-align: left; font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 600; transition: all 0.25s; display: flex; align-items: center; gap: 1rem; }
+  .option-btn:hover:not(:disabled) { background: rgba(253,248,240,0.09); border-color: rgba(253,248,240,0.25); transform: translateX(4px); }
+  .option-btn.correct { background: rgba(42,157,143,0.2); border-color: var(--teal); color: #7ecec7; }
+  .option-btn.incorrect { background: rgba(230,57,70,0.15); border-color: var(--accent); color: #ff8a93; }
+  .option-letter { width: 28px; height: 28px; background: rgba(253,248,240,0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 0.8rem; flex-shrink: 0; }
+
+  .feedback-box { display: none; padding: 1.2rem 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; animation: fadeIn 0.3s ease; }
+  .feedback-box.show { display: block; }
+  .feedback-correct { background: rgba(42,157,143,0.15); border: 1px solid rgba(42,157,143,0.3); }
+  .feedback-incorrect { background: rgba(230,57,70,0.12); border: 1px solid rgba(230,57,70,0.25); }
+  .feedback-title { font-weight: 800; font-size: 1rem; margin-bottom: 0.5rem; }
+  .feedback-correct .feedback-title { color: #7ecec7; }
+  .feedback-incorrect .feedback-title { color: #ff8a93; }
+  .feedback-text { font-size: 0.9rem; color: rgba(253,248,240,0.75); line-height: 1.6; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+  .ex-actions { display: flex; gap: 1rem; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+  .btn-next { background: var(--teal); color: white; border: none; padding: 0.9rem 2rem; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800; cursor: pointer; transition: all 0.3s; box-shadow: 0 5px 20px rgba(42,157,143,0.4); }
+  .btn-next:hover { transform: translateY(-2px); }
+  .btn-skip { background: transparent; color: rgba(253,248,240,0.4); border: none; padding: 0.5rem 1rem; font-family: 'Nunito', sans-serif; font-size: 0.85rem; cursor: pointer; transition: color 0.2s; }
+  .btn-skip:hover { color: rgba(253,248,240,0.7); }
+
+  .combo-display { position: fixed; top: 80px; right: 2rem; z-index: 200; text-align: center; pointer-events: none; }
+  .combo-num { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; color: var(--gold); line-height: 1; text-shadow: 0 0 30px rgba(244,162,97,0.6); transition: all 0.3s; opacity: 0; }
+  .combo-num.show { opacity: 1; }
+  .combo-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.2em; color: rgba(244,162,97,0.6); text-transform: uppercase; }
+
+  .rules-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.3rem; max-width: 1200px; margin: 0 auto; }
+  .rule-card { background: rgba(253,248,240,0.04); border: 1px solid rgba(253,248,240,0.08); border-radius: 16px; padding: 1.6rem; transition: all 0.3s; }
+  .rule-card:hover { transform: translateY(-4px); border-color: rgba(253,248,240,0.15); background: rgba(253,248,240,0.07); }
+  .rule-icon { font-size: 1.8rem; margin-bottom: 0.8rem; }
+  .rule-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .rule-desc { font-size: 0.88rem; color: rgba(253,248,240,0.6); line-height: 1.6; }
+  .rule-tag { display: inline-block; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 50px; margin-bottom: 0.7rem; font-family: 'DM Mono', monospace; background: rgba(109,76,158,0.2); color: #a67fd4; border: 1px solid rgba(109,76,158,0.3); }
+
+  .section-header { margin-bottom: 2rem; }
+  .section-header h2 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .section-header h2 span { color: var(--accent); font-style: italic; }
+  .section-header p { color: rgba(253,248,240,0.5); font-size: 0.95rem; }
+
+  .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-width: 900px; margin: 0 auto; }
+  @media (max-width: 700px) { .home-grid { grid-template-columns: 1fr; } }
+  .home-card { background: rgba(253,248,240,0.04); border: 1px solid rgba(253,248,240,0.08); border-radius: 20px; padding: 2rem; cursor: pointer; transition: all 0.3s; }
+  .home-card:hover { transform: translateY(-5px); }
+  .home-card.c1 { border-top: 3px solid var(--purple); }
+  .home-card.c2 { border-top: 3px solid var(--gold); }
+  .home-card.c3 { border-top: 3px solid var(--teal); }
+  .home-card.c4 { border-top: 3px solid var(--accent); }
+  .home-card.c5 { border-top: 3px solid var(--blue); }
+  .home-card.c6 { border-top: 3px solid var(--light); }
+  .home-card-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .home-card h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 0.5rem; }
+  .home-card p { font-size: 0.85rem; color: rgba(253,248,240,0.5); line-height: 1.6; }
+
+  .progress-rings { display: flex; flex-wrap: wrap; gap: 2rem; max-width: 900px; margin: 0 auto 2rem; }
+  .ring-card { background: rgba(253,248,240,0.04); border: 1px solid rgba(253,248,240,0.08); border-radius: 16px; padding: 1.5rem; text-align: center; flex: 1; min-width: 150px; }
+  .ring-card h4 { font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(253,248,240,0.4); margin-bottom: 1rem; font-family: 'DM Mono', monospace; }
+  .ring-num { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; color: var(--gold); }
+  .ring-label { font-size: 0.75rem; color: rgba(253,248,240,0.4); }
+
+  .sidebar-toggle { display: none; position: fixed; bottom: 1.5rem; right: 1.5rem; width: 56px; height: 56px; background: var(--accent); border: none; border-radius: 50%; font-size: 1.4rem; cursor: pointer; z-index: 300; box-shadow: 0 8px 25px rgba(230,57,70,0.5); color: white; }
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main-area { margin-left: 0; }
+    .sidebar-toggle { display: flex; align-items: center; justify-content: center; }
+    .combo-display { top: auto; bottom: 5rem; right: 1rem; }
+    .checklist-row { flex-direction: column; align-items: flex-start !important; gap: 0.5rem !important; }
+  }
+
+  .section-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; justify-content: center; }
+  .section-tab { padding: 0.5rem 1.2rem; border-radius: 50px; border: 1.5px solid rgba(253,248,240,0.12); background: transparent; color: rgba(253,248,240,0.6); font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+  .section-tab:hover { border-color: rgba(253,248,240,0.25); color: var(--paper); }
+  .section-tab.active { background: var(--purple); border-color: var(--purple); color: white; }
+
+  .notification { position: fixed; top: 1rem; right: 1rem; background: var(--ink); border: 1px solid rgba(253,248,240,0.15); border-radius: 12px; padding: 1rem 1.5rem; z-index: 1000; font-weight: 700; font-size: 0.9rem; animation: slideIn 0.3s ease; max-width: 300px; }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+  .notif-level { border-color: var(--gold); color: var(--gold); }
+
+  /* TESIS SPECIFIC */
+  .flow-steps { display: flex; flex-direction: column; gap: 0; max-width: 700px; margin: 0 auto 2.5rem; }
+  .flow-step { background: rgba(253,248,240,0.04); border: 1px solid rgba(253,248,240,0.1); border-radius: 14px; padding: 1.4rem 1.6rem; position: relative; }
+  .flow-step + .flow-step { margin-top: 1.6rem; }
+  .flow-step + .flow-step::before { content: '↓'; position: absolute; top: -1.7rem; left: 50%; transform: translateX(-50%); color: var(--gold); font-size: 1.2rem; }
+  .flow-step h4 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--gold); margin-bottom: 0.4rem; }
+  .flow-step p { font-size: 0.88rem; color: rgba(253,248,240,0.65); line-height: 1.6; }
+
+  .checklist { max-width: 700px; margin: 0 auto 2.5rem; background: rgba(253,248,240,0.04); border: 1px solid rgba(253,248,240,0.1); border-radius: 16px; padding: 1.5rem 2rem; }
+  .checklist-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.9rem 0; border-bottom: 1px solid rgba(253,248,240,0.06); }
+  .checklist-row:last-child { border-bottom: none; }
+  .checklist-row span { font-size: 0.92rem; color: rgba(253,248,240,0.85); }
+  .checklist-btns { display: flex; gap: 0.5rem; }
+  .chk-btn { background: rgba(253,248,240,0.06); border: 1.5px solid rgba(253,248,240,0.15); color: rgba(253,248,240,0.6); padding: 0.35rem 0.9rem; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.8rem; transition: all 0.2s; }
+  .chk-btn.si.active { background: rgba(42,157,143,0.25); border-color: var(--teal); color: #7ecec7; }
+  .chk-btn.no.active { background: rgba(230,57,70,0.2); border-color: var(--accent); color: #ff8a93; }
+  .checklist-result { text-align: center; margin-top: 1rem; font-family: 'DM Mono', monospace; font-size: 0.85rem; color: var(--gold); }
+
+  .verb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; max-width: 1000px; margin: 0 auto; }
+  .verb-card { background: rgba(253,248,240,0.04); border: 1px solid rgba(253,248,240,0.08); border-radius: 12px; padding: 1.1rem 1.3rem; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s; }
+  .verb-card:hover { background: rgba(253,248,240,0.08); }
+  .verb-inf { font-family: 'Playfair Display', serif; font-size: 1rem; }
+  .verb-conj { font-family: 'DM Mono', monospace; font-size: 0.85rem; color: var(--gold); }
+
+  .builder-box { max-width: 700px; margin: 0 auto 2rem; background: rgba(253,248,240,0.04); border: 1px solid rgba(253,248,240,0.1); border-radius: 16px; padding: 2rem; }
+  .builder-field { margin-bottom: 1.2rem; }
+  .builder-field label { display: block; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(253,248,240,0.45); margin-bottom: 0.4rem; font-family: 'DM Mono', monospace; }
+  .builder-field input, .builder-field select {
+    width: 100%; background: rgba(253,248,240,0.06); border: 1.5px solid rgba(253,248,240,0.15); color: var(--paper);
+    padding: 0.8rem 1rem; border-radius: 10px; font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 600; outline: none;
+  }
+  .builder-field input:focus, .builder-field select:focus { border-color: var(--gold); }
+  .builder-preview { margin-top: 1.5rem; padding: 1.5rem; background: rgba(244,162,97,0.08); border: 1px solid rgba(244,162,97,0.2); border-radius: 12px; font-family: 'Playfair Display', serif; font-size: 1.15rem; font-style: italic; line-height: 1.6; color: var(--paper); min-height: 60px; }
+
+  .example-track { max-width: 800px; margin: 0 auto 3rem; }
+  .example-track h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 1.2rem; text-align: center; }
+  .example-track h3 span { color: var(--gold); font-style: italic; }
+  .version-card { background: rgba(253,248,240,0.04); border: 1px solid rgba(253,248,240,0.08); border-left: 3px solid var(--purple); border-radius: 10px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; }
+  .version-card .v-label { font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem; }
+  .version-card .v-text { font-size: 0.95rem; line-height: 1.6; color: rgba(253,248,240,0.85); }
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <a class="back-link" href="index.html">← Volver al portal</a>
+  <div class="floating-letters" id="floatingLetters"></div>
+  <div class="hero-tag">✍️ IB Literatura — Ensayo argumentativo</div>
+  <h1 class="hero-title">Construye tu<br><span>argumento</span>.</h1>
+  <p class="hero-sub">Cómo formular una tesis contundente, elegir tus argumentos y estructurar un ensayo de nivel superior — con ejemplos reales de tesis que evolucionan de vagas a precisas, banco de verbos y práctica interactiva.</p>
+  <div class="hero-buttons">
+    <button class="btn-primary" onclick="launchApp()">🚀 Empezar</button>
+    <button class="btn-secondary" onclick="launchApp(); showSection('practica')">🎯 Ir a practicar</button>
+  </div>
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-num">7</div><div class="stat-label">Criterios de tesis</div></div>
+    <div class="stat"><div class="stat-num">22</div><div class="stat-label">Verbos clave</div></div>
+    <div class="stat"><div class="stat-num">2</div><div class="stat-label">Casos reales</div></div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><h2>Ensayo<span>IB</span></h2><p>Construye tu argumento</p></div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Aprender</div>
+      <div class="nav-item active" onclick="showSection('inicio')"><span class="icon">🏠</span> Inicio</div>
+      <div class="nav-item" onclick="showSection('tesis')"><span class="icon">🎯</span> La tesis</div>
+      <div class="nav-item" onclick="showSection('estructura')"><span class="icon">🏗️</span> Estructura del ensayo</div>
+      <div class="nav-item" onclick="showSection('verbos')"><span class="icon">🔤</span> Banco de verbos</div>
+      <div class="nav-item" onclick="showSection('ejemplos')"><span class="icon">📈</span> Casos reales</div>
+      <div class="nav-section-label">Practicar</div>
+      <div class="nav-item" onclick="showSection('constructor')"><span class="icon">🛠️</span> Arma tu tesis</div>
+      <div class="nav-item" onclick="showSection('practica')"><span class="icon">🎯</span> Quiz</div>
+      <div class="nav-item" onclick="showSection('progreso')"><span class="icon">📊</span> Mi progreso</div>
+    </div>
+    <div class="progress-mini">
+      <p>Nivel <span id="miniLevel">1</span></p>
+      <div class="progress-bar"><div class="progress-fill" id="miniProgress" style="width:0%"></div></div>
+      <div class="xp-display" id="miniXP">0 XP</div>
+    </div>
+  </div>
+
+  <div class="main-area">
+    <div class="top-bar">
+      <h1>Ensayo<span>IB</span></h1>
+      <div class="top-stats">
+        <div class="top-stat">🔥 <strong id="topStreak">0</strong></div>
+        <div class="top-stat">⭐ <strong id="topXP">0</strong> XP</div>
+        <div class="streak-badge" id="topLevel">Nivel 1</div>
+      </div>
+    </div>
+    <div class="combo-display" id="comboDisplay"><div class="combo-num" id="comboNum">0</div><div class="combo-label">combo</div></div>
+
+    <!-- INICIO -->
+    <div class="section active" id="sec-inicio">
+      <div class="section-header"><h2>Todo lo que necesitas para <span>tu ensayo</span></h2><p>Desde entender qué es una tesis hasta practicar identificándolas.</p></div>
+      <div class="home-grid">
+        <div class="home-card c1" onclick="showSection('tesis')"><div class="home-card-icon">🎯</div><h3>La tesis</h3><p>Qué es, por qué importa y los 7 criterios para saber si la tuya funciona.</p></div>
+        <div class="home-card c2" onclick="showSection('estructura')"><div class="home-card-icon">🏗️</div><h3>Estructura del ensayo</h3><p>De la línea de indagación a la conclusión: el mapa completo.</p></div>
+        <div class="home-card c3" onclick="showSection('verbos')"><div class="home-card-icon">🔤</div><h3>Banco de verbos</h3><p>22 verbos precisos para formular tu tesis sin repetir "muestra" o "habla de".</p></div>
+        <div class="home-card c4" onclick="showSection('ejemplos')"><div class="home-card-icon">📈</div><h3>Casos reales</h3><p>Mira cómo una tesis vaga se vuelve específica, paso a paso, con ejemplos reales.</p></div>
+        <div class="home-card c5" onclick="showSection('constructor')"><div class="home-card-icon">🛠️</div><h3>Arma tu tesis</h3><p>Rellena los campos y arma tu propia tesis en tiempo real.</p></div>
+        <div class="home-card c6" onclick="showSection('practica')"><div class="home-card-icon">🎯</div><h3>Quiz</h3><p>¿Tesis válida o no? Practica distinguirlas con XP y racha.</p></div>
+      </div>
+    </div>
+
+    <!-- TESIS -->
+    <div class="section" id="sec-tesis">
+      <div class="section-header"><h2>¿Qué es <span>la tesis</span>?</h2><p>La columna vertebral de tu ensayo argumentativo.</p></div>
+      <div class="flow-steps">
+        <div class="flow-step"><h4>Postura del autor</h4><p>Tu opinión personal frente al tema que elegiste analizar.</p></div>
+        <div class="flow-step"><h4>= Opinión sobre un tema</h4><p>No es el tema en sí, sino lo que tú piensas sobre cómo funciona ese tema en la obra.</p></div>
+        <div class="flow-step"><h4>= Hipótesis</h4><p>Una afirmación que se puede sustentar — o refutar — con evidencia del texto.</p></div>
+        <div class="flow-step"><h4>= Tesis (ensayo)</h4><p>La idea completa (sujeto + verbo + complemento) que vas a defender en todo el ensayo.</p></div>
+      </div>
+      <p style="max-width:700px;margin:0 auto 2rem;text-align:center;color:rgba(253,248,240,0.6);font-size:0.92rem;line-height:1.7">
+        La tesis se presenta en la <strong style="color:var(--gold)">introducción</strong>, se sustenta en <strong style="color:var(--gold)">cada párrafo</strong>, y se reafirma en la <strong style="color:var(--gold)">conclusión</strong>. Sin una postura clara, el ensayo no logra su propósito: persuadir con razones veraces y confiables.
+      </p>
+      <div class="rules-grid" id="tesisReglas"></div>
+      <h3 style="font-family:'Playfair Display',serif;text-align:center;margin:3rem 0 1.5rem">Verifica tu <span style="color:var(--gold);font-style:italic">tesis</span></h3>
+      <div class="checklist" id="checklistBox"></div>
+    </div>
+
+    <!-- ESTRUCTURA -->
+    <div class="section" id="sec-estructura">
+      <div class="section-header"><h2>Estructura del <span>ensayo</span></h2><p>De la idea inicial al texto terminado.</p></div>
+      <div class="rules-grid" id="estructuraGrid"></div>
+    </div>
+
+    <!-- VERBOS -->
+    <div class="section" id="sec-verbos">
+      <div class="section-header"><h2>Banco de <span>verbos</span></h2><p>Antes de usar uno, verifica su significado — no se trata de sonar rebuscado, sino preciso.</p></div>
+      <div class="verb-grid" id="verbGrid"></div>
+    </div>
+
+    <!-- EJEMPLOS -->
+    <div class="section" id="sec-ejemplos">
+      <div class="section-header"><h2>Casos <span>reales</span></h2><p>Así evoluciona una tesis de amplia a específica.</p></div>
+      <div id="ejemplosContainer"></div>
+    </div>
+
+    <!-- CONSTRUCTOR -->
+    <div class="section" id="sec-constructor">
+      <div class="section-header"><h2>Arma tu <span>tesis</span></h2><p>Completa los campos y observa tu tesis tomar forma.</p></div>
+      <div class="builder-box">
+        <div class="builder-field"><label>Autor/a</label><input id="bAutor" type="text" placeholder="ej: Isabel Allende" oninput="updateBuilder()"></div>
+        <div class="builder-field"><label>Recursos literarios (separados por coma)</label><input id="bRecursos" type="text" placeholder="ej: el simbolismo, la estructura circular" oninput="updateBuilder()"></div>
+        <div class="builder-field"><label>Verbo</label>
+          <select id="bVerbo" onchange="updateBuilder()"></select>
+        </div>
+        <div class="builder-field"><label>Lo que representa / configura</label><input id="bTema" type="text" placeholder="ej: la crítica al ciclo de la violencia" oninput="updateBuilder()"></div>
+        <div class="builder-field"><label>Obra</label><input id="bObra" type="text" placeholder="ej: Cien años de soledad" oninput="updateBuilder()"></div>
+        <div class="builder-preview" id="builderPreview">Tu tesis aparecerá aquí…</div>
+      </div>
+    </div>
+
+    <!-- PRACTICA / QUIZ -->
+    <div class="section" id="sec-practica">
+      <div class="section-header"><h2>Quiz: <span>¿es una tesis válida?</span></h2><p>Lee la afirmación y decide.</p></div>
+      <div id="quizContainer"></div>
+    </div>
+
+    <!-- PROGRESO -->
+    <div class="section" id="sec-progreso">
+      <div class="section-header"><h2>Mi <span>progreso</span></h2><p>Tu avance dominando la formulación de tesis.</p></div>
+      <div class="progress-rings" id="progressRings"></div>
+    </div>
+  </div>
+</div>
+
+<button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const TESIS_REGLAS = [
+  {icon:"🎯", title:"Es una afirmación específica", desc:"Cubre solo lo que vas a discutir en tu ensayo — nada más, nada menos."},
+  {icon:"📐", title:"Sujeto + verbo + complemento", desc:"Es una idea completa escrita en una sola oración, no un título ni una lista de temas."},
+  {icon:"🧱", title:"Necesita argumentos", desc:"Antes de fijarla, revisa qué ideas usarás para justificarla — deben sostenerla de principio a fin."},
+  {icon:"📍", title:"Va en la introducción", desc:"Es conveniente presentarla en el párrafo introductorio, no escondida al final."},
+  {icon:"🔄", title:"Puede evolucionar", desc:"Es probable que cambie mientras escribes. Asegúrate de que la versión final sea coherente con el desarrollo y la conclusión."},
+  {icon:"🔗", title:"Todo se conecta con ella", desc:"Cada párrafo de tu ensayo debe estar relacionado con la tesis — si no aporta, sobra."},
+];
+
+const CHECKLIST_ITEMS = [
+  "¿Es una afirmación contundente y específica?",
+  "¿Incluye variables o conceptos clave relacionados entre sí?",
+  "¿Es discutible (no es obvia)?",
+  "¿Deja clara su postura frente al tema?",
+  "¿Existen posiciones que difieren respecto a la ya planteada?",
+  "¿Puede ser sustentada a través de argumentos?",
+  "¿Está bien escrita? (redacción y ortografía)",
+];
+
+const ESTRUCTURA = [
+  {icon:"🧭", tag:"Paso 1", title:"Línea de indagación", desc:"El área general que vas a explorar: qué elementos de la obra te interesa cruzar (ej: narrador, conflicto, tipos de discurso)."},
+  {icon:"❓", tag:"Paso 2", title:"Pregunta de indagación", desc:"Convierte la línea de indagación en una pregunta concreta que tu ensayo va a responder."},
+  {icon:"🎯", tag:"Paso 3", title:"Tesis", desc:"Tu respuesta argumentable a la pregunta — la postura que vas a defender."},
+  {icon:"🧩", tag:"Paso 4", title:"Argumentos", desc:"Cada argumento sostiene una parte de la tesis con evidencia textual concreta (citas, recursos, ejemplos)."},
+  {icon:"📖", tag:"Introducción", title:"Presenta el terreno", desc:"Contextualiza la obra y el tema, y cierra con tu tesis claramente formulada."},
+  {icon:"📝", tag:"Cuerpo", title:"Un argumento por párrafo", desc:"Cada párrafo: idea central → evidencia (cita) → análisis que conecta esa evidencia con la tesis."},
+  {icon:"🔚", tag:"Conclusión", title:"Reafirma sin repetir", desc:"Sintetiza cómo tus argumentos sostuvieron la tesis, sin copiar literalmente la introducción."},
+];
+
+const VERBOS = [
+  ["Evidenciar","Evidencia"], ["Reflejar","Refleja"], ["Ejemplificar","Ejemplifica"], ["Establecer","Establece"],
+  ["Explorar","Explora"], ["Exhibir","Exhibe"], ["Exponer","Expone"], ["Denotar","Denota"], ["Propiciar","Propicia"],
+  ["Exaltar","Exalta"], ["Incidir","Incide"], ["Caracterizar","Caracteriza"], ["Tipificar","Tipifica"],
+  ["Remarcar","Remarca"], ["Repercutir","Repercute"], ["Exacerbar","Exacerba"], ["Revelar","Revela"],
+  ["Concretizar","Concretiza"], ["Conferir","Confiere"], ["Construir","Construye"], ["Contrastar","Contrasta"],
+  ["Configurar","Configura"], ["Representar","Representa"], ["Simbolizar","Simboliza"],
+];
+
+const EJEMPLOS = [
+  {
+    titulo: "Medea, de Eurípides",
+    versiones: [
+      {label:"Versión 1 — sujeto: los elementos textuales", texto:"Los personajes, la modalidad discursiva y conflictos configuran la crítica a la dualidad del poder para el orden social griego en la obra Medea de Eurípides."},
+      {label:"Versión 2 — sujeto: el autor", texto:"Eurípides a través de los personajes, la modalidad discursiva y conflictos configura la crítica a la dualidad del poder para el orden social griego en la obra Medea."},
+      {label:"Versión 3 — más específica", texto:"Eurípides a través de los personajes, la modalidad discursiva y conflictos configura la contraposición del poder en el ámbito cultural, familiar y político en la dinámica social griega de Medea."},
+    ]
+  },
+  {
+    titulo: "La casa de los espíritus, de Isabel Allende",
+    versiones: [
+      {label:"Versión 1 — amplia", texto:"El conflicto entre personajes, el narrador heterodiegético y los tipos de discurso representan la evolución de los tipos de personalidad en \u201cLa casa de los espíritus\u201d de Allende."},
+      {label:"Versión 2 — sujeto: la autora", texto:"Allende a través del conflicto entre personajes, narrador heterodiegético y los tipos de discurso representa la evolución de los tipos de personalidad en \u201cLa casa de los espíritus\u201d."},
+      {label:"Versión 3 — reordenada", texto:"Allende representa la evolución de los tipos de personalidad a través del conflicto entre personajes, narrador heterodiegético y los tipos de discurso en \u201cLa casa de los espíritus\u201d."},
+      {label:"Versión 4 — final, con nombres propios y específica", texto:"Allende a través del conflicto entre personajes, narrador heterodiegético y los tipos de discurso representa la transformación de Esteban hacia la redención Trueba, el alejamiento de Clara de sus dotes sobrenaturales y el proceso hacia la paranoia de Miguel en \u201cLa casa de los espíritus\u201d."},
+    ]
+  }
+];
+
+const QUIZ_DATA = [
+  {t:"Considero que la clonación de seres humanos implica controversia ética.", valida:false, exp:"Es un hecho de aceptación general — casi nadie lo discutiría. Una tesis debe ser discutible, no obvia."},
+  {t:"Argumentaré sobre los efectos de las redes sociales en la vida de las personas.", valida:false, exp:"Esto es el tema del ensayo, no la tesis. Falta la postura: ¿qué efecto, y qué opinas de él?"},
+  {t:"¿Son las corridas de toros una manifestación cultural o una conducta de maltrato animal?", valida:false, exp:"La tesis no es una pregunta, sino la afirmación que le da respuesta a esa pregunta."},
+  {t:"Los personajes, la modalidad discursiva y los conflictos configuran la crítica a la dualidad del poder en Medea de Eurípides.", valida:true, exp:"Es específica, discutible, y tiene sujeto + verbo + complemento claros."},
+  {t:"En 1984, George Orwell escribió una novela sobre el totalitarismo.", valida:false, exp:"Es un dato biográfico/histórico, no una postura argumentable sobre cómo funciona la obra."},
+  {t:"El símbolo del fuego representa tanto la destrucción como la purificación moral de los personajes en Fahrenheit 451.", valida:true, exp:"Afirmación concreta, con concepto clave (el fuego) y una postura discutible sobre su doble función."},
+  {t:"Las redes sociales son buenas y malas a la vez.", valida:false, exp:"Es demasiado vaga: no especifica variables, obra, ni un ángulo argumentable concreto."},
+  {t:"A través de la ironía dramática y el monólogo interior, Shakespeare configura la corrupción progresiva de la conciencia moral en Macbeth.", valida:true, exp:"Postura clara, recursos literarios nombrados, y un proceso (corrupción progresiva) que se puede sustentar con evidencia."},
+  {t:"Romeo y Julieta es una obra de amor y tragedia.", valida:false, exp:"Es una descripción general del género de la obra, no una tesis argumentable."},
+  {t:"El uso del realismo mágico y la estructura circular configuran una crítica a la repetición histórica de la violencia en Cien años de soledad.", valida:true, exp:"Combina recursos concretos con una postura interpretativa específica y sustentable."},
+];
+
+// ============================================================
+// STATE
+// ============================================================
+const STATE = { xp: 0, correct: 0, total: 0, streak: 0, maxStreak: 0, level: 1 };
+let currentQ = null;
+let quizPool = [];
+
+function save() { try { localStorage.setItem('ensayoIB', JSON.stringify(STATE)); } catch(e){} }
+function load() { try { const d = localStorage.getItem('ensayoIB'); if (d) Object.assign(STATE, JSON.parse(d)); } catch(e){} }
+
+function updateUI() {
+  document.getElementById('topXP').textContent = STATE.xp;
+  document.getElementById('topStreak').textContent = STATE.streak;
+  document.getElementById('topLevel').textContent = 'Nivel ' + STATE.level;
+  document.getElementById('miniLevel').textContent = STATE.level;
+  document.getElementById('miniXP').textContent = STATE.xp + ' XP';
+  const need = STATE.level * 100;
+  document.getElementById('miniProgress').style.width = Math.min(100, (STATE.xp % need) / need * 100) + '%';
+}
+
+function addXP(amount) {
+  STATE.xp += amount;
+  const needed = STATE.level * 100;
+  if (STATE.xp >= needed * STATE.level) { STATE.level++; showNotification('¡Subiste a nivel ' + STATE.level + '!'); }
+  save(); updateUI();
+}
+function showNotification(text) {
+  const n = document.createElement('div');
+  n.className = 'notification notif-level';
+  n.textContent = text;
+  document.body.appendChild(n);
+  setTimeout(() => n.remove(), 2500);
+}
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+// ============================================================
+// TESIS SECTION
+// ============================================================
+function loadTesisReglas() {
+  document.getElementById('tesisReglas').innerHTML = TESIS_REGLAS.map(r => `
+    <div class="rule-card"><div class="rule-icon">${r.icon}</div><div class="rule-title">${r.title}</div><div class="rule-desc">${r.desc}</div></div>
+  `).join('');
+}
+function loadChecklist() {
+  document.getElementById('checklistBox').innerHTML = CHECKLIST_ITEMS.map((c,i) => `
+    <div class="checklist-row">
+      <span>${c}</span>
+      <div class="checklist-btns">
+        <button class="chk-btn si" id="chk-${i}-si" onclick="setChk(${i}, true)">Sí</button>
+        <button class="chk-btn no" id="chk-${i}-no" onclick="setChk(${i}, false)">No</button>
+      </div>
+    </div>
+  `).join('') + '<div class="checklist-result" id="chkResult"></div>';
+}
+const chkState = {};
+function setChk(i, val) {
+  chkState[i] = val;
+  document.getElementById(`chk-${i}-si`).classList.toggle('active', val === true);
+  document.getElementById(`chk-${i}-no`).classList.toggle('active', val === false);
+  const answered = Object.keys(chkState).length;
+  const yes = Object.values(chkState).filter(v => v).length;
+  const result = document.getElementById('chkResult');
+  if (answered === CHECKLIST_ITEMS.length) {
+    result.textContent = yes === CHECKLIST_ITEMS.length ? '✅ Tu tesis cumple los 7 criterios.' : `Cumples ${yes}/7 — revisa los "No" antes de seguir escribiendo.`;
+  } else {
+    result.textContent = `${answered}/7 respondidas…`;
+  }
+}
+
+// ============================================================
+// ESTRUCTURA
+// ============================================================
+function loadEstructura() {
+  document.getElementById('estructuraGrid').innerHTML = ESTRUCTURA.map(e => `
+    <div class="rule-card"><div class="rule-tag">${e.tag}</div><div class="rule-icon">${e.icon}</div><div class="rule-title">${e.title}</div><div class="rule-desc">${e.desc}</div></div>
+  `).join('');
+}
+
+// ============================================================
+// VERBOS
+// ============================================================
+function loadVerbos() {
+  document.getElementById('verbGrid').innerHTML = VERBOS.map(v => `
+    <div class="verb-card"><span class="verb-inf">${v[0]}</span><span class="verb-conj">${v[1]}</span></div>
+  `).join('');
+}
+
+// ============================================================
+// EJEMPLOS
+// ============================================================
+function loadEjemplos() {
+  document.getElementById('ejemplosContainer').innerHTML = EJEMPLOS.map(ej => `
+    <div class="example-track">
+      <h3>${ej.titulo.split(',')[0]} <span>${ej.titulo.split(',').slice(1).join(',')}</span></h3>
+      ${ej.versiones.map(v => `<div class="version-card"><div class="v-label">${v.label}</div><div class="v-text">${v.texto}</div></div>`).join('')}
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// CONSTRUCTOR
+// ============================================================
+function loadConstructor() {
+  const sel = document.getElementById('bVerbo');
+  sel.innerHTML = '<option value="">— elige un verbo —</option>' + VERBOS.map(v => `<option value="${v[1]}">${v[0]} → ${v[1]}</option>`).join('');
+}
+function updateBuilder() {
+  const autor = document.getElementById('bAutor').value.trim();
+  const recursos = document.getElementById('bRecursos').value.trim();
+  const verbo = document.getElementById('bVerbo').value;
+  const tema = document.getElementById('bTema').value.trim();
+  const obra = document.getElementById('bObra').value.trim();
+  const preview = document.getElementById('builderPreview');
+  if (!autor && !recursos && !verbo && !tema && !obra) { preview.textContent = 'Tu tesis aparecerá aquí…'; return; }
+  let s = '';
+  if (autor) s += autor + ' ';
+  if (recursos) s += 'a través de ' + recursos + ' ';
+  s += verbo ? verbo : '____';
+  if (tema) s += ' ' + tema;
+  if (obra) s += ' en ' + obra;
+  preview.textContent = s.trim() + '.';
+}
+
+// ============================================================
+// QUIZ
+// ============================================================
+function loadQuiz() {
+  if (quizPool.length === 0) quizPool = shuffle(QUIZ_DATA);
+  currentQ = quizPool.pop();
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = `
+    <div class="exercise-card">
+      <div class="ex-meta"><span class="ex-type-badge badge-general">Tesis</span><span class="diff-stars">★★☆</span></div>
+      <div class="ex-question">"${currentQ.t}"</div>
+      <div class="ex-instruction">¿Es esta una tesis válida para un ensayo argumentativo?</div>
+      <div class="options-grid" id="quizOptions">
+        <button class="option-btn" onclick="checkAnswer(true)"><span class="option-letter">A</span> Sí, es una tesis válida</button>
+        <button class="option-btn" onclick="checkAnswer(false)"><span class="option-letter">B</span> No, no es una tesis válida</button>
+      </div>
+      <div class="feedback-box" id="quizFeedback">
+        <div class="feedback-title" id="quizFeedbackTitle"></div>
+        <div class="feedback-text" id="quizFeedbackText"></div>
+      </div>
+      <div class="ex-actions"><button class="btn-skip" onclick="loadQuiz()">Saltar →</button></div>
+    </div>`;
+}
+function checkAnswer(choice) {
+  const isCorrect = choice === currentQ.valida;
+  document.querySelectorAll('#quizOptions .option-btn').forEach((btn, i) => {
+    btn.disabled = true;
+    const btnVal = i === 0;
+    if (btnVal === currentQ.valida) btn.classList.add('correct');
+    else if (btnVal === choice) btn.classList.add('incorrect');
+  });
+  const box = document.getElementById('quizFeedback');
+  box.classList.add('show', isCorrect ? 'feedback-correct' : 'feedback-incorrect');
+  box.classList.remove(isCorrect ? 'feedback-incorrect' : 'feedback-correct');
+  document.getElementById('quizFeedbackTitle').textContent = isCorrect ? '¡Correcto!' : (currentQ.valida ? 'En realidad, sí es válida' : 'En realidad, no es válida');
+  document.getElementById('quizFeedbackText').textContent = currentQ.exp;
+
+  STATE.total++;
+  if (isCorrect) { STATE.correct++; STATE.streak++; STATE.maxStreak = Math.max(STATE.maxStreak, STATE.streak); addXP(10 + Math.min(STATE.streak,10)); showCombo(STATE.streak); }
+  else { STATE.streak = 0; save(); updateUI(); }
+
+  document.querySelector('#quizContainer .ex-actions').innerHTML = `<button class="btn-next show" onclick="loadQuiz()">Siguiente →</button>`;
+}
+function showCombo(n) { const el = document.getElementById('comboNum'); el.textContent = n+'×'; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),1000); }
+
+// ============================================================
+// PROGRESO
+// ============================================================
+function loadProgress() {
+  const accuracy = STATE.total > 0 ? Math.round(STATE.correct / STATE.total * 100) : 0;
+  document.getElementById('progressRings').innerHTML = `
+    <div class="ring-card"><h4>Total XP</h4><div class="ring-num">${STATE.xp}</div><div class="ring-label">puntos</div></div>
+    <div class="ring-card"><h4>Nivel</h4><div class="ring-num">${STATE.level}</div><div class="ring-label">nivel actual</div></div>
+    <div class="ring-card"><h4>Precisión</h4><div class="ring-num">${accuracy}%</div><div class="ring-label">${STATE.correct}/${STATE.total} correctas</div></div>
+    <div class="ring-card"><h4>Racha máx.</h4><div class="ring-num">${STATE.maxStreak}</div><div class="ring-label">respuestas seguidas</div></div>
+    <div style="width:100%;text-align:center;margin-top:1rem"><button class="btn-secondary" onclick="if(confirm('¿Resetear tu progreso en Ensayo IB?')){localStorage.removeItem('ensayoIB');location.reload()}">Reiniciar progreso</button></div>
+  `;
+}
+
+// ============================================================
+// NAVEGACIÓN
+// ============================================================
+function showSection(sec) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + sec).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => { if (n.getAttribute('onclick')?.includes(`'${sec}'`)) n.classList.add('active'); });
+
+  if (sec === 'tesis') { loadTesisReglas(); loadChecklist(); }
+  else if (sec === 'estructura') loadEstructura();
+  else if (sec === 'verbos') loadVerbos();
+  else if (sec === 'ejemplos') loadEjemplos();
+  else if (sec === 'constructor') { loadConstructor(); updateBuilder(); }
+  else if (sec === 'practica') loadQuiz();
+  else if (sec === 'progreso') loadProgress();
+
+  if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+  window.scrollTo(0, 0);
+}
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+function launchApp() { document.getElementById('splash').style.display = 'none'; document.getElementById('app').style.display = 'block'; showSection('inicio'); updateUI(); }
+
+function createFloatingLetters() {
+  const container = document.getElementById('floatingLetters');
+  const letters = 'tesisargumentoconclusiónpostura¡!¿?—«»';
+  for (let i = 0; i < 30; i++) {
+    const el = document.createElement('div');
+    el.className = 'fl';
+    el.textContent = letters[Math.floor(Math.random() * letters.length)];
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.fontSize = (Math.random() * 50 + 18) + 'px';
+    el.style.animationDuration = (Math.random() * 20 + 15) + 's';
+    el.style.animationDelay = -(Math.random() * 20) + 's';
+    container.appendChild(el);
+  }
+}
+
+// INIT
+load();
+createFloatingLetters();
+updateUI();
+</script>
+</body>
+</html>
