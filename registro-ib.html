@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RegistroIB — El acento de cada palabra</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Nunito:wght@300;400;600;700;800;900&display=swap');
+
+  :root {
+    --ink: #1a1025; --paper: #fdf8f0; --accent: #e63946; --gold: #f4a261;
+    --teal: #2a9d8f; --purple: #6d4c9e; --blue: #457b9d; --light: #a8dadc;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Nunito', sans-serif; background: var(--ink); color: var(--paper); min-height: 100vh; overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+
+  #splash { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: var(--ink); position: relative; overflow: hidden; padding: 2rem; }
+  #splash::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 30%, rgba(230,57,70,0.22) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 70%, rgba(42,157,143,0.2) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 50% 90%, rgba(244,162,97,0.18) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .floating-letters { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .fl { position: absolute; font-family: 'Playfair Display', serif; opacity: 0.06; color: var(--paper); animation: floatUp linear infinite; user-select: none; }
+  @keyframes floatUp { 0% { transform: translateY(110vh) rotate(0deg); opacity: 0; } 10% { opacity: 0.06; } 90% { opacity: 0.06; } 100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; } }
+
+  .hero-tag { font-family: 'DM Mono', monospace; font-size: 0.75rem; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin-bottom: 1.5rem; animation: fadeSlideUp 0.8s ease both; }
+  .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(3rem, 10vw, 7rem); font-weight: 900; line-height: 0.9; margin-bottom: 1.5rem; animation: fadeSlideUp 0.8s 0.15s ease both; }
+  .hero-title span { color: var(--teal); font-style: italic; }
+  .hero-sub { font-size: clamp(1rem, 2.5vw, 1.3rem); color: rgba(253,248,240,0.65); max-width: 620px; line-height: 1.7; margin-bottom: 3rem; animation: fadeSlideUp 0.8s 0.3s ease both; }
+  .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; animation: fadeSlideUp 0.8s 0.45s ease both; }
+  .btn-primary { background: var(--accent); color: white; border: none; padding: 1rem 2.5rem; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: all 0.3s; box-shadow: 0 8px 30px rgba(230,57,70,0.4); letter-spacing: 0.02em; }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(230,57,70,0.5); }
+  .btn-secondary { background: transparent; color: var(--paper); border: 2px solid rgba(253,248,240,0.3); padding: 1rem 2.5rem; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: all 0.3s; }
+  .btn-secondary:hover { border-color: var(--paper); background: rgba(253,248,240,0.08); }
+  @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .stats-bar { display: flex; gap: 3rem; margin-top: 4rem; animation: fadeSlideUp 0.8s 0.6s ease both; flex-wrap: wrap; justify-content: center; }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700; color: var(--gold); }
+  .stat-label { font-size: 0.8rem; color: rgba(253,248,240,0.5); text-transform: uppercase; letter-spacing: 0.1em; }
+  .back-link { position: absolute; top: 1.5rem; left: 1.5rem; font-family: 'DM Mono', monospace; font-size: 0.8rem; color: rgba(253,248,240,0.5); letter-spacing: 0.05em; z-index: 5; }
+  .back-link:hover { color: var(--paper); }
+
+  #app { display: none; min-height: 100vh; }
+  .sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 260px; background: rgba(26,16,37,0.97); border-right: 1px solid rgba(253,248,240,0.08); z-index: 100; display: flex; flex-direction: column; backdrop-filter: blur(20px); transition: transform 0.3s; }
+  .sidebar-logo { padding: 1.5rem 1.5rem 1rem; border-bottom: 1px solid rgba(253,248,240,0.08); }
+  .sidebar-logo h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; }
+  .sidebar-logo h2 span { color: var(--teal); font-style: italic; }
+  .sidebar-logo p { font-size: 0.7rem; color: rgba(253,248,240,0.4); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
+  .sidebar-nav { flex: 1; padding: 1rem 0; overflow-y: auto; }
+  .nav-section-label { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(253,248,240,0.3); padding: 1rem 1.5rem 0.5rem; font-family: 'DM Mono', monospace; }
+  .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 1.5rem; cursor: pointer; transition: all 0.2s; border-left: 3px solid transparent; font-weight: 600; font-size: 0.9rem; color: rgba(253,248,240,0.6); user-select: none; }
+  .nav-item:hover { background: rgba(253,248,240,0.05); color: var(--paper); }
+  .nav-item.active { border-left-color: var(--teal); background: rgba(42,157,143,0.12); color: var(--paper); }
+  .nav-item .icon { font-size: 1.1rem; width: 20px; text-align: center; }
+  .progress-mini { padding: 1rem 1.5rem; border-top: 1px solid rgba(253,248,240,0.08); }
+  .progress-mini p { font-size: 0.72rem; color: rgba(253,248,240,0.4); margin-bottom: 0.5rem; }
+  .progress-bar { height: 4px; background: rgba(253,248,240,0.1); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--accent)); border-radius: 2px; transition: width 0.5s; }
+  .xp-display { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--gold); margin-top: 0.5rem; }
+
+  .main-area { margin-left: 260px; min-height: 100vh; background: linear-gradient(135deg, #1a1025 0%, #0f1923 100%); position: relative; }
+  .top-bar { position: sticky; top: 0; background: rgba(26,16,37,0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(253,248,240,0.08); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; z-index: 50; }
+  .top-bar h1 { font-family: 'Playfair Display', serif; font-size: 1.3rem; }
+  .top-bar h1 span { color: var(--teal); font-style: italic; }
+  .top-stats { display: flex; gap: 1.5rem; align-items: center; }
+  .top-stat { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: rgba(253,248,240,0.7); font-family: 'DM Mono', monospace; }
+  .top-stat strong { color: var(--gold); }
+  .streak-badge { background: linear-gradient(135deg, #f4a261, #e63946); color: white; padding: 0.3rem 0.8rem; border-radius: 50px; font-size: 0.8rem; font-weight: 800; }
+
+  .section { display: none; padding: 2rem; }
+  .section.active { display: block; }
+
+  .exercise-card { background: rgba(253,248,240,0.04); border: 1px solid rgba(253,248,240,0.08); border-radius: 20px; padding: 2.5rem; max-width: 800px; margin: 0 auto; position: relative; overflow: hidden; }
+  .exercise-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--teal), var(--accent), var(--gold)); }
+  .ex-meta { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .ex-type-badge { font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.3rem 0.8rem; border-radius: 50px; font-weight: 500; }
+  .badge-registro { background: rgba(69,123,157,0.2); color: var(--light); border: 1px solid rgba(69,123,157,0.3); }
+  .badge-slang { background: rgba(230,57,70,0.2); color: #ff8a93; border: 1px solid rgba(230,57,70,0.3); }
+  .badge-regionalismos { background: rgba(244,162,97,0.2); color: var(--gold); border: 1px solid rgba(244,162,97,0.3); }
+  .badge-recursos { background: rgba(42,157,143,0.2); color: var(--teal); border: 1px solid rgba(42,157,143,0.3); }
+  .diff-stars { color: var(--gold); font-size: 0.85rem; }
+  .ex-question { font-family: 'Playfair Display', serif; font-size: 1.3rem; line-height: 1.6; margin-bottom: 0.4rem; color: var(--paper); font-style: italic; }
+  .ex-instruction { font-size: 0.85rem; color: rgba(253,248,240,0.5); margin-bottom: 2rem; }
+
+  .options-grid { display: grid; gap: 0.8rem; margin-bottom: 1.5rem; }
+  .option-btn { background: rgba(253,248,240,0.04); border: 1.5px solid rgba(253,248,240,0.12); color: var(--paper); padding: 1rem 1.5rem; border-radius: 12px; cursor: pointer; text-align: left; font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 600; transition: all 0.25s; display: flex; align-items: center; gap: 1rem; }
+  .option-btn:hover:not(:disabled) { background: rgba(253,248,240,0.09); border-color: rgba(253,248,240,0.25); transform: translateX(4px); }
+  .option-btn.correct { background: rgba(42,157,143,0.2); border-color: var(--teal); color: #7ecec7; }
+  .option-btn.incorrect { background: rgba(230,57,70,0.15); border-color: var(--accent); color: #ff8a93; }
+  .option-letter { width: 28px; height: 28px; background: rgba(253,248,240,0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 0.8rem; flex-shrink: 0; }
+
+  .feedback-box { display: none; padding: 1.2rem 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; animation: fadeIn 0.3s ease; }
+  .feedback-box.show { display: block; }
+  .feedback-correct { background: rgba(42,157,143,0.15); border: 1px solid rgba(42,157,143,0.3); }
+  .feedback-incorrect { background: rgba(230,57,70,0.12); border: 1px solid rgba(230,57,70,0.25); }
+  .feedback-title { font-weight: 800; font-size: 1rem; margin-bottom: 0.5rem; }
+  .feedback-correct .feedback-title { color: #7ecec7; }
+  .feedback-incorrect .feedback-title { color: #ff8a93; }
+  .feedback-text { font-size: 0.9rem; color: rgba(253,248,240,0.75); line-height: 1.6; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+  .ex-actions { display: flex; gap: 1rem; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+  .btn-next { background: var(--teal); color: white; border: none; padding: 0.9rem 2rem; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800; cursor: pointer; transition: all 0.3s; box-shadow: 0 5px 20px rgba(42,157,143,0.4); }
+  .btn-next:hover { transform: translateY(-2px); }
+  .btn-skip { background: transparent; color: rgba(253,248,240,0.4); border: none; padding: 0.5rem 1rem; font-family: 'Nunito', sans-serif; font-size: 0.85rem; cursor: pointer; transition: color 0.2s; }
+  .btn-skip:hover { color: rgba(253,248,240,0.7); }
+
+  .combo-display { position: fixed; top: 80px; right: 2rem; z-index: 200; text-align: center; pointer-events: none; }
+  .combo-num { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; color: var(--gold); line-height: 1; text-shadow: 0 0 30px rgba(244,162,97,0.6); transition: all 0.3s; opacity: 0; }
+  .combo-num.show { opacity: 1; }
+  .combo-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.2em; color: rgba(244,162,97,0.6); text-transform: uppercase; }
+
+  .dict-search-wrap { max-width: 700px; margin: 0 auto 2rem; position: relative; }
+  .dict-input { width: 100%; background: rgba(253,248,240,0.06); border: 2px solid rgba(253,248,240,0.15); color: var(--paper); padding: 1.2rem 1.5rem 1.2rem 4rem; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 1.1rem; font-weight: 600; outline: none; transition: border-color 0.3s; }
+  .dict-input:focus { border-color: var(--gold); }
+  .dict-search-icon { position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); font-size: 1.2rem; }
+  .dict-card { background: rgba(253,248,240,0.04); border: 1px solid rgba(253,248,240,0.1); border-radius: 16px; padding: 2rem; max-width: 700px; margin: 0 auto 1.2rem; display: none; }
+  .dict-card.show { display: block; animation: fadeIn 0.3s ease; }
+  .dict-word { font-family: 'Playfair Display', serif; font-size: 1.9rem; font-weight: 700; }
+  .dict-type { display: inline-block; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0.7rem; border-radius: 50px; margin: 0.6rem 0 1rem; font-family: 'DM Mono', monospace; }
+  .dict-def { font-size: 1rem; line-height: 1.8; color: rgba(253,248,240,0.85); margin-bottom: 1rem; }
+  .dict-origin { font-size: 0.82rem; color: rgba(253,248,240,0.4); font-family: 'DM Mono', monospace; }
+  .word-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; max-width: 700px; margin: 0 auto 2rem; justify-content: center; }
+  .word-chip { background: rgba(253,248,240,0.06); border: 1px solid rgba(253,248,240,0.1); color: rgba(253,248,240,0.7); padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; font-weight: 600; }
+  .word-chip:hover { background: rgba(253,248,240,0.12); color: var(--paper); }
+
+  .rules-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.3rem; max-width: 1200px; margin: 0 auto; }
+  .rule-card { background: rgba(253,248,240,0.04); border: 1px solid rgba(253,248,240,0.08); border-radius: 16px; padding: 1.6rem; transition: all 0.3s; }
+  .rule-card:hover { transform: translateY(-4px); border-color: rgba(253,248,240,0.15); background: rgba(253,248,240,0.07); }
+  .rule-title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .rule-desc { font-size: 0.88rem; color: rgba(253,248,240,0.6); line-height: 1.6; margin-bottom: 0.6rem; }
+  .rule-origin { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: rgba(253,248,240,0.35); }
+  .rule-tag { display: inline-block; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 50px; margin-bottom: 0.7rem; font-family: 'DM Mono', monospace; }
+
+  .section-header { margin-bottom: 2rem; }
+  .section-header h2 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .section-header h2 span { color: var(--teal); font-style: italic; }
+  .section-header p { color: rgba(253,248,240,0.5); font-size: 0.95rem; }
+
+  .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-width: 900px; margin: 0 auto; }
+  @media (max-width: 700px) { .home-grid { grid-template-columns: 1fr; } }
+  .home-card { background: rgba(253,248,240,0.04); border: 1px solid rgba(253,248,240,0.08); border-radius: 20px; padding: 2rem; cursor: pointer; transition: all 0.3s; }
+  .home-card:hover { transform: translateY(-5px); }
+  .home-card.c1 { border-top: 3px solid var(--blue); }
+  .home-card.c2 { border-top: 3px solid var(--accent); }
+  .home-card.c3 { border-top: 3px solid var(--gold); }
+  .home-card.c4 { border-top: 3px solid var(--teal); }
+  .home-card.c5 { border-top: 3px solid var(--purple); }
+  .home-card.c6 { border-top: 3px solid var(--light); }
+  .home-card-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .home-card h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 0.5rem; }
+  .home-card p { font-size: 0.85rem; color: rgba(253,248,240,0.5); line-height: 1.6; }
+  .home-card .exercise-count { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: rgba(253,248,240,0.3); margin-top: 0.8rem; }
+
+  .progress-rings { display: flex; flex-wrap: wrap; gap: 2rem; max-width: 900px; margin: 0 auto 2rem; }
+  .ring-card { background: rgba(253,248,240,0.04); border: 1px solid rgba(253,248,240,0.08); border-radius: 16px; padding: 1.5rem; text-align: center; flex: 1; min-width: 150px; }
+  .ring-card h4 { font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(253,248,240,0.4); margin-bottom: 1rem; font-family: 'DM Mono', monospace; }
+  .ring-num { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; color: var(--gold); }
+  .ring-label { font-size: 0.75rem; color: rgba(253,248,240,0.4); }
+
+  .sidebar-toggle { display: none; position: fixed; bottom: 1.5rem; right: 1.5rem; width: 56px; height: 56px; background: var(--accent); border: none; border-radius: 50%; font-size: 1.4rem; cursor: pointer; z-index: 300; box-shadow: 0 8px 25px rgba(230,57,70,0.5); color: white; }
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main-area { margin-left: 0; }
+    .sidebar-toggle { display: flex; align-items: center; justify-content: center; }
+    .combo-display { top: auto; bottom: 5rem; right: 1rem; }
+  }
+
+  .section-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; justify-content: center; }
+  .section-tab { padding: 0.5rem 1.2rem; border-radius: 50px; border: 1.5px solid rgba(253,248,240,0.12); background: transparent; color: rgba(253,248,240,0.6); font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+  .section-tab:hover { border-color: rgba(253,248,240,0.25); color: var(--paper); }
+  .section-tab.active { background: var(--teal); border-color: var(--teal); color: white; }
+
+  .notification { position: fixed; top: 1rem; right: 1rem; background: var(--ink); border: 1px solid rgba(253,248,240,0.15); border-radius: 12px; padding: 1rem 1.5rem; z-index: 1000; font-weight: 700; font-size: 0.9rem; animation: slideIn 0.3s ease; max-width: 300px; }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+  .notif-level { border-color: var(--gold); color: var(--gold); }
+
+  .intro-note { max-width: 700px; margin: 0 auto 2rem; background: rgba(244,162,97,0.08); border: 1px solid rgba(244,162,97,0.2); border-radius: 14px; padding: 1.2rem 1.6rem; font-size: 0.88rem; color: rgba(253,248,240,0.7); line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <a class="back-link" href="index.html">← Volver al portal</a>
+  <div class="floating-letters" id="floatingLetters"></div>
+  <div class="hero-tag">🗣️ IB Español — Registro y variedades</div>
+  <h1 class="hero-title">El acento<br>de cada <span>palabra</span>.</h1>
+  <p class="hero-sub">Cómo cambia el español según quién habla, dónde y en qué contexto: registros (culto, coloquial, vulgar), jerga juvenil de distintos países, regionalismos, y recursos como el eufemismo y el disfemismo. Vocabulario clave para analizar el habla de los personajes en un texto.</p>
+  <div class="hero-buttons">
+    <button class="btn-primary" onclick="launchApp()">🚀 Explorar</button>
+    <button class="btn-secondary" onclick="launchApp(); showSection('quiz')">🎯 Ir directo al quiz</button>
+  </div>
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-num">40</div><div class="stat-label">Términos</div></div>
+    <div class="stat"><div class="stat-num">4</div><div class="stat-label">Categorías</div></div>
+    <div class="stat"><div class="stat-num">10+</div><div class="stat-label">Países representados</div></div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><h2>Registro<span>IB</span></h2><p>El acento de cada palabra</p></div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Explorar</div>
+      <div class="nav-item active" onclick="showSection('inicio')"><span class="icon">🏠</span> Inicio</div>
+      <div class="nav-item" onclick="showSection('registro')"><span class="icon">🎚️</span> Registros y niveles</div>
+      <div class="nav-item" onclick="showSection('slang')"><span class="icon">😎</span> "Genial" en cada país</div>
+      <div class="nav-item" onclick="showSection('regionalismos')"><span class="icon">🌎</span> Regionalismos</div>
+      <div class="nav-item" onclick="showSection('recursos')"><span class="icon">🧩</span> Eufemismo y variación</div>
+      <div class="nav-section-label">Practicar</div>
+      <div class="nav-item" onclick="showSection('quiz')"><span class="icon">🎯</span> Quiz</div>
+      <div class="nav-item" onclick="showSection('diccionario')"><span class="icon">🔍</span> Diccionario</div>
+      <div class="nav-item" onclick="showSection('progreso')"><span class="icon">📊</span> Mi progreso</div>
+    </div>
+    <div class="progress-mini">
+      <p>Nivel <span id="miniLevel">1</span></p>
+      <div class="progress-bar"><div class="progress-fill" id="miniProgress" style="width:0%"></div></div>
+      <div class="xp-display" id="miniXP">0 XP</div>
+    </div>
+  </div>
+
+  <div class="main-area">
+    <div class="top-bar">
+      <h1>Registro<span>IB</span></h1>
+      <div class="top-stats">
+        <div class="top-stat">🔥 <strong id="topStreak">0</strong></div>
+        <div class="top-stat">⭐ <strong id="topXP">0</strong> XP</div>
+        <div class="streak-badge" id="topLevel">Nivel 1</div>
+      </div>
+    </div>
+    <div class="combo-display" id="comboDisplay"><div class="combo-num" id="comboNum">0</div><div class="combo-label">combo</div></div>
+
+    <div class="section active" id="sec-inicio">
+      <div class="section-header"><h2>El español <span>no es uno solo</span></h2><p>Cómo varía la lengua según el hablante, el país y la situación — clave para analizar diálogos y personajes.</p></div>
+      <div class="home-grid">
+        <div class="home-card c1" onclick="showSection('registro')"><div class="home-card-icon">🎚️</div><h3>Registros y niveles</h3><p>Culto, estándar, coloquial, vulgar, jerga, argot, diglosia.</p><div class="exercise-count" id="count-registro"></div></div>
+        <div class="home-card c2" onclick="showSection('slang')"><div class="home-card-icon">😎</div><h3>"Genial" en cada país</h3><p>Guay, chévere, chido, bacán, copado, parcero… la misma idea, diez acentos.</p><div class="exercise-count" id="count-slang"></div></div>
+        <div class="home-card c3" onclick="showSection('regionalismos')"><div class="home-card-icon">🌎</div><h3>Regionalismos</h3><p>Carro/coche/auto, papa/patata, vos/tú — el mismo referente, distinta palabra.</p><div class="exercise-count" id="count-regionalismos"></div></div>
+        <div class="home-card c4" onclick="showSection('recursos')"><div class="home-card-icon">🧩</div><h3>Eufemismo y variación</h3><p>Eufemismo, disfemismo, tabú lingüístico, préstamos, neologismos.</p><div class="exercise-count" id="count-recursos"></div></div>
+        <div class="home-card c5" onclick="showSection('quiz')"><div class="home-card-icon">🎯</div><h3>Quiz</h3><p>Identifica el término o la palabra según su definición o país.</p></div>
+        <div class="home-card c6" onclick="showSection('diccionario')"><div class="home-card-icon">🔍</div><h3>Diccionario</h3><p>Busca cualquier término por nombre.</p></div>
+      </div>
+    </div>
+
+    <div class="section" id="sec-registro"><div class="section-header"><h2>Registros y <span>niveles de habla</span></h2><p>De lo más formal a lo más informal.</p></div><div class="rules-grid" id="grid-registro"></div></div>
+    <div class="section" id="sec-slang">
+      <div class="section-header"><h2><span>"Genial"</span> en cada país</h2><p>La misma idea de aprobación o entusiasmo, en el habla coloquial de distintos países hispanohablantes.</p></div>
+      <div class="intro-note">Esto es dialectología, no una lista de insultos: el IB de Lengua A pide justamente reconocer cómo varía el español según la región, algo muy útil si tu obra tiene personajes de distintos países.</div>
+      <div class="rules-grid" id="grid-slang"></div>
+    </div>
+    <div class="section" id="sec-regionalismos"><div class="section-header"><h2><span>Regionalismos</span> léxicos</h2><p>El mismo objeto o idea, nombrado distinto según el país.</p></div><div class="rules-grid" id="grid-regionalismos"></div></div>
+    <div class="section" id="sec-recursos"><div class="section-header"><h2>Eufemismo y <span>variación</span></h2><p>Cómo se suaviza, se endurece o se renueva el vocabulario.</p></div><div class="rules-grid" id="grid-recursos"></div></div>
+
+    <div class="section" id="sec-quiz">
+      <div class="section-header"><h2>Quiz de <span>registro</span></h2><p>Lee la definición e identifica el término o la palabra.</p></div>
+      <div class="section-tabs">
+        <button class="section-tab active" onclick="setQuizFilter('todas', event)">Todas</button>
+        <button class="section-tab" onclick="setQuizFilter('registro', event)">Registros</button>
+        <button class="section-tab" onclick="setQuizFilter('slang', event)">"Genial" por país</button>
+        <button class="section-tab" onclick="setQuizFilter('regionalismos', event)">Regionalismos</button>
+        <button class="section-tab" onclick="setQuizFilter('recursos', event)">Recursos</button>
+      </div>
+      <div id="quizContainer"></div>
+    </div>
+
+    <div class="section" id="sec-diccionario">
+      <div class="section-header"><h2>Diccionario de <span>registro</span></h2><p>Busca por nombre (ej: "chévere", "eufemismo", "voseo"…).</p></div>
+      <div class="dict-search-wrap"><span class="dict-search-icon">🔍</span><input class="dict-input" id="dictInput" type="text" placeholder="Busca un término…" oninput="searchDict(this.value)"></div>
+      <div class="word-chips" id="wordChips"></div>
+      <div class="dict-card" id="dictCard"></div>
+    </div>
+
+    <div class="section" id="sec-progreso">
+      <div class="section-header"><h2>Mi <span>progreso</span></h2><p>Tu avance dominando la variación del español.</p></div>
+      <div class="progress-rings" id="progressRings"></div>
+    </div>
+  </div>
+</div>
+
+<button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+
+<script>
+// ============================================================
+// DATA — 40 TÉRMINOS DE REGISTRO Y VARIEDADES DEL ESPAÑOL
+// n=término/palabra, cat=categoría, d=definición, o=origen/país (opcional)
+// ============================================================
+const TERMINOS = [
+  {n:"Registro culto", cat:"registro", d:"Variedad formal, con vocabulario preciso y sintaxis elaborada, propia de contextos académicos o literarios serios.", o:"nivel de lengua"},
+  {n:"Registro estándar", cat:"registro", d:"Variedad neutra, correcta y ampliamente entendida, sin marcas fuertes de formalidad ni de coloquialismo.", o:"nivel de lengua"},
+  {n:"Registro coloquial", cat:"registro", d:"Variedad informal usada en la conversación cotidiana entre personas de confianza.", o:"nivel de lengua"},
+  {n:"Registro vulgar", cat:"registro", d:"Variedad con expresiones consideradas groseras o de mal gusto por la norma social, asociada a baja formalidad.", o:"nivel de lengua"},
+  {n:"Registro técnico", cat:"registro", d:"Variedad propia de un campo de conocimiento, con terminología específica de esa área.", o:"nivel de lengua"},
+  {n:"Jerga", cat:"registro", d:"Vocabulario particular de un grupo social o profesional, que puede resultar oscuro para quien no pertenece a él.", o:"concepto sociolingüístico"},
+  {n:"Argot", cat:"registro", d:"Variante de la jerga asociada históricamente a grupos marginales o cerrados, con función identitaria y a veces críptica.", o:"concepto sociolingüístico"},
+  {n:"Diglosia", cat:"registro", d:"Convivencia de dos variedades (o lenguas) en una comunidad, cada una reservada a distintos contextos de uso.", o:"concepto sociolingüístico"},
+
+  {n:"Guay", cat:"slang", d:"Forma coloquial juvenil para expresar aprobación o entusiasmo, equivalente a 'genial'.", o:"España"},
+  {n:"Chévere", cat:"slang", d:"Expresión coloquial de aprobación, muy extendida en el Caribe hispanohablante.", o:"Colombia, Venezuela, Ecuador, Caribe"},
+  {n:"Chido", cat:"slang", d:"Forma coloquial para decir que algo es genial o agradable.", o:"México"},
+  {n:"Bacán / bacano", cat:"slang", d:"Expresión coloquial de aprobación o admiración.", o:"Perú, Chile, Colombia"},
+  {n:"Copado", cat:"slang", d:"Forma coloquial rioplatense para decir que algo es genial.", o:"Argentina, Uruguay"},
+  {n:"Chulo", cat:"slang", d:"Coloquialismo para 'bonito' o 'genial'; en otras regiones puede tener un matiz distinto.", o:"España"},
+  {n:"Parcero/a", cat:"slang", d:"Forma coloquial para 'amigo/a', propia del habla juvenil.", o:"Colombia"},
+  {n:"Pana", cat:"slang", d:"Forma coloquial para 'amigo cercano'.", o:"Venezuela, Ecuador, Caribe"},
+  {n:"Buena onda", cat:"slang", d:"Expresión coloquial para describir a alguien o algo agradable y de trato fácil.", o:"México, Cono Sur"},
+  {n:"Mostro", cat:"slang", d:"Forma coloquial para elogiar algo como excelente o admirable.", o:"Chile"},
+
+  {n:"Computadora / ordenador", cat:"regionalismos", d:"Variación léxica entre el español americano ('computadora') y el peninsular ('ordenador') para el mismo referente.", o:"América / España"},
+  {n:"Carro / coche / auto", cat:"regionalismos", d:"Tres formas regionales distintas para referirse al automóvil.", o:"América / España / Cono Sur"},
+  {n:"Papa / patata", cat:"regionalismos", d:"Variación léxica entre América ('papa') y España ('patata') para el mismo tubérculo.", o:"América / España"},
+  {n:"Popote / pajita / sorbete / bombilla", cat:"regionalismos", d:"Distintas formas regionales de nombrar el tubo para beber líquidos.", o:"México / España / Argentina / Chile"},
+  {n:"Jugo / zumo", cat:"regionalismos", d:"Variación entre América ('jugo') y España ('zumo') para la bebida extraída de frutas.", o:"América / España"},
+  {n:"Frijol / judía / poroto / alubia", cat:"regionalismos", d:"Variantes regionales para la misma legumbre según el país hispanohablante.", o:"México / España / Cono Sur"},
+  {n:"Guagua", cat:"regionalismos", d:"Un mismo significante con dos significados regionales completamente distintos: 'autobús' en el Caribe y Canarias, 'bebé' en los Andes y Chile.", o:"Caribe/Canarias vs. Andes/Chile"},
+  {n:"Voseo (vos / tú)", cat:"regionalismos", d:"Variación pronominal de segunda persona singular informal: el voseo rioplatense y centroamericano frente al tuteo general.", o:"Argentina, Uruguay, Centroamérica"},
+  {n:"Che", cat:"regionalismos", d:"Interjección apelativa característica del habla rioplatense para llamar la atención del interlocutor.", o:"Argentina, Uruguay"},
+  {n:"Tío/a", cat:"regionalismos", d:"Forma coloquial para dirigirse a alguien conocido, equivalente a 'amigo/a' en otros dialectos.", o:"España"},
+  {n:"Ustedes / vosotros", cat:"regionalismos", d:"Variación en el trato plural informal: 'vosotros' en España frente al uso general de 'ustedes' en América.", o:"España / América"},
+  {n:"Meter la pata", cat:"regionalismos", d:"Expresión idiomática coloquial para referirse a cometer un error por torpeza o falta de tacto.", o:"uso general con variantes regionales"},
+
+  {n:"Eufemismo", cat:"recursos", d:"Sustitución de una palabra por otra más suave o socialmente aceptable para el mismo referente (ej. 'pasar a mejor vida' por 'morir').", o:"recurso de atenuación"},
+  {n:"Disfemismo", cat:"recursos", d:"Sustitución de una palabra por otra más brusca o directa de lo habitual para el mismo referente (ej. 'estirar la pata' por 'morir').", o:"recurso de refuerzo"},
+  {n:"Tabú lingüístico", cat:"recursos", d:"Palabra o tema que una comunidad evita nombrar directamente por convención social, religiosa o cultural.", o:"concepto sociolingüístico"},
+  {n:"Diminutivo afectivo", cat:"recursos", d:"Sufijo (-ito, -ita) que, además de indicar tamaño pequeño, transmite cercanía o cariño hacia el referente.", o:"recurso morfológico"},
+  {n:"Aumentativo", cat:"recursos", d:"Sufijo (-ón, -ote, -azo) que agranda el referente y puede añadir un matiz despectivo o admirativo según el contexto.", o:"recurso morfológico"},
+  {n:"Extranjerismo", cat:"recursos", d:"Palabra tomada de otra lengua que se incorpora al español sin traducir, a veces adaptada en su escritura.", o:"contacto de lenguas"},
+  {n:"Calco lingüístico", cat:"recursos", d:"Traducción literal de una expresión extranjera que se incorpora al español (ej. 'rascacielos' del inglés 'skyscraper').", o:"contacto de lenguas"},
+  {n:"Préstamo lingüístico", cat:"recursos", d:"Palabra extranjera adoptada por el español conservando gran parte de su forma original (ej. 'fútbol', 'márketing').", o:"contacto de lenguas"},
+  {n:"Neologismo", cat:"recursos", d:"Palabra de creación reciente que responde a una necesidad expresiva nueva, muchas veces ligada a la tecnología.", o:"cambio léxico"},
+  {n:"Arcaísmo", cat:"recursos", d:"Palabra o expresión en desuso en el habla actual, pero que puede conservarse en ciertas regiones o en el lenguaje literario.", o:"cambio léxico"},
+];
+
+const CAT_LABEL = { registro: "Registros y niveles", slang: "\"Genial\" por país", regionalismos: "Regionalismos", recursos: "Eufemismo y variación" };
+const CAT_BADGE = { registro: "badge-registro", slang: "badge-slang", regionalismos: "badge-regionalismos", recursos: "badge-recursos" };
+
+// ============================================================
+// STATE
+// ============================================================
+const STATE = { xp: 0, correct: 0, total: 0, streak: 0, maxStreak: 0, level: 1 };
+let quizFilter = 'todas';
+let currentQ = null;
+
+function save() { try { localStorage.setItem('registroIB', JSON.stringify(STATE)); } catch(e){} }
+function load() { try { const d = localStorage.getItem('registroIB'); if (d) Object.assign(STATE, JSON.parse(d)); } catch(e){} }
+
+function updateUI() {
+  document.getElementById('topXP').textContent = STATE.xp;
+  document.getElementById('topStreak').textContent = STATE.streak;
+  document.getElementById('topLevel').textContent = 'Nivel ' + STATE.level;
+  document.getElementById('miniLevel').textContent = STATE.level;
+  document.getElementById('miniXP').textContent = STATE.xp + ' XP';
+  const need = STATE.level * 100;
+  document.getElementById('miniProgress').style.width = Math.min(100, (STATE.xp % need) / need * 100) + '%';
+  ['registro','slang','regionalismos','recursos'].forEach(c => {
+    const el = document.getElementById('count-' + c);
+    if (el) el.textContent = TERMINOS.filter(t => t.cat === c).length + ' términos';
+  });
+}
+function addXP(amount) {
+  STATE.xp += amount;
+  const needed = STATE.level * 100;
+  if (STATE.xp >= needed * STATE.level) { STATE.level++; showNotification('¡Subiste a nivel ' + STATE.level + '!'); }
+  save(); updateUI();
+}
+function showNotification(text) {
+  const n = document.createElement('div');
+  n.className = 'notification notif-level';
+  n.textContent = text;
+  document.body.appendChild(n);
+  setTimeout(() => n.remove(), 2500);
+}
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+// ============================================================
+// GRID
+// ============================================================
+function renderGrid(cat) {
+  const grid = document.getElementById('grid-' + cat);
+  grid.innerHTML = TERMINOS.filter(t => t.cat === cat).map(t => `
+    <div class="rule-card">
+      <div class="rule-tag ${CAT_BADGE[t.cat]}">${CAT_LABEL[t.cat]}</div>
+      <div class="rule-title">${t.n}</div>
+      <div class="rule-desc">${t.d}</div>
+      <div class="rule-origin">${t.o}</div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// QUIZ
+// ============================================================
+function setQuizFilter(cat, evt) {
+  quizFilter = cat;
+  document.querySelectorAll('#sec-quiz .section-tab').forEach(t => t.classList.remove('active'));
+  if (evt && evt.target) evt.target.classList.add('active');
+  loadQuiz();
+}
+function loadQuiz() {
+  const pool = quizFilter === 'todas' ? TERMINOS : TERMINOS.filter(t => t.cat === quizFilter);
+  const correct = pool[Math.floor(Math.random() * pool.length)];
+  let sameCat = TERMINOS.filter(t => t.cat === correct.cat && t.n !== correct.n);
+  const distractors = shuffle(sameCat).slice(0, 3);
+  while (distractors.length < 3) {
+    const extra = TERMINOS[Math.floor(Math.random() * TERMINOS.length)];
+    if (extra.n !== correct.n && !distractors.find(d => d.n === extra.n)) distractors.push(extra);
+  }
+  const options = shuffle([correct, ...distractors]);
+  currentQ = { correct, options };
+
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = `
+    <div class="exercise-card">
+      <div class="ex-meta"><span class="ex-type-badge ${CAT_BADGE[correct.cat]}">${CAT_LABEL[correct.cat]}</span><span class="diff-stars">★★☆</span></div>
+      <div class="ex-question">${correct.d}</div>
+      <div class="ex-instruction">¿Qué término o palabra corresponde a esto?</div>
+      <div class="options-grid" id="quizOptions">
+        ${options.map((o, i) => `<button class="option-btn" onclick="checkAnswer(${i})"><span class="option-letter">${String.fromCharCode(65+i)}</span> ${o.n}</button>`).join('')}
+      </div>
+      <div class="feedback-box" id="quizFeedback"><div class="feedback-title" id="quizFeedbackTitle"></div><div class="feedback-text" id="quizFeedbackText"></div></div>
+      <div class="ex-actions"><button class="btn-skip" onclick="loadQuiz()">Saltar →</button></div>
+    </div>`;
+}
+function checkAnswer(idx) {
+  const chosen = currentQ.options[idx];
+  const isCorrect = chosen.n === currentQ.correct.n;
+  document.querySelectorAll('#quizOptions .option-btn').forEach((btn, i) => {
+    btn.disabled = true;
+    if (currentQ.options[i].n === currentQ.correct.n) btn.classList.add('correct');
+    else if (i === idx) btn.classList.add('incorrect');
+  });
+  const box = document.getElementById('quizFeedback');
+  box.classList.add('show', isCorrect ? 'feedback-correct' : 'feedback-incorrect');
+  box.classList.remove(isCorrect ? 'feedback-incorrect' : 'feedback-correct');
+  document.getElementById('quizFeedbackTitle').textContent = isCorrect ? '¡Correcto!' : 'No — es ' + currentQ.correct.n;
+  document.getElementById('quizFeedbackText').textContent = currentQ.correct.o;
+  STATE.total++;
+  if (isCorrect) { STATE.correct++; STATE.streak++; STATE.maxStreak = Math.max(STATE.maxStreak, STATE.streak); addXP(10 + Math.min(STATE.streak,10)); showCombo(STATE.streak); }
+  else { STATE.streak = 0; save(); updateUI(); }
+  document.querySelector('#quizContainer .ex-actions').innerHTML = `<button class="btn-next show" onclick="loadQuiz()">Siguiente →</button>`;
+}
+function showCombo(n) { const el = document.getElementById('comboNum'); el.textContent = n+'×'; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),1000); }
+
+// ============================================================
+// DICCIONARIO
+// ============================================================
+function searchDict(query) {
+  const q = query.toLowerCase().trim();
+  const card = document.getElementById('dictCard');
+  if (q.length < 2) { card.classList.remove('show'); return; }
+  const found = TERMINOS.find(t => t.n.toLowerCase().includes(q) || q.includes(t.n.toLowerCase()));
+  if (found) renderDictCard(found);
+  else { card.innerHTML = `<p style="color:rgba(255,255,255,0.4)">No se encontró "${query}".</p>`; card.classList.add('show'); }
+}
+function renderDictCard(t) {
+  const card = document.getElementById('dictCard');
+  card.classList.add('show');
+  card.innerHTML = `
+    <div class="dict-word">${t.n}</div>
+    <div class="dict-type ${CAT_BADGE[t.cat]}">${CAT_LABEL[t.cat]}</div>
+    <div class="dict-def">${t.d}</div>
+    <div class="dict-origin">${t.o}</div>
+  `;
+}
+function loadWordChips() {
+  document.getElementById('wordChips').innerHTML = shuffle(TERMINOS).slice(0, 20).map(t =>
+    `<span class="word-chip" onclick="document.getElementById('dictInput').value='${t.n.replace(/'/g,"\\'")}';searchDict('${t.n.replace(/'/g,"\\'")}')">${t.n}</span>`
+  ).join('');
+}
+
+// ============================================================
+// PROGRESO
+// ============================================================
+function loadProgress() {
+  const accuracy = STATE.total > 0 ? Math.round(STATE.correct / STATE.total * 100) : 0;
+  document.getElementById('progressRings').innerHTML = `
+    <div class="ring-card"><h4>Total XP</h4><div class="ring-num">${STATE.xp}</div><div class="ring-label">puntos</div></div>
+    <div class="ring-card"><h4>Nivel</h4><div class="ring-num">${STATE.level}</div><div class="ring-label">nivel actual</div></div>
+    <div class="ring-card"><h4>Precisión</h4><div class="ring-num">${accuracy}%</div><div class="ring-label">${STATE.correct}/${STATE.total} correctas</div></div>
+    <div class="ring-card"><h4>Racha máx.</h4><div class="ring-num">${STATE.maxStreak}</div><div class="ring-label">respuestas seguidas</div></div>
+    <div style="width:100%;text-align:center;margin-top:1rem"><button class="btn-secondary" onclick="if(confirm('¿Resetear tu progreso en Registro IB?')){localStorage.removeItem('registroIB');location.reload()}">Reiniciar progreso</button></div>
+  `;
+}
+
+// ============================================================
+// NAVEGACIÓN
+// ============================================================
+function showSection(sec) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + sec).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => { if (n.getAttribute('onclick')?.includes(`'${sec}'`)) n.classList.add('active'); });
+
+  if (['registro','slang','regionalismos','recursos'].includes(sec)) renderGrid(sec);
+  else if (sec === 'quiz') loadQuiz();
+  else if (sec === 'diccionario') loadWordChips();
+  else if (sec === 'progreso') loadProgress();
+
+  if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+  window.scrollTo(0, 0);
+}
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+function launchApp() { document.getElementById('splash').style.display = 'none'; document.getElementById('app').style.display = 'block'; showSection('inicio'); updateUI(); }
+
+function createFloatingLetters() {
+  const container = document.getElementById('floatingLetters');
+  const letters = 'chévereguaychidobacáncoloquial¡!¿?—«»';
+  for (let i = 0; i < 30; i++) {
+    const el = document.createElement('div');
+    el.className = 'fl';
+    el.textContent = letters[Math.floor(Math.random() * letters.length)];
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.fontSize = (Math.random() * 50 + 18) + 'px';
+    el.style.animationDuration = (Math.random() * 20 + 15) + 's';
+    el.style.animationDelay = -(Math.random() * 20) + 's';
+    container.appendChild(el);
+  }
+}
+
+load();
+createFloatingLetters();
+updateUI();
+</script>
+</body>
+</html>
